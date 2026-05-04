@@ -1,5 +1,6 @@
 openai>=1.50
-python-dotenv>=1.0
-requests>=2.31
+python-dotenv>=1.2.2
+requests>=2.33.0
+urllib3>=2.6.3
 transformers>=4.45
 torch>=2.0
