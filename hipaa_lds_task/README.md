@@ -68,7 +68,10 @@ Notes:
   for an LDS-aware filter. The model is not published with this benchmark
   entry; the per-question result file in `results/` records what a model with
   these scores produced span-by-span and is reproducible from the questions
-  in `evaluation_questions/`.
+  in `evaluation_questions/`. The `caiioo-research/hipaa-lds-detector`
+  identifier refers to a proprietary model owned by Six Cailloux, LLC. — see
+  the repo-root `MODELS.md` for the full ownership / availability
+  disclosure.
 
 ### Cross-task: the same LDS detector on canonical PrivacyBench
 

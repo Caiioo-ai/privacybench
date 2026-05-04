@@ -25,3 +25,16 @@ This repository is dedicated to benchmarking legal and privacy-related performan
 **Trademark**
 
 - PrivacyBench is a trademark of Alex J. Wall.
+
+**About the models referenced in result tables**
+
+- The benchmark code, questions, methodology, and per-question result rows
+  in this repository are MIT-licensed (see `LICENSE`).
+- Specific *models* appearing in those result tables are owned by their
+  respective publishers and licensed separately. The `caiioo-research/*`
+  models published by Six Cailloux, LLC. (the company that maintains this
+  benchmark) are **proprietary and not currently available for download** —
+  they appear in result tables as reference points, not as openly
+  redistributable artifacts.
+- See `MODELS.md` for the full list of models referenced, where each can be
+  obtained, what license each falls under, and which are proprietary.

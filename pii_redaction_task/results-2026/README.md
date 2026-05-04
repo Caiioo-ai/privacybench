@@ -43,9 +43,13 @@ predictions which are then mapped to bracketed placeholders, rather than
 generating redacted text directly. The judge scores the resulting redacted
 text identically to the generative-model entries in `../archive/`.
 
-Model weights are not published with this benchmark entry. The
-per-question result file in this directory is reproducible by anyone with a
-HuggingFace-compatible token-classification model:
+Model weights are not published with this benchmark entry — the
+`caiioo-research/personal-data-detector-v14` identifier refers to a
+proprietary model owned by Six Cailloux, LLC. (see the repo-root
+`MODELS.md` for the full ownership / availability disclosure across all
+referenced models). The per-question result file in this directory is
+reproducible by anyone with a HuggingFace-compatible token-classification
+model:
 
 ```bash
 cd ../../pii_redaction_heldout_2026/scripts
