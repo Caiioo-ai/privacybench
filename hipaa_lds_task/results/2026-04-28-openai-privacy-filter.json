@@ -1,0 +1,2722 @@
+{
+  "privacy-filter": {
+    "label": "privacy-filter",
+    "n_questions": 40,
+    "overall_score_pct": 77.0,
+    "hipaa_recall_pct": 92.41,
+    "carveout_preservation_pct": 82.35,
+    "lds_class_accuracy_pct": 43.84,
+    "totals": {
+      "expected_phi": 79,
+      "caught_phi": 73,
+      "missed_phi": 6,
+      "retained_signals": 34,
+      "retained_violations": 6,
+      "class_correct": 32
+    },
+    "per_question": [
+      {
+        "id": 1,
+        "category": "name_basic",
+        "score": 5,
+        "n_expected_phi": 1,
+        "n_caught": 1,
+        "n_missed": 0,
+        "n_class_wrong": 0,
+        "n_retained_violations": 0,
+        "n_spurious": 0,
+        "missed_phi": [],
+        "retained_violations": [],
+        "spurious_redactions": [],
+        "runtime_s": 0.661,
+        "predicted_spans": [
+          {
+            "start": 8,
+            "end": 18,
+            "label": "name"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "category": "name_compound",
+        "score": 5,
+        "n_expected_phi": 2,
+        "n_caught": 2,
+        "n_missed": 0,
+        "n_class_wrong": 0,
+        "n_retained_violations": 0,
+        "n_spurious": 0,
+        "missed_phi": [],
+        "retained_violations": [],
+        "spurious_redactions": [],
+        "runtime_s": 0.53,
+        "predicted_spans": [
+          {
+            "start": 11,
+            "end": 29,
+            "label": "name"
+          },
+          {
+            "start": 43,
+            "end": 64,
+            "label": "name"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "category": "street_address_with_carveout",
+        "score": 4,
+        "n_expected_phi": 1,
+        "n_caught": 1,
+        "n_missed": 0,
+        "n_class_wrong": 0,
+        "n_retained_violations": 1,
+        "n_spurious": 0,
+        "missed_phi": [],
+        "retained_violations": [
+          {
+            "retained": {
+              "start": 36,
+              "end": 52,
+              "kind": "city_state_zip"
+            },
+            "redacted_as": {
+              "start": 19,
+              "end": 52,
+              "label": "street_address"
+            }
+          }
+        ],
+        "spurious_redactions": [],
+        "runtime_s": 0.459,
+        "predicted_spans": [
+          {
+            "start": 19,
+            "end": 52,
+            "label": "street_address"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "category": "phone_basic",
+        "score": 5,
+        "n_expected_phi": 1,
+        "n_caught": 1,
+        "n_missed": 0,
+        "n_class_wrong": 0,
+        "n_retained_violations": 0,
+        "n_spurious": 0,
+        "missed_phi": [],
+        "retained_violations": [],
+        "spurious_redactions": [],
+        "runtime_s": 0.395,
+        "predicted_spans": [
+          {
+            "start": 9,
+            "end": 23,
+            "label": "phone"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "category": "fax_vs_phone_disambiguation",
+        "score": 4,
+        "n_expected_phi": 2,
+        "n_caught": 2,
+        "n_missed": 0,
+        "n_class_wrong": 1,
+        "n_retained_violations": 0,
+        "n_spurious": 1,
+        "missed_phi": [],
+        "retained_violations": [],
+        "spurious_redactions": [
+          {
+            "start": 39,
+            "end": 47,
+            "label": "phone"
+          }
+        ],
+        "runtime_s": 0.474,
+        "predicted_spans": [
+          {
+            "start": 13,
+            "end": 27,
+            "label": "phone"
+          },
+          {
+            "start": 33,
+            "end": 37,
+            "label": "phone"
+          },
+          {
+            "start": 39,
+            "end": 47,
+            "label": "phone"
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "category": "email_definitional",
+        "score": 2,
+        "n_expected_phi": 2,
+        "n_caught": 1,
+        "n_missed": 1,
+        "n_class_wrong": 0,
+        "n_retained_violations": 0,
+        "n_spurious": 0,
+        "missed_phi": [
+          {
+            "start": 16,
+            "end": 33,
+            "label": "email"
+          }
+        ],
+        "retained_violations": [],
+        "spurious_redactions": [],
+        "runtime_s": 0.432,
+        "predicted_spans": [
+          {
+            "start": 38,
+            "end": 58,
+            "label": "email"
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "category": "ssn",
+        "score": 3,
+        "n_expected_phi": 2,
+        "n_caught": 2,
+        "n_missed": 0,
+        "n_class_wrong": 2,
+        "n_retained_violations": 0,
+        "n_spurious": 0,
+        "missed_phi": [],
+        "retained_violations": [],
+        "spurious_redactions": [],
+        "runtime_s": 0.646,
+        "predicted_spans": [
+          {
+            "start": 13,
+            "end": 24,
+            "label": "account"
+          },
+          {
+            "start": 38,
+            "end": 49,
+            "label": "account"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "category": "mrn_format_variety",
+        "score": 3,
+        "n_expected_phi": 3,
+        "n_caught": 3,
+        "n_missed": 0,
+        "n_class_wrong": 3,
+        "n_retained_violations": 0,
+        "n_spurious": 0,
+        "missed_phi": [],
+        "retained_violations": [],
+        "spurious_redactions": [],
+        "runtime_s": 0.537,
+        "predicted_spans": [
+          {
+            "start": 0,
+            "end": 11,
+            "label": "account"
+          },
+          {
+            "start": 22,
+            "end": 31,
+            "label": "account"
+          },
+          {
+            "start": 46,
+            "end": 55,
+            "label": "account"
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "category": "health_plan_payer_specific",
+        "score": 2,
+        "n_expected_phi": 3,
+        "n_caught": 2,
+        "n_missed": 1,
+        "n_class_wrong": 2,
+        "n_retained_violations": 0,
+        "n_spurious": 0,
+        "missed_phi": [
+          {
+            "start": 39,
+            "end": 52,
+            "label": "health_plan"
+          }
+        ],
+        "retained_violations": [],
+        "spurious_redactions": [],
+        "runtime_s": 0.651,
+        "predicted_spans": [
+          {
+            "start": 14,
+            "end": 24,
+            "label": "account"
+          },
+          {
+            "start": 63,
+            "end": 77,
+            "label": "account"
+          }
+        ]
+      },
+      {
+        "id": 10,
+        "category": "account_basic",
+        "score": 5,
+        "n_expected_phi": 1,
+        "n_caught": 1,
+        "n_missed": 0,
+        "n_class_wrong": 0,
+        "n_retained_violations": 0,
+        "n_spurious": 0,
+        "missed_phi": [],
+        "retained_violations": [],
+        "spurious_redactions": [],
+        "runtime_s": 0.46,
+        "predicted_spans": [
+          {
+            "start": 16,
+            "end": 26,
+            "label": "account"
+          }
+        ]
+      },
+      {
+        "id": 11,
+        "category": "license_dl_and_professional",
+        "score": 3,
+        "n_expected_phi": 3,
+        "n_caught": 3,
+        "n_missed": 0,
+        "n_class_wrong": 3,
+        "n_retained_violations": 0,
+        "n_spurious": 0,
+        "missed_phi": [],
+        "retained_violations": [],
+        "spurious_redactions": [],
+        "runtime_s": 0.67,
+        "predicted_spans": [
+          {
+            "start": 3,
+            "end": 11,
+            "label": "account"
+          },
+          {
+            "start": 43,
+            "end": 53,
+            "label": "account"
+          },
+          {
+            "start": 59,
+            "end": 68,
+            "label": "account"
+          }
+        ]
+      },
+      {
+        "id": 12,
+        "category": "vehicle_vin_and_plate",
+        "score": 3,
+        "n_expected_phi": 2,
+        "n_caught": 2,
+        "n_missed": 0,
+        "n_class_wrong": 2,
+        "n_retained_violations": 0,
+        "n_spurious": 0,
+        "missed_phi": [],
+        "retained_violations": [],
+        "spurious_redactions": [],
+        "runtime_s": 0.516,
+        "predicted_spans": [
+          {
+            "start": 13,
+            "end": 30,
+            "label": "account"
+          },
+          {
+            "start": 39,
+            "end": 47,
+            "label": "account"
+          }
+        ]
+      },
+      {
+        "id": 13,
+        "category": "device_serial",
+        "score": 2,
+        "n_expected_phi": 2,
+        "n_caught": 1,
+        "n_missed": 1,
+        "n_class_wrong": 1,
+        "n_retained_violations": 0,
+        "n_spurious": 7,
+        "missed_phi": [
+          {
+            "start": 17,
+            "end": 29,
+            "label": "device"
+          }
+        ],
+        "retained_violations": [],
+        "spurious_redactions": [
+          {
+            "start": 49,
+            "end": 51,
+            "label": "account"
+          },
+          {
+            "start": 51,
+            "end": 54,
+            "label": "url"
+          },
+          {
+            "start": 54,
+            "end": 55,
+            "label": "account"
+          },
+          {
+            "start": 55,
+            "end": 57,
+            "label": "url"
+          },
+          {
+            "start": 57,
+            "end": 58,
+            "label": "account"
+          },
+          {
+            "start": 58,
+            "end": 60,
+            "label": "url"
+          },
+          {
+            "start": 60,
+            "end": 61,
+            "label": "account"
+          }
+        ],
+        "runtime_s": 0.669,
+        "predicted_spans": [
+          {
+            "start": 46,
+            "end": 49,
+            "label": "url"
+          },
+          {
+            "start": 49,
+            "end": 51,
+            "label": "account"
+          },
+          {
+            "start": 51,
+            "end": 54,
+            "label": "url"
+          },
+          {
+            "start": 54,
+            "end": 55,
+            "label": "account"
+          },
+          {
+            "start": 55,
+            "end": 57,
+            "label": "url"
+          },
+          {
+            "start": 57,
+            "end": 58,
+            "label": "account"
+          },
+          {
+            "start": 58,
+            "end": 60,
+            "label": "url"
+          },
+          {
+            "start": 60,
+            "end": 61,
+            "label": "account"
+          }
+        ]
+      },
+      {
+        "id": 14,
+        "category": "url_basic",
+        "score": 2,
+        "n_expected_phi": 1,
+        "n_caught": 0,
+        "n_missed": 1,
+        "n_class_wrong": 0,
+        "n_retained_violations": 0,
+        "n_spurious": 0,
+        "missed_phi": [
+          {
+            "start": 16,
+            "end": 58,
+            "label": "url"
+          }
+        ],
+        "retained_violations": [],
+        "spurious_redactions": [],
+        "runtime_s": 0.356,
+        "predicted_spans": []
+      },
+      {
+        "id": 15,
+        "category": "ip_address",
+        "score": 4,
+        "n_expected_phi": 1,
+        "n_caught": 1,
+        "n_missed": 0,
+        "n_class_wrong": 1,
+        "n_retained_violations": 0,
+        "n_spurious": 0,
+        "missed_phi": [],
+        "retained_violations": [],
+        "spurious_redactions": [],
+        "runtime_s": 0.401,
+        "predicted_spans": [
+          {
+            "start": 14,
+            "end": 28,
+            "label": "url"
+          }
+        ]
+      },
+      {
+        "id": 16,
+        "category": "biometric",
+        "score": 2,
+        "n_expected_phi": 2,
+        "n_caught": 1,
+        "n_missed": 1,
+        "n_class_wrong": 1,
+        "n_retained_violations": 0,
+        "n_spurious": 0,
+        "missed_phi": [
+          {
+            "start": 47,
+            "end": 54,
+            "label": "biometric"
+          }
+        ],
+        "retained_violations": [],
+        "spurious_redactions": [],
+        "runtime_s": 0.394,
+        "predicted_spans": [
+          {
+            "start": 15,
+            "end": 24,
+            "label": "account"
+          }
+        ]
+      },
+      {
+        "id": 17,
+        "category": "photo_reference",
+        "score": 3,
+        "n_expected_phi": 2,
+        "n_caught": 2,
+        "n_missed": 0,
+        "n_class_wrong": 2,
+        "n_retained_violations": 0,
+        "n_spurious": 0,
+        "missed_phi": [],
+        "retained_violations": [],
+        "spurious_redactions": [],
+        "runtime_s": 0.43,
+        "predicted_spans": [
+          {
+            "start": 15,
+            "end": 34,
+            "label": "name"
+          },
+          {
+            "start": 52,
+            "end": 66,
+            "label": "account"
+          }
+        ]
+      },
+      {
+        "id": 18,
+        "category": "carveout_dates_must_remain",
+        "score": 5,
+        "n_expected_phi": 0,
+        "n_caught": 0,
+        "n_missed": 0,
+        "n_class_wrong": 0,
+        "n_retained_violations": 0,
+        "n_spurious": 0,
+        "missed_phi": [],
+        "retained_violations": [],
+        "spurious_redactions": [],
+        "runtime_s": 0.564,
+        "predicted_spans": []
+      },
+      {
+        "id": 19,
+        "category": "carveout_geography_must_remain",
+        "score": 5,
+        "n_expected_phi": 0,
+        "n_caught": 0,
+        "n_missed": 0,
+        "n_class_wrong": 0,
+        "n_retained_violations": 0,
+        "n_spurious": 0,
+        "missed_phi": [],
+        "retained_violations": [],
+        "spurious_redactions": [],
+        "runtime_s": 0.923,
+        "predicted_spans": []
+      },
+      {
+        "id": 20,
+        "category": "carveout_age_must_remain",
+        "score": 5,
+        "n_expected_phi": 0,
+        "n_caught": 0,
+        "n_missed": 0,
+        "n_class_wrong": 0,
+        "n_retained_violations": 0,
+        "n_spurious": 1,
+        "missed_phi": [],
+        "retained_violations": [],
+        "spurious_redactions": [
+          {
+            "start": 30,
+            "end": 32,
+            "label": "name"
+          }
+        ],
+        "runtime_s": 0.281,
+        "predicted_spans": [
+          {
+            "start": 30,
+            "end": 32,
+            "label": "name"
+          }
+        ]
+      },
+      {
+        "id": 21,
+        "category": "hard_negative_apt_suite",
+        "score": 5,
+        "n_expected_phi": 0,
+        "n_caught": 0,
+        "n_missed": 0,
+        "n_class_wrong": 0,
+        "n_retained_violations": 0,
+        "n_spurious": 2,
+        "missed_phi": [],
+        "retained_violations": [],
+        "spurious_redactions": [
+          {
+            "start": 25,
+            "end": 28,
+            "label": "street_address"
+          },
+          {
+            "start": 33,
+            "end": 54,
+            "label": "street_address"
+          }
+        ],
+        "runtime_s": 0.42,
+        "predicted_spans": [
+          {
+            "start": 25,
+            "end": 28,
+            "label": "street_address"
+          },
+          {
+            "start": 33,
+            "end": 54,
+            "label": "street_address"
+          }
+        ]
+      },
+      {
+        "id": 22,
+        "category": "hard_negative_anonymized_id",
+        "score": 5,
+        "n_expected_phi": 0,
+        "n_caught": 0,
+        "n_missed": 0,
+        "n_class_wrong": 0,
+        "n_retained_violations": 0,
+        "n_spurious": 0,
+        "missed_phi": [],
+        "retained_violations": [],
+        "spurious_redactions": [],
+        "runtime_s": 0.424,
+        "predicted_spans": []
+      },
+      {
+        "id": 23,
+        "category": "hard_negative_codes",
+        "score": 5,
+        "n_expected_phi": 0,
+        "n_caught": 0,
+        "n_missed": 0,
+        "n_class_wrong": 0,
+        "n_retained_violations": 0,
+        "n_spurious": 2,
+        "missed_phi": [],
+        "retained_violations": [],
+        "spurious_redactions": [
+          {
+            "start": 17,
+            "end": 23,
+            "label": "account"
+          },
+          {
+            "start": 51,
+            "end": 64,
+            "label": "account"
+          }
+        ],
+        "runtime_s": 0.526,
+        "predicted_spans": [
+          {
+            "start": 17,
+            "end": 23,
+            "label": "account"
+          },
+          {
+            "start": 51,
+            "end": 64,
+            "label": "account"
+          }
+        ]
+      },
+      {
+        "id": 24,
+        "category": "hard_negative_streetname_with_personname",
+        "score": 4,
+        "n_expected_phi": 0,
+        "n_caught": 0,
+        "n_missed": 0,
+        "n_class_wrong": 0,
+        "n_retained_violations": 1,
+        "n_spurious": 1,
+        "missed_phi": [],
+        "retained_violations": [
+          {
+            "retained": {
+              "start": 31,
+              "end": 50,
+              "kind": "city_state_zip"
+            },
+            "redacted_as": {
+              "start": 31,
+              "end": 40,
+              "label": "street_address"
+            }
+          }
+        ],
+        "spurious_redactions": [
+          {
+            "start": 10,
+            "end": 27,
+            "label": "street_address"
+          }
+        ],
+        "runtime_s": 0.334,
+        "predicted_spans": [
+          {
+            "start": 10,
+            "end": 27,
+            "label": "street_address"
+          },
+          {
+            "start": 31,
+            "end": 40,
+            "label": "street_address"
+          },
+          {
+            "start": 45,
+            "end": 50,
+            "label": "street_address"
+          }
+        ]
+      },
+      {
+        "id": 25,
+        "category": "complex_clinical_note",
+        "score": 3,
+        "n_expected_phi": 7,
+        "n_caught": 7,
+        "n_missed": 0,
+        "n_class_wrong": 4,
+        "n_retained_violations": 1,
+        "n_spurious": 0,
+        "missed_phi": [],
+        "retained_violations": [
+          {
+            "retained": {
+              "start": 92,
+              "end": 111,
+              "kind": "city_state_zip"
+            },
+            "redacted_as": {
+              "start": 106,
+              "end": 111,
+              "label": "street_address"
+            }
+          }
+        ],
+        "spurious_redactions": [],
+        "runtime_s": 1.152,
+        "predicted_spans": [
+          {
+            "start": 22,
+            "end": 37,
+            "label": "name"
+          },
+          {
+            "start": 39,
+            "end": 50,
+            "label": "account"
+          },
+          {
+            "start": 106,
+            "end": 111,
+            "label": "street_address"
+          },
+          {
+            "start": 117,
+            "end": 128,
+            "label": "account"
+          },
+          {
+            "start": 146,
+            "end": 160,
+            "label": "account"
+          },
+          {
+            "start": 171,
+            "end": 185,
+            "label": "phone"
+          },
+          {
+            "start": 191,
+            "end": 205,
+            "label": "phone"
+          },
+          {
+            "start": 214,
+            "end": 234,
+            "label": "email"
+          }
+        ]
+      },
+      {
+        "id": 26,
+        "category": "complex_billing",
+        "score": 4,
+        "n_expected_phi": 4,
+        "n_caught": 4,
+        "n_missed": 0,
+        "n_class_wrong": 1,
+        "n_retained_violations": 1,
+        "n_spurious": 0,
+        "missed_phi": [],
+        "retained_violations": [
+          {
+            "retained": {
+              "start": 149,
+              "end": 165,
+              "kind": "city_state_zip"
+            },
+            "redacted_as": {
+              "start": 132,
+              "end": 165,
+              "label": "street_address"
+            }
+          }
+        ],
+        "spurious_redactions": [],
+        "runtime_s": 1.009,
+        "predicted_spans": [
+          {
+            "start": 14,
+            "end": 28,
+            "label": "name"
+          },
+          {
+            "start": 38,
+            "end": 48,
+            "label": "account"
+          },
+          {
+            "start": 62,
+            "end": 76,
+            "label": "account"
+          },
+          {
+            "start": 132,
+            "end": 165,
+            "label": "street_address"
+          }
+        ]
+      },
+      {
+        "id": 27,
+        "category": "complex_intake_form",
+        "score": 3,
+        "n_expected_phi": 7,
+        "n_caught": 7,
+        "n_missed": 0,
+        "n_class_wrong": 3,
+        "n_retained_violations": 1,
+        "n_spurious": 0,
+        "missed_phi": [],
+        "retained_violations": [
+          {
+            "retained": {
+              "start": 74,
+              "end": 92,
+              "kind": "city_state_zip"
+            },
+            "redacted_as": {
+              "start": 74,
+              "end": 82,
+              "label": "street_address"
+            }
+          }
+        ],
+        "spurious_redactions": [],
+        "runtime_s": 1.076,
+        "predicted_spans": [
+          {
+            "start": 18,
+            "end": 32,
+            "label": "name"
+          },
+          {
+            "start": 42,
+            "end": 57,
+            "label": "street_address"
+          },
+          {
+            "start": 74,
+            "end": 82,
+            "label": "street_address"
+          },
+          {
+            "start": 87,
+            "end": 92,
+            "label": "street_address"
+          },
+          {
+            "start": 100,
+            "end": 112,
+            "label": "phone"
+          },
+          {
+            "start": 118,
+            "end": 130,
+            "label": "phone"
+          },
+          {
+            "start": 138,
+            "end": 159,
+            "label": "email"
+          },
+          {
+            "start": 189,
+            "end": 200,
+            "label": "account"
+          },
+          {
+            "start": 219,
+            "end": 227,
+            "label": "account"
+          }
+        ]
+      },
+      {
+        "id": 28,
+        "category": "complex_pharmacy_fax",
+        "score": 3,
+        "n_expected_phi": 4,
+        "n_caught": 4,
+        "n_missed": 0,
+        "n_class_wrong": 3,
+        "n_retained_violations": 0,
+        "n_spurious": 0,
+        "missed_phi": [],
+        "retained_violations": [],
+        "spurious_redactions": [],
+        "runtime_s": 0.739,
+        "predicted_spans": [
+          {
+            "start": 23,
+            "end": 35,
+            "label": "phone"
+          },
+          {
+            "start": 45,
+            "end": 59,
+            "label": "name"
+          },
+          {
+            "start": 78,
+            "end": 89,
+            "label": "account"
+          },
+          {
+            "start": 101,
+            "end": 113,
+            "label": "account"
+          }
+        ]
+      },
+      {
+        "id": 29,
+        "category": "complex_audit_log",
+        "score": 3,
+        "n_expected_phi": 4,
+        "n_caught": 4,
+        "n_missed": 0,
+        "n_class_wrong": 3,
+        "n_retained_violations": 0,
+        "n_spurious": 0,
+        "missed_phi": [],
+        "retained_violations": [],
+        "spurious_redactions": [],
+        "runtime_s": 0.793,
+        "predicted_spans": [
+          {
+            "start": 30,
+            "end": 51,
+            "label": "email"
+          },
+          {
+            "start": 61,
+            "end": 72,
+            "label": "account"
+          },
+          {
+            "start": 81,
+            "end": 91,
+            "label": "url"
+          },
+          {
+            "start": 103,
+            "end": 115,
+            "label": "account"
+          }
+        ]
+      },
+      {
+        "id": 30,
+        "category": "complex_referral",
+        "score": 5,
+        "n_expected_phi": 3,
+        "n_caught": 3,
+        "n_missed": 0,
+        "n_class_wrong": 0,
+        "n_retained_violations": 0,
+        "n_spurious": 0,
+        "missed_phi": [],
+        "retained_violations": [],
+        "spurious_redactions": [],
+        "runtime_s": 0.747,
+        "predicted_spans": [
+          {
+            "start": 17,
+            "end": 28,
+            "label": "name"
+          },
+          {
+            "start": 59,
+            "end": 73,
+            "label": "name"
+          },
+          {
+            "start": 100,
+            "end": 115,
+            "label": "street_address"
+          }
+        ]
+      },
+      {
+        "id": 31,
+        "category": "complex_biometric_enrollment",
+        "score": 3,
+        "n_expected_phi": 5,
+        "n_caught": 5,
+        "n_missed": 0,
+        "n_class_wrong": 4,
+        "n_retained_violations": 0,
+        "n_spurious": 1,
+        "missed_phi": [],
+        "retained_violations": [],
+        "spurious_redactions": [
+          {
+            "start": 78,
+            "end": 82,
+            "label": "name"
+          }
+        ],
+        "runtime_s": 0.729,
+        "predicted_spans": [
+          {
+            "start": 25,
+            "end": 38,
+            "label": "name"
+          },
+          {
+            "start": 52,
+            "end": 61,
+            "label": "account"
+          },
+          {
+            "start": 77,
+            "end": 78,
+            "label": "account"
+          },
+          {
+            "start": 78,
+            "end": 82,
+            "label": "name"
+          },
+          {
+            "start": 96,
+            "end": 109,
+            "label": "account"
+          },
+          {
+            "start": 133,
+            "end": 137,
+            "label": "name"
+          }
+        ]
+      },
+      {
+        "id": 32,
+        "category": "complex_dl_record",
+        "score": 3,
+        "n_expected_phi": 3,
+        "n_caught": 3,
+        "n_missed": 0,
+        "n_class_wrong": 2,
+        "n_retained_violations": 1,
+        "n_spurious": 1,
+        "missed_phi": [],
+        "retained_violations": [
+          {
+            "retained": {
+              "start": 50,
+              "end": 63,
+              "kind": "city_state"
+            },
+            "redacted_as": {
+              "start": 36,
+              "end": 60,
+              "label": "name"
+            }
+          }
+        ],
+        "spurious_redactions": [
+          {
+            "start": 63,
+            "end": 64,
+            "label": "name"
+          }
+        ],
+        "runtime_s": 0.702,
+        "predicted_spans": [
+          {
+            "start": 17,
+            "end": 25,
+            "label": "account"
+          },
+          {
+            "start": 36,
+            "end": 60,
+            "label": "name"
+          },
+          {
+            "start": 63,
+            "end": 64,
+            "label": "name"
+          },
+          {
+            "start": 72,
+            "end": 79,
+            "label": "account"
+          }
+        ]
+      },
+      {
+        "id": 33,
+        "category": "carveout_research_summary",
+        "score": 5,
+        "n_expected_phi": 0,
+        "n_caught": 0,
+        "n_missed": 0,
+        "n_class_wrong": 0,
+        "n_retained_violations": 0,
+        "n_spurious": 0,
+        "missed_phi": [],
+        "retained_violations": [],
+        "spurious_redactions": [],
+        "runtime_s": 0.86,
+        "predicted_spans": []
+      },
+      {
+        "id": 34,
+        "category": "hard_negative_drug_brand_names",
+        "score": 5,
+        "n_expected_phi": 0,
+        "n_caught": 0,
+        "n_missed": 0,
+        "n_class_wrong": 0,
+        "n_retained_violations": 0,
+        "n_spurious": 1,
+        "missed_phi": [],
+        "retained_violations": [],
+        "spurious_redactions": [
+          {
+            "start": 53,
+            "end": 59,
+            "label": "name"
+          }
+        ],
+        "runtime_s": 0.508,
+        "predicted_spans": [
+          {
+            "start": 53,
+            "end": 59,
+            "label": "name"
+          }
+        ]
+      },
+      {
+        "id": 35,
+        "category": "hard_negative_hospital_names",
+        "score": 5,
+        "n_expected_phi": 0,
+        "n_caught": 0,
+        "n_missed": 0,
+        "n_class_wrong": 0,
+        "n_retained_violations": 0,
+        "n_spurious": 0,
+        "missed_phi": [],
+        "retained_violations": [],
+        "spurious_redactions": [],
+        "runtime_s": 0.471,
+        "predicted_spans": []
+      },
+      {
+        "id": 36,
+        "category": "ip_v6",
+        "score": 4,
+        "n_expected_phi": 1,
+        "n_caught": 1,
+        "n_missed": 0,
+        "n_class_wrong": 1,
+        "n_retained_violations": 0,
+        "n_spurious": 0,
+        "missed_phi": [],
+        "retained_violations": [],
+        "spurious_redactions": [],
+        "runtime_s": 0.423,
+        "predicted_spans": [
+          {
+            "start": 21,
+            "end": 44,
+            "label": "url"
+          }
+        ]
+      },
+      {
+        "id": 37,
+        "category": "phone_international",
+        "score": 5,
+        "n_expected_phi": 2,
+        "n_caught": 2,
+        "n_missed": 0,
+        "n_class_wrong": 0,
+        "n_retained_violations": 0,
+        "n_spurious": 0,
+        "missed_phi": [],
+        "retained_violations": [],
+        "spurious_redactions": [],
+        "runtime_s": 0.514,
+        "predicted_spans": [
+          {
+            "start": 23,
+            "end": 39,
+            "label": "phone"
+          },
+          {
+            "start": 46,
+            "end": 61,
+            "label": "phone"
+          }
+        ]
+      },
+      {
+        "id": 38,
+        "category": "name_with_titles",
+        "score": 5,
+        "n_expected_phi": 2,
+        "n_caught": 2,
+        "n_missed": 0,
+        "n_class_wrong": 0,
+        "n_retained_violations": 0,
+        "n_spurious": 0,
+        "missed_phi": [],
+        "retained_violations": [],
+        "spurious_redactions": [],
+        "runtime_s": 0.421,
+        "predicted_spans": [
+          {
+            "start": 12,
+            "end": 27,
+            "label": "name"
+          },
+          {
+            "start": 60,
+            "end": 70,
+            "label": "name"
+          }
+        ]
+      },
+      {
+        "id": 39,
+        "category": "complex_negative_only",
+        "score": 5,
+        "n_expected_phi": 0,
+        "n_caught": 0,
+        "n_missed": 0,
+        "n_class_wrong": 0,
+        "n_retained_violations": 0,
+        "n_spurious": 0,
+        "missed_phi": [],
+        "retained_violations": [],
+        "spurious_redactions": [],
+        "runtime_s": 0.767,
+        "predicted_spans": []
+      },
+      {
+        "id": 40,
+        "category": "complex_handoff",
+        "score": 2,
+        "n_expected_phi": 6,
+        "n_caught": 5,
+        "n_missed": 1,
+        "n_class_wrong": 2,
+        "n_retained_violations": 0,
+        "n_spurious": 0,
+        "missed_phi": [
+          {
+            "start": 39,
+            "end": 54,
+            "label": "name"
+          }
+        ],
+        "retained_violations": [],
+        "spurious_redactions": [],
+        "runtime_s": 1.028,
+        "predicted_spans": [
+          {
+            "start": 13,
+            "end": 22,
+            "label": "name"
+          },
+          {
+            "start": 26,
+            "end": 54,
+            "label": "name"
+          },
+          {
+            "start": 56,
+            "end": 67,
+            "label": "account"
+          },
+          {
+            "start": 140,
+            "end": 154,
+            "label": "phone"
+          },
+          {
+            "start": 176,
+            "end": 190,
+            "label": "phone"
+          }
+        ]
+      }
+    ]
+  },
+  "privacy-filter+regex": {
+    "label": "privacy-filter+regex",
+    "n_questions": 40,
+    "overall_score_pct": 80.5,
+    "hipaa_recall_pct": 92.41,
+    "carveout_preservation_pct": 82.35,
+    "lds_class_accuracy_pct": 61.64,
+    "totals": {
+      "expected_phi": 79,
+      "caught_phi": 73,
+      "missed_phi": 6,
+      "retained_signals": 34,
+      "retained_violations": 6,
+      "class_correct": 45
+    },
+    "per_question": [
+      {
+        "id": 1,
+        "category": "name_basic",
+        "score": 5,
+        "n_expected_phi": 1,
+        "n_caught": 1,
+        "n_missed": 0,
+        "n_class_wrong": 0,
+        "n_retained_violations": 0,
+        "n_spurious": 0,
+        "missed_phi": [],
+        "retained_violations": [],
+        "spurious_redactions": [],
+        "runtime_s": 0.303,
+        "predicted_spans": [
+          {
+            "start": 8,
+            "end": 18,
+            "label": "name"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "category": "name_compound",
+        "score": 5,
+        "n_expected_phi": 2,
+        "n_caught": 2,
+        "n_missed": 0,
+        "n_class_wrong": 0,
+        "n_retained_violations": 0,
+        "n_spurious": 0,
+        "missed_phi": [],
+        "retained_violations": [],
+        "spurious_redactions": [],
+        "runtime_s": 0.458,
+        "predicted_spans": [
+          {
+            "start": 11,
+            "end": 29,
+            "label": "name"
+          },
+          {
+            "start": 43,
+            "end": 64,
+            "label": "name"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "category": "street_address_with_carveout",
+        "score": 4,
+        "n_expected_phi": 1,
+        "n_caught": 1,
+        "n_missed": 0,
+        "n_class_wrong": 0,
+        "n_retained_violations": 1,
+        "n_spurious": 0,
+        "missed_phi": [],
+        "retained_violations": [
+          {
+            "retained": {
+              "start": 36,
+              "end": 52,
+              "kind": "city_state_zip"
+            },
+            "redacted_as": {
+              "start": 19,
+              "end": 52,
+              "label": "street_address"
+            }
+          }
+        ],
+        "spurious_redactions": [],
+        "runtime_s": 0.523,
+        "predicted_spans": [
+          {
+            "start": 19,
+            "end": 52,
+            "label": "street_address"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "category": "phone_basic",
+        "score": 5,
+        "n_expected_phi": 1,
+        "n_caught": 1,
+        "n_missed": 0,
+        "n_class_wrong": 0,
+        "n_retained_violations": 0,
+        "n_spurious": 0,
+        "missed_phi": [],
+        "retained_violations": [],
+        "spurious_redactions": [],
+        "runtime_s": 0.48,
+        "predicted_spans": [
+          {
+            "start": 9,
+            "end": 23,
+            "label": "phone"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "category": "fax_vs_phone_disambiguation",
+        "score": 4,
+        "n_expected_phi": 2,
+        "n_caught": 2,
+        "n_missed": 0,
+        "n_class_wrong": 1,
+        "n_retained_violations": 0,
+        "n_spurious": 1,
+        "missed_phi": [],
+        "retained_violations": [],
+        "spurious_redactions": [
+          {
+            "start": 39,
+            "end": 47,
+            "label": "phone"
+          }
+        ],
+        "runtime_s": 0.543,
+        "predicted_spans": [
+          {
+            "start": 13,
+            "end": 27,
+            "label": "phone"
+          },
+          {
+            "start": 33,
+            "end": 37,
+            "label": "phone"
+          },
+          {
+            "start": 39,
+            "end": 47,
+            "label": "phone"
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "category": "email_definitional",
+        "score": 2,
+        "n_expected_phi": 2,
+        "n_caught": 1,
+        "n_missed": 1,
+        "n_class_wrong": 0,
+        "n_retained_violations": 0,
+        "n_spurious": 0,
+        "missed_phi": [
+          {
+            "start": 16,
+            "end": 33,
+            "label": "email"
+          }
+        ],
+        "retained_violations": [],
+        "spurious_redactions": [],
+        "runtime_s": 0.519,
+        "predicted_spans": [
+          {
+            "start": 38,
+            "end": 58,
+            "label": "email"
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "category": "ssn",
+        "score": 5,
+        "n_expected_phi": 2,
+        "n_caught": 2,
+        "n_missed": 0,
+        "n_class_wrong": 0,
+        "n_retained_violations": 0,
+        "n_spurious": 0,
+        "missed_phi": [],
+        "retained_violations": [],
+        "spurious_redactions": [],
+        "runtime_s": 0.653,
+        "predicted_spans": [
+          {
+            "start": 13,
+            "end": 24,
+            "label": "ssn"
+          },
+          {
+            "start": 38,
+            "end": 49,
+            "label": "ssn"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "category": "mrn_format_variety",
+        "score": 3,
+        "n_expected_phi": 3,
+        "n_caught": 3,
+        "n_missed": 0,
+        "n_class_wrong": 3,
+        "n_retained_violations": 0,
+        "n_spurious": 0,
+        "missed_phi": [],
+        "retained_violations": [],
+        "spurious_redactions": [],
+        "runtime_s": 0.593,
+        "predicted_spans": [
+          {
+            "start": 0,
+            "end": 11,
+            "label": "account"
+          },
+          {
+            "start": 22,
+            "end": 31,
+            "label": "license"
+          },
+          {
+            "start": 46,
+            "end": 55,
+            "label": "license"
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "category": "health_plan_payer_specific",
+        "score": 2,
+        "n_expected_phi": 3,
+        "n_caught": 2,
+        "n_missed": 1,
+        "n_class_wrong": 2,
+        "n_retained_violations": 0,
+        "n_spurious": 0,
+        "missed_phi": [
+          {
+            "start": 39,
+            "end": 52,
+            "label": "health_plan"
+          }
+        ],
+        "retained_violations": [],
+        "spurious_redactions": [],
+        "runtime_s": 0.704,
+        "predicted_spans": [
+          {
+            "start": 15,
+            "end": 24,
+            "label": "license"
+          },
+          {
+            "start": 63,
+            "end": 77,
+            "label": "account"
+          }
+        ]
+      },
+      {
+        "id": 10,
+        "category": "account_basic",
+        "score": 5,
+        "n_expected_phi": 1,
+        "n_caught": 1,
+        "n_missed": 0,
+        "n_class_wrong": 0,
+        "n_retained_violations": 0,
+        "n_spurious": 0,
+        "missed_phi": [],
+        "retained_violations": [],
+        "spurious_redactions": [],
+        "runtime_s": 0.615,
+        "predicted_spans": [
+          {
+            "start": 16,
+            "end": 26,
+            "label": "account"
+          }
+        ]
+      },
+      {
+        "id": 11,
+        "category": "license_dl_and_professional",
+        "score": 4,
+        "n_expected_phi": 3,
+        "n_caught": 3,
+        "n_missed": 0,
+        "n_class_wrong": 1,
+        "n_retained_violations": 0,
+        "n_spurious": 1,
+        "missed_phi": [],
+        "retained_violations": [],
+        "spurious_redactions": [
+          {
+            "start": 3,
+            "end": 11,
+            "label": "license"
+          }
+        ],
+        "runtime_s": 0.628,
+        "predicted_spans": [
+          {
+            "start": 3,
+            "end": 11,
+            "label": "license"
+          },
+          {
+            "start": 3,
+            "end": 11,
+            "label": "license"
+          },
+          {
+            "start": 43,
+            "end": 53,
+            "label": "account"
+          },
+          {
+            "start": 55,
+            "end": 68,
+            "label": "license"
+          }
+        ]
+      },
+      {
+        "id": 12,
+        "category": "vehicle_vin_and_plate",
+        "score": 3,
+        "n_expected_phi": 2,
+        "n_caught": 2,
+        "n_missed": 0,
+        "n_class_wrong": 2,
+        "n_retained_violations": 0,
+        "n_spurious": 0,
+        "missed_phi": [],
+        "retained_violations": [],
+        "spurious_redactions": [],
+        "runtime_s": 0.553,
+        "predicted_spans": [
+          {
+            "start": 13,
+            "end": 30,
+            "label": "account"
+          },
+          {
+            "start": 39,
+            "end": 47,
+            "label": "account"
+          }
+        ]
+      },
+      {
+        "id": 13,
+        "category": "device_serial",
+        "score": 2,
+        "n_expected_phi": 2,
+        "n_caught": 1,
+        "n_missed": 1,
+        "n_class_wrong": 1,
+        "n_retained_violations": 0,
+        "n_spurious": 1,
+        "missed_phi": [
+          {
+            "start": 17,
+            "end": 29,
+            "label": "device"
+          }
+        ],
+        "retained_violations": [],
+        "spurious_redactions": [
+          {
+            "start": 46,
+            "end": 63,
+            "label": "device"
+          }
+        ],
+        "runtime_s": 0.69,
+        "predicted_spans": [
+          {
+            "start": 46,
+            "end": 63,
+            "label": "ip"
+          },
+          {
+            "start": 46,
+            "end": 63,
+            "label": "device"
+          }
+        ]
+      },
+      {
+        "id": 14,
+        "category": "url_basic",
+        "score": 2,
+        "n_expected_phi": 1,
+        "n_caught": 0,
+        "n_missed": 1,
+        "n_class_wrong": 0,
+        "n_retained_violations": 0,
+        "n_spurious": 0,
+        "missed_phi": [
+          {
+            "start": 16,
+            "end": 58,
+            "label": "url"
+          }
+        ],
+        "retained_violations": [],
+        "spurious_redactions": [],
+        "runtime_s": 0.49,
+        "predicted_spans": []
+      },
+      {
+        "id": 15,
+        "category": "ip_address",
+        "score": 5,
+        "n_expected_phi": 1,
+        "n_caught": 1,
+        "n_missed": 0,
+        "n_class_wrong": 0,
+        "n_retained_violations": 0,
+        "n_spurious": 0,
+        "missed_phi": [],
+        "retained_violations": [],
+        "spurious_redactions": [],
+        "runtime_s": 0.549,
+        "predicted_spans": [
+          {
+            "start": 14,
+            "end": 28,
+            "label": "ip"
+          }
+        ]
+      },
+      {
+        "id": 16,
+        "category": "biometric",
+        "score": 2,
+        "n_expected_phi": 2,
+        "n_caught": 1,
+        "n_missed": 1,
+        "n_class_wrong": 0,
+        "n_retained_violations": 0,
+        "n_spurious": 0,
+        "missed_phi": [
+          {
+            "start": 47,
+            "end": 54,
+            "label": "biometric"
+          }
+        ],
+        "retained_violations": [],
+        "spurious_redactions": [],
+        "runtime_s": 0.468,
+        "predicted_spans": [
+          {
+            "start": 15,
+            "end": 24,
+            "label": "biometric"
+          }
+        ]
+      },
+      {
+        "id": 17,
+        "category": "photo_reference",
+        "score": 3,
+        "n_expected_phi": 2,
+        "n_caught": 2,
+        "n_missed": 0,
+        "n_class_wrong": 2,
+        "n_retained_violations": 0,
+        "n_spurious": 0,
+        "missed_phi": [],
+        "retained_violations": [],
+        "spurious_redactions": [],
+        "runtime_s": 0.502,
+        "predicted_spans": [
+          {
+            "start": 15,
+            "end": 34,
+            "label": "name"
+          },
+          {
+            "start": 52,
+            "end": 66,
+            "label": "account"
+          }
+        ]
+      },
+      {
+        "id": 18,
+        "category": "carveout_dates_must_remain",
+        "score": 5,
+        "n_expected_phi": 0,
+        "n_caught": 0,
+        "n_missed": 0,
+        "n_class_wrong": 0,
+        "n_retained_violations": 0,
+        "n_spurious": 0,
+        "missed_phi": [],
+        "retained_violations": [],
+        "spurious_redactions": [],
+        "runtime_s": 0.64,
+        "predicted_spans": []
+      },
+      {
+        "id": 19,
+        "category": "carveout_geography_must_remain",
+        "score": 5,
+        "n_expected_phi": 0,
+        "n_caught": 0,
+        "n_missed": 0,
+        "n_class_wrong": 0,
+        "n_retained_violations": 0,
+        "n_spurious": 0,
+        "missed_phi": [],
+        "retained_violations": [],
+        "spurious_redactions": [],
+        "runtime_s": 0.657,
+        "predicted_spans": []
+      },
+      {
+        "id": 20,
+        "category": "carveout_age_must_remain",
+        "score": 5,
+        "n_expected_phi": 0,
+        "n_caught": 0,
+        "n_missed": 0,
+        "n_class_wrong": 0,
+        "n_retained_violations": 0,
+        "n_spurious": 1,
+        "missed_phi": [],
+        "retained_violations": [],
+        "spurious_redactions": [
+          {
+            "start": 30,
+            "end": 32,
+            "label": "name"
+          }
+        ],
+        "runtime_s": 0.395,
+        "predicted_spans": [
+          {
+            "start": 30,
+            "end": 32,
+            "label": "name"
+          }
+        ]
+      },
+      {
+        "id": 21,
+        "category": "hard_negative_apt_suite",
+        "score": 5,
+        "n_expected_phi": 0,
+        "n_caught": 0,
+        "n_missed": 0,
+        "n_class_wrong": 0,
+        "n_retained_violations": 0,
+        "n_spurious": 2,
+        "missed_phi": [],
+        "retained_violations": [],
+        "spurious_redactions": [
+          {
+            "start": 25,
+            "end": 28,
+            "label": "street_address"
+          },
+          {
+            "start": 33,
+            "end": 54,
+            "label": "street_address"
+          }
+        ],
+        "runtime_s": 0.497,
+        "predicted_spans": [
+          {
+            "start": 25,
+            "end": 28,
+            "label": "street_address"
+          },
+          {
+            "start": 33,
+            "end": 54,
+            "label": "street_address"
+          }
+        ]
+      },
+      {
+        "id": 22,
+        "category": "hard_negative_anonymized_id",
+        "score": 5,
+        "n_expected_phi": 0,
+        "n_caught": 0,
+        "n_missed": 0,
+        "n_class_wrong": 0,
+        "n_retained_violations": 0,
+        "n_spurious": 0,
+        "missed_phi": [],
+        "retained_violations": [],
+        "spurious_redactions": [],
+        "runtime_s": 0.544,
+        "predicted_spans": []
+      },
+      {
+        "id": 23,
+        "category": "hard_negative_codes",
+        "score": 5,
+        "n_expected_phi": 0,
+        "n_caught": 0,
+        "n_missed": 0,
+        "n_class_wrong": 0,
+        "n_retained_violations": 0,
+        "n_spurious": 2,
+        "missed_phi": [],
+        "retained_violations": [],
+        "spurious_redactions": [
+          {
+            "start": 17,
+            "end": 23,
+            "label": "account"
+          },
+          {
+            "start": 51,
+            "end": 64,
+            "label": "account"
+          }
+        ],
+        "runtime_s": 0.672,
+        "predicted_spans": [
+          {
+            "start": 17,
+            "end": 23,
+            "label": "account"
+          },
+          {
+            "start": 51,
+            "end": 64,
+            "label": "account"
+          }
+        ]
+      },
+      {
+        "id": 24,
+        "category": "hard_negative_streetname_with_personname",
+        "score": 4,
+        "n_expected_phi": 0,
+        "n_caught": 0,
+        "n_missed": 0,
+        "n_class_wrong": 0,
+        "n_retained_violations": 1,
+        "n_spurious": 1,
+        "missed_phi": [],
+        "retained_violations": [
+          {
+            "retained": {
+              "start": 31,
+              "end": 50,
+              "kind": "city_state_zip"
+            },
+            "redacted_as": {
+              "start": 31,
+              "end": 40,
+              "label": "street_address"
+            }
+          }
+        ],
+        "spurious_redactions": [
+          {
+            "start": 10,
+            "end": 27,
+            "label": "street_address"
+          }
+        ],
+        "runtime_s": 0.485,
+        "predicted_spans": [
+          {
+            "start": 10,
+            "end": 27,
+            "label": "street_address"
+          },
+          {
+            "start": 31,
+            "end": 40,
+            "label": "street_address"
+          },
+          {
+            "start": 45,
+            "end": 50,
+            "label": "street_address"
+          }
+        ]
+      },
+      {
+        "id": 25,
+        "category": "complex_clinical_note",
+        "score": 3,
+        "n_expected_phi": 7,
+        "n_caught": 7,
+        "n_missed": 0,
+        "n_class_wrong": 3,
+        "n_retained_violations": 1,
+        "n_spurious": 0,
+        "missed_phi": [],
+        "retained_violations": [
+          {
+            "retained": {
+              "start": 92,
+              "end": 111,
+              "kind": "city_state_zip"
+            },
+            "redacted_as": {
+              "start": 106,
+              "end": 111,
+              "label": "street_address"
+            }
+          }
+        ],
+        "spurious_redactions": [],
+        "runtime_s": 1.304,
+        "predicted_spans": [
+          {
+            "start": 22,
+            "end": 37,
+            "label": "name"
+          },
+          {
+            "start": 39,
+            "end": 50,
+            "label": "account"
+          },
+          {
+            "start": 106,
+            "end": 111,
+            "label": "street_address"
+          },
+          {
+            "start": 117,
+            "end": 128,
+            "label": "ssn"
+          },
+          {
+            "start": 146,
+            "end": 160,
+            "label": "account"
+          },
+          {
+            "start": 171,
+            "end": 185,
+            "label": "phone"
+          },
+          {
+            "start": 191,
+            "end": 205,
+            "label": "phone"
+          },
+          {
+            "start": 214,
+            "end": 234,
+            "label": "email"
+          }
+        ]
+      },
+      {
+        "id": 26,
+        "category": "complex_billing",
+        "score": 4,
+        "n_expected_phi": 4,
+        "n_caught": 4,
+        "n_missed": 0,
+        "n_class_wrong": 1,
+        "n_retained_violations": 1,
+        "n_spurious": 0,
+        "missed_phi": [],
+        "retained_violations": [
+          {
+            "retained": {
+              "start": 149,
+              "end": 165,
+              "kind": "city_state_zip"
+            },
+            "redacted_as": {
+              "start": 132,
+              "end": 165,
+              "label": "street_address"
+            }
+          }
+        ],
+        "spurious_redactions": [],
+        "runtime_s": 1.152,
+        "predicted_spans": [
+          {
+            "start": 14,
+            "end": 28,
+            "label": "name"
+          },
+          {
+            "start": 38,
+            "end": 48,
+            "label": "account"
+          },
+          {
+            "start": 62,
+            "end": 76,
+            "label": "account"
+          },
+          {
+            "start": 132,
+            "end": 165,
+            "label": "street_address"
+          }
+        ]
+      },
+      {
+        "id": 27,
+        "category": "complex_intake_form",
+        "score": 4,
+        "n_expected_phi": 7,
+        "n_caught": 7,
+        "n_missed": 0,
+        "n_class_wrong": 1,
+        "n_retained_violations": 1,
+        "n_spurious": 1,
+        "missed_phi": [],
+        "retained_violations": [
+          {
+            "retained": {
+              "start": 74,
+              "end": 92,
+              "kind": "city_state_zip"
+            },
+            "redacted_as": {
+              "start": 74,
+              "end": 82,
+              "label": "street_address"
+            }
+          }
+        ],
+        "spurious_redactions": [
+          {
+            "start": 219,
+            "end": 227,
+            "label": "license"
+          }
+        ],
+        "runtime_s": 1.292,
+        "predicted_spans": [
+          {
+            "start": 18,
+            "end": 32,
+            "label": "name"
+          },
+          {
+            "start": 42,
+            "end": 57,
+            "label": "street_address"
+          },
+          {
+            "start": 74,
+            "end": 82,
+            "label": "street_address"
+          },
+          {
+            "start": 87,
+            "end": 92,
+            "label": "street_address"
+          },
+          {
+            "start": 100,
+            "end": 112,
+            "label": "phone"
+          },
+          {
+            "start": 118,
+            "end": 130,
+            "label": "phone"
+          },
+          {
+            "start": 138,
+            "end": 159,
+            "label": "email"
+          },
+          {
+            "start": 189,
+            "end": 200,
+            "label": "ssn"
+          },
+          {
+            "start": 219,
+            "end": 227,
+            "label": "license"
+          },
+          {
+            "start": 219,
+            "end": 227,
+            "label": "license"
+          }
+        ]
+      },
+      {
+        "id": 28,
+        "category": "complex_pharmacy_fax",
+        "score": 3,
+        "n_expected_phi": 4,
+        "n_caught": 4,
+        "n_missed": 0,
+        "n_class_wrong": 3,
+        "n_retained_violations": 0,
+        "n_spurious": 0,
+        "missed_phi": [],
+        "retained_violations": [],
+        "spurious_redactions": [],
+        "runtime_s": 0.975,
+        "predicted_spans": [
+          {
+            "start": 23,
+            "end": 35,
+            "label": "phone"
+          },
+          {
+            "start": 45,
+            "end": 59,
+            "label": "name"
+          },
+          {
+            "start": 78,
+            "end": 89,
+            "label": "account"
+          },
+          {
+            "start": 101,
+            "end": 113,
+            "label": "account"
+          }
+        ]
+      },
+      {
+        "id": 29,
+        "category": "complex_audit_log",
+        "score": 3,
+        "n_expected_phi": 4,
+        "n_caught": 4,
+        "n_missed": 0,
+        "n_class_wrong": 2,
+        "n_retained_violations": 0,
+        "n_spurious": 0,
+        "missed_phi": [],
+        "retained_violations": [],
+        "spurious_redactions": [],
+        "runtime_s": 0.879,
+        "predicted_spans": [
+          {
+            "start": 30,
+            "end": 51,
+            "label": "email"
+          },
+          {
+            "start": 61,
+            "end": 72,
+            "label": "account"
+          },
+          {
+            "start": 81,
+            "end": 91,
+            "label": "ip"
+          },
+          {
+            "start": 103,
+            "end": 115,
+            "label": "account"
+          }
+        ]
+      },
+      {
+        "id": 30,
+        "category": "complex_referral",
+        "score": 5,
+        "n_expected_phi": 3,
+        "n_caught": 3,
+        "n_missed": 0,
+        "n_class_wrong": 0,
+        "n_retained_violations": 0,
+        "n_spurious": 0,
+        "missed_phi": [],
+        "retained_violations": [],
+        "spurious_redactions": [],
+        "runtime_s": 0.904,
+        "predicted_spans": [
+          {
+            "start": 17,
+            "end": 28,
+            "label": "name"
+          },
+          {
+            "start": 59,
+            "end": 73,
+            "label": "name"
+          },
+          {
+            "start": 100,
+            "end": 115,
+            "label": "street_address"
+          }
+        ]
+      },
+      {
+        "id": 31,
+        "category": "complex_biometric_enrollment",
+        "score": 3,
+        "n_expected_phi": 5,
+        "n_caught": 5,
+        "n_missed": 0,
+        "n_class_wrong": 3,
+        "n_retained_violations": 0,
+        "n_spurious": 1,
+        "missed_phi": [],
+        "retained_violations": [],
+        "spurious_redactions": [
+          {
+            "start": 78,
+            "end": 82,
+            "label": "name"
+          }
+        ],
+        "runtime_s": 0.765,
+        "predicted_spans": [
+          {
+            "start": 25,
+            "end": 38,
+            "label": "name"
+          },
+          {
+            "start": 52,
+            "end": 61,
+            "label": "biometric"
+          },
+          {
+            "start": 77,
+            "end": 78,
+            "label": "account"
+          },
+          {
+            "start": 78,
+            "end": 82,
+            "label": "name"
+          },
+          {
+            "start": 96,
+            "end": 109,
+            "label": "account"
+          },
+          {
+            "start": 133,
+            "end": 137,
+            "label": "name"
+          }
+        ]
+      },
+      {
+        "id": 32,
+        "category": "complex_dl_record",
+        "score": 4,
+        "n_expected_phi": 3,
+        "n_caught": 3,
+        "n_missed": 0,
+        "n_class_wrong": 1,
+        "n_retained_violations": 1,
+        "n_spurious": 2,
+        "missed_phi": [],
+        "retained_violations": [
+          {
+            "retained": {
+              "start": 50,
+              "end": 63,
+              "kind": "city_state"
+            },
+            "redacted_as": {
+              "start": 36,
+              "end": 60,
+              "label": "name"
+            }
+          }
+        ],
+        "spurious_redactions": [
+          {
+            "start": 17,
+            "end": 25,
+            "label": "license"
+          },
+          {
+            "start": 63,
+            "end": 64,
+            "label": "name"
+          }
+        ],
+        "runtime_s": 0.736,
+        "predicted_spans": [
+          {
+            "start": 17,
+            "end": 25,
+            "label": "license"
+          },
+          {
+            "start": 17,
+            "end": 25,
+            "label": "license"
+          },
+          {
+            "start": 36,
+            "end": 60,
+            "label": "name"
+          },
+          {
+            "start": 63,
+            "end": 64,
+            "label": "name"
+          },
+          {
+            "start": 72,
+            "end": 79,
+            "label": "account"
+          }
+        ]
+      },
+      {
+        "id": 33,
+        "category": "carveout_research_summary",
+        "score": 5,
+        "n_expected_phi": 0,
+        "n_caught": 0,
+        "n_missed": 0,
+        "n_class_wrong": 0,
+        "n_retained_violations": 0,
+        "n_spurious": 0,
+        "missed_phi": [],
+        "retained_violations": [],
+        "spurious_redactions": [],
+        "runtime_s": 1.286,
+        "predicted_spans": []
+      },
+      {
+        "id": 34,
+        "category": "hard_negative_drug_brand_names",
+        "score": 5,
+        "n_expected_phi": 0,
+        "n_caught": 0,
+        "n_missed": 0,
+        "n_class_wrong": 0,
+        "n_retained_violations": 0,
+        "n_spurious": 1,
+        "missed_phi": [],
+        "retained_violations": [],
+        "spurious_redactions": [
+          {
+            "start": 53,
+            "end": 59,
+            "label": "name"
+          }
+        ],
+        "runtime_s": 0.626,
+        "predicted_spans": [
+          {
+            "start": 53,
+            "end": 59,
+            "label": "name"
+          }
+        ]
+      },
+      {
+        "id": 35,
+        "category": "hard_negative_hospital_names",
+        "score": 5,
+        "n_expected_phi": 0,
+        "n_caught": 0,
+        "n_missed": 0,
+        "n_class_wrong": 0,
+        "n_retained_violations": 0,
+        "n_spurious": 0,
+        "missed_phi": [],
+        "retained_violations": [],
+        "spurious_redactions": [],
+        "runtime_s": 0.487,
+        "predicted_spans": []
+      },
+      {
+        "id": 36,
+        "category": "ip_v6",
+        "score": 5,
+        "n_expected_phi": 1,
+        "n_caught": 1,
+        "n_missed": 0,
+        "n_class_wrong": 0,
+        "n_retained_violations": 0,
+        "n_spurious": 0,
+        "missed_phi": [],
+        "retained_violations": [],
+        "spurious_redactions": [],
+        "runtime_s": 0.519,
+        "predicted_spans": [
+          {
+            "start": 31,
+            "end": 44,
+            "label": "ip"
+          }
+        ]
+      },
+      {
+        "id": 37,
+        "category": "phone_international",
+        "score": 5,
+        "n_expected_phi": 2,
+        "n_caught": 2,
+        "n_missed": 0,
+        "n_class_wrong": 0,
+        "n_retained_violations": 0,
+        "n_spurious": 0,
+        "missed_phi": [],
+        "retained_violations": [],
+        "spurious_redactions": [],
+        "runtime_s": 0.502,
+        "predicted_spans": [
+          {
+            "start": 23,
+            "end": 39,
+            "label": "phone"
+          },
+          {
+            "start": 46,
+            "end": 61,
+            "label": "phone"
+          }
+        ]
+      },
+      {
+        "id": 38,
+        "category": "name_with_titles",
+        "score": 5,
+        "n_expected_phi": 2,
+        "n_caught": 2,
+        "n_missed": 0,
+        "n_class_wrong": 0,
+        "n_retained_violations": 0,
+        "n_spurious": 0,
+        "missed_phi": [],
+        "retained_violations": [],
+        "spurious_redactions": [],
+        "runtime_s": 0.491,
+        "predicted_spans": [
+          {
+            "start": 12,
+            "end": 27,
+            "label": "name"
+          },
+          {
+            "start": 60,
+            "end": 70,
+            "label": "name"
+          }
+        ]
+      },
+      {
+        "id": 39,
+        "category": "complex_negative_only",
+        "score": 5,
+        "n_expected_phi": 0,
+        "n_caught": 0,
+        "n_missed": 0,
+        "n_class_wrong": 0,
+        "n_retained_violations": 0,
+        "n_spurious": 0,
+        "missed_phi": [],
+        "retained_violations": [],
+        "spurious_redactions": [],
+        "runtime_s": 0.845,
+        "predicted_spans": []
+      },
+      {
+        "id": 40,
+        "category": "complex_handoff",
+        "score": 2,
+        "n_expected_phi": 6,
+        "n_caught": 5,
+        "n_missed": 1,
+        "n_class_wrong": 2,
+        "n_retained_violations": 0,
+        "n_spurious": 0,
+        "missed_phi": [
+          {
+            "start": 39,
+            "end": 54,
+            "label": "name"
+          }
+        ],
+        "retained_violations": [],
+        "spurious_redactions": [],
+        "runtime_s": 1.065,
+        "predicted_spans": [
+          {
+            "start": 13,
+            "end": 22,
+            "label": "name"
+          },
+          {
+            "start": 26,
+            "end": 54,
+            "label": "name"
+          },
+          {
+            "start": 56,
+            "end": 67,
+            "label": "account"
+          },
+          {
+            "start": 140,
+            "end": 154,
+            "label": "phone"
+          },
+          {
+            "start": 176,
+            "end": 190,
+            "label": "phone"
+          }
+        ]
+      }
+    ]
+  }
+}

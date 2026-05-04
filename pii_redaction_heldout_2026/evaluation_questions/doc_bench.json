@@ -1,0 +1,191 @@
+{
+  "_meta": {
+    "name": "Document Format Bench",
+    "purpose": "Held-out OOD eval. Tests PII detection inside formal-document formats: corporate memos, personal letters, contracts, medical notes, legal filings, reports. v8 catastrophically failed on Q14 (memo) of gen-bench despite finding the same PII when extracted from the document context. This bench probes that failure mode systematically.",
+    "author": "Claude (in conversation), 2026-04-30, distribution-keyed (NOT failure-keyed)",
+    "scoring": "GPT-4o judge, 0-100% per question, average = overall",
+    "structure": "5 questions × 6 document types = 30 total"
+  },
+  "questions": [
+    {
+      "id": 1,
+      "doctype": "corp_memo_hr",
+      "text": "MEMORANDUM\n\nTo: All Engineering Staff\nFrom: Patricia Wong, VP Human Resources\nDate: March 14, 2024\nRe: Updated benefits enrollment\n\nBenefits open enrollment runs through March 31. Log in at benefits.acme.com using your employee ID. For Maya Chen that's EMP-44219; for Theodore Sato, EMP-44388.\n\nQuestions: contact Patricia at p.wong@acme.com or x4421.",
+      "expected_pii": ["Patricia Wong", "Maya Chen", "EMP-44219", "Theodore Sato", "EMP-44388", "p.wong@acme.com", "x4421"]
+    },
+    {
+      "id": 2,
+      "doctype": "corp_memo_finance",
+      "text": "INTERNAL MEMO\n\nFrom: Office of the CFO\nTo: Department Heads\nDate: 2024-09-22\nSubject: Q3 expense reporting\n\nPlease ensure all Q3 receipts are submitted via Expensify by October 5. The new approval flow routes through Maria del Carmen Ortiz (Controller, m.ortiz@firm.com, x2210) for amounts >$500. Direct billing inquiries to Vendor Relations: Ahmed El-Sayed, vendor.ops@firm.com, (415) 555-9182.",
+      "expected_pii": ["Maria del Carmen Ortiz", "m.ortiz@firm.com", "x2210", "Ahmed El-Sayed", "vendor.ops@firm.com", "(415) 555-9182"]
+    },
+    {
+      "id": 3,
+      "doctype": "corp_memo_security",
+      "text": "SECURITY NOTICE\n\nFrom: IT Security <security@acme.io>\nTo: All Staff\nDate: November 8, 2024\n\nWe detected unusual login activity for the following accounts. If you are listed below, your password has been auto-rotated. Confirm via the portal:\n\n  - jhaugen@acme.io (login from 73.222.18.91)\n  - alavergne@acme.io (login from 88.34.211.7)\n  - rkasturi@acme.io (login from 102.18.55.230)\n\nIf you did not initiate these, contact security at x9111 immediately.",
+      "expected_pii": ["security@acme.io", "jhaugen@acme.io", "73.222.18.91", "alavergne@acme.io", "88.34.211.7", "rkasturi@acme.io", "102.18.55.230", "x9111"]
+    },
+    {
+      "id": 4,
+      "doctype": "corp_memo_exec",
+      "text": "FROM THE OFFICE OF THE CEO\n\nDate: April 2, 2024\n\nTeam,\n\nI'm pleased to announce that Yusuf Adamu will join us as VP of Engineering, starting May 1. Yusuf brings 15 years from his prior roles at Google and Stripe. He joins us from his most recent post at Plaid where he reported to Zach Perret. Welcome him at his new email yusuf.adamu@acme.com.\n\nA welcome reception will be held at our SF office (450 Mission St., 8th floor) on May 3 at 5pm.\n\n— Eleanor Nakamura, CEO",
+      "expected_pii": ["Yusuf Adamu", "Yusuf", "Zach Perret", "yusuf.adamu@acme.com", "450 Mission St., 8th floor", "Eleanor Nakamura"]
+    },
+    {
+      "id": 5,
+      "doctype": "corp_memo_legal",
+      "text": "LEGAL HOLD NOTICE\n\nFrom: Office of General Counsel\nTo: All employees in Customer Success and Sales\nDate: February 19, 2024\nSubject: Pending litigation — preserve documents\n\nA litigation hold is now in effect for the matter Smith v. Acme Inc., Case No. 2024-CV-08821. Do not delete any communications related to or with the following individuals: Jonathan Smith, his attorneys at Pelletier & Cohen LLP (lead: Marie Pelletier, mpelletier@pcllp.com, (212) 555-3344), and any internal correspondence with Customer Success rep Diana Asare (d.asare@acme.com, EMP-77182).\n\nQuestions to GC at legal@acme.com or x4400.",
+      "expected_pii": ["Smith v. Acme Inc.", "2024-CV-08821", "Jonathan Smith", "Marie Pelletier", "mpelletier@pcllp.com", "(212) 555-3344", "Diana Asare", "d.asare@acme.com", "EMP-77182", "legal@acme.com", "x4400"]
+    },
+    {
+      "id": 6,
+      "doctype": "personal_letter_complaint",
+      "text": "Dear Customer Service Manager,\n\nI am writing to formally complain about the service I received at your branch on October 14. I am Beatriz Hernández-Lopez, account holder #4729183562, and I have been a customer of First National since 2008. On the date in question, your teller (badge #1184) refused to process my deposit despite valid ID.\n\nI can be reached at 215-555-0918 or beatriz.hl@email.com to discuss resolution. My address on file is 1421 Spruce Street, Philadelphia PA 19102.\n\nSincerely,\nBeatriz Hernández-Lopez",
+      "expected_pii": ["Beatriz Hernández-Lopez", "4729183562", "#1184", "215-555-0918", "beatriz.hl@email.com", "1421 Spruce Street, Philadelphia PA 19102"]
+    },
+    {
+      "id": 7,
+      "doctype": "personal_letter_medical_billing",
+      "text": "Dear Billing Department,\n\nI am disputing the charge dated September 12, 2024, on my bill (account #BCBS-9988776543). The amount of $1,247 for emergency room services is incorrect — I was admitted as an inpatient, not seen in the ER.\n\nMy details: Donald Frye, DOB 06/22/1958, MRN 3382197. Address: 4400 Westhaven Rd, Madison WI 53711. Phone: 608-555-2210. Insurance member ID 5728193477A.\n\nPlease correct the bill and re-submit to my insurance.\n\nSincerely,\nDonald Frye",
+      "expected_pii": ["BCBS-9988776543", "Donald Frye", "06/22/1958", "3382197", "4400 Westhaven Rd, Madison WI 53711", "608-555-2210", "5728193477A"]
+    },
+    {
+      "id": 8,
+      "doctype": "personal_letter_employment",
+      "text": "Dear Mr. Tanaka,\n\nI am writing to follow up on my application for the Senior Designer role advertised on your career page (req #DES-2024-441). I had the pleasure of meeting your team on November 2 — Kenji Watanabe walked me through the studio, and I spoke at length with Sarah Whitfield about the brand work for the Hokkaido campaign.\n\nMy portfolio is at https://nadiacisneros.design and I can be reached at +1 (415) 555-7821 or nadia.cisneros@gmail.com.\n\nLooking forward to hearing from you.\n\nBest,\nNadia Cisneros",
+      "expected_pii": ["Mr. Tanaka", "DES-2024-441", "Kenji Watanabe", "Sarah Whitfield", "https://nadiacisneros.design", "+1 (415) 555-7821", "nadia.cisneros@gmail.com", "Nadia Cisneros"]
+    },
+    {
+      "id": 9,
+      "doctype": "personal_letter_lease",
+      "text": "October 30, 2024\n\nDear Mrs. Goldberg,\n\nI am giving formal 60-day notice that I will be vacating apartment 7B at 2218 Park Avenue, New York NY 10037, on December 31, 2024. As you know, I, Jamal Washington, have been your tenant since June 2019 (lease #LEASE-2019-0612).\n\nMy new contact info effective January 1: 770-555-3382, jamalwash@protonmail.com. Forwarding address: 4421 Peachtree Road NE, Atlanta GA 30319.\n\nI'd appreciate the deposit return promptly per the lease terms.\n\nRegards,\nJamal Washington",
+      "expected_pii": ["Mrs. Goldberg", "2218 Park Avenue, New York NY 10037", "Jamal Washington", "LEASE-2019-0612", "770-555-3382", "jamalwash@protonmail.com", "4421 Peachtree Road NE, Atlanta GA 30319"]
+    },
+    {
+      "id": 10,
+      "doctype": "personal_letter_legal",
+      "text": "Date: January 15, 2025\n\nDear Mr. Albrecht,\n\nThis letter constitutes formal notice that I will be retaining counsel regarding the matter we discussed on December 14. My attorney is Bernardo Quintero (Quintero & Associates, 100 Federal Plaza, Suite 1410, Newark NJ 07102, bernie.q@quintero-law.com, 973-555-4421). All future correspondence regarding case CR-2024-09182 should be directed to him.\n\nI am Karen Brigden, formerly residing at 88 Maple St., Verona NJ — but please use my attorney's address going forward.\n\nKaren Brigden",
+      "expected_pii": ["Mr. Albrecht", "Bernardo Quintero", "100 Federal Plaza, Suite 1410, Newark NJ 07102", "bernie.q@quintero-law.com", "973-555-4421", "CR-2024-09182", "Karen Brigden", "88 Maple St., Verona NJ"]
+    },
+    {
+      "id": 11,
+      "doctype": "contract_nda",
+      "text": "MUTUAL NON-DISCLOSURE AGREEMENT\n\nThis Agreement is entered into as of November 5, 2024, by and between:\n\nDISCLOSING PARTY: Akira Industries, Inc., a Delaware corporation, with principal offices at 800 Tech Plaza, San Jose CA 95110.\n\nRECEIVING PARTY: Helena Brodzinski (an individual residing at 142 Birchwood Lane, Cupertino CA 95014, phone 408-555-2231, email h.brodzinski@me.com).\n\nIn consideration of the mutual covenants...\n\n[signatures]\n\nFor Akira Industries: Sven Lindquist, CTO\nReceiving Party: Helena Brodzinski",
+      "expected_pii": ["800 Tech Plaza, San Jose CA 95110", "Helena Brodzinski", "142 Birchwood Lane, Cupertino CA 95014", "408-555-2231", "h.brodzinski@me.com", "Sven Lindquist"]
+    },
+    {
+      "id": 12,
+      "doctype": "contract_employment",
+      "text": "EMPLOYMENT AGREEMENT — Schedule A\n\nEmployee Name: Zainab Mohammed Khan\nDate of Birth: 04/12/1991\nNational Insurance Number: AB 12 34 56 C\nResidential Address: 47 Wellesley Road, Sutton, London SM2 5HB, UK\nNext of Kin: Tariq Khan (brother), +44 7700 900456\nBank Details (for salary deposit): HSBC, sort code 40-04-37, account 12345678\n\nStart Date: January 6, 2025\nReports to: Olivia Bennett (olivia.bennett@firmuk.co.uk)\nPosition: Senior Risk Analyst\n\n[Signed by employee on 12 December 2024]",
+      "expected_pii": ["Zainab Mohammed Khan", "04/12/1991", "AB 12 34 56 C", "47 Wellesley Road, Sutton, London SM2 5HB", "Tariq Khan", "+44 7700 900456", "40-04-37", "12345678", "Olivia Bennett", "olivia.bennett@firmuk.co.uk"]
+    },
+    {
+      "id": 13,
+      "doctype": "contract_lease_residential",
+      "text": "RESIDENTIAL LEASE AGREEMENT — Cover Page\n\nLandlord: Theresa Maliakal-Joseph (sole owner)\nLandlord Address: 9912 Oak Ridge Drive, Plano TX 75024\nLandlord Contact: t.maliakal@email.com / 469-555-7102\n\nTenant: Mateusz Kowalczyk\nTenant DOB: 11/22/1992\nTenant SSN: 442-19-3781\nCo-tenant: Halina Nowak (DOB 03/04/1995)\n\nLeased Premises: 1517 Whispering Pines Drive, Apt. 12, Frisco TX 75034\nLease Term: January 1, 2025 to December 31, 2025\nMonthly Rent: $2,150",
+      "expected_pii": ["Theresa Maliakal-Joseph", "9912 Oak Ridge Drive, Plano TX 75024", "t.maliakal@email.com", "469-555-7102", "Mateusz Kowalczyk", "11/22/1992", "442-19-3781", "Halina Nowak", "03/04/1995", "1517 Whispering Pines Drive, Apt. 12, Frisco TX 75034"]
+    },
+    {
+      "id": 14,
+      "doctype": "contract_service",
+      "text": "SERVICE AGREEMENT\n\nProvider: Westover Consulting LLC\nClient: Anastasia Chrysanthou\nClient Address: 4400 Tradewind Dr, Naples FL 34102\nClient Phone: 239-555-8821\nClient Email: a.chrysanthou@aol.com\n\nServices: Personal financial planning. Provider's lead consultant assigned: Hank Lieberman (CFP-9981234), reachable at hlieb@westover-consulting.com.\n\nFee: $4,500 retainer. Wired to Bank of America routing 026009593, account 489221756301.\n\nTerm: 12 months from execution date below.\n\nClient Signature: A. Chrysanthou — November 12, 2024",
+      "expected_pii": ["Anastasia Chrysanthou", "4400 Tradewind Dr, Naples FL 34102", "239-555-8821", "a.chrysanthou@aol.com", "Hank Lieberman", "CFP-9981234", "hlieb@westover-consulting.com", "026009593", "489221756301"]
+    },
+    {
+      "id": 15,
+      "doctype": "contract_partnership",
+      "text": "PARTNERSHIP AGREEMENT — Article I (Parties)\n\nThis Partnership Agreement is made and entered into this 1st day of March, 2025, by and among:\n\n  Partner 1: Bjørn Eriksen, residing at Storgata 18, 0184 Oslo, Norway. Email: bjorn.eriksen@startup.no. Mobile: +47 906 28 451.\n  Partner 2: Renée Beauchamp, residing at 3401 Cherry Lane, Vancouver BC V6N 1B5, Canada. Email: r.beauchamp@gmail.com. Mobile: +1 604 555 2210.\n  Partner 3: Pankaj Subramanian, residing at C-12, Saket Block A, New Delhi 110017, India. Email: pankaj.s@startup.in. Mobile: +91 98765 43210.\n\nThe partnership shall trade as NorthernLights Ventures.",
+      "expected_pii": ["Bjørn Eriksen", "Storgata 18, 0184 Oslo, Norway", "bjorn.eriksen@startup.no", "+47 906 28 451", "Renée Beauchamp", "3401 Cherry Lane, Vancouver BC V6N 1B5", "r.beauchamp@gmail.com", "+1 604 555 2210", "Pankaj Subramanian", "C-12, Saket Block A, New Delhi 110017", "pankaj.s@startup.in", "+91 98765 43210"]
+    },
+    {
+      "id": 16,
+      "doctype": "medical_clinic_visit",
+      "text": "Riverside Family Practice — Encounter Note\n\nPatient: Margarita Olivera-Diaz\nDOB: 11/30/1973  Sex: F  MRN: 4471829\nAddress: 2233 Cypress Knoll Way, Clearwater FL 33761\nPhone: 727-555-9082\nInsurance: Aetna PPO, member ID W123456789-04\nProvider: Dr. Vivian Hartmann, MD (NPI 1437582019)\nDate of service: 2024-10-15\n\nCC: Persistent migraines, 3-month history.\nHPI: Patient reports HA 4-5×/week, photophobia, no aura. No new meds. Sleep disrupted...\nA: Migraine without aura, chronic.\nP: Trial sumatriptan 50mg PRN; lifestyle journal x 4 weeks; F/U 11/15.",
+      "expected_pii": ["Margarita Olivera-Diaz", "11/30/1973", "4471829", "2233 Cypress Knoll Way, Clearwater FL 33761", "727-555-9082", "W123456789-04", "Vivian Hartmann", "1437582019"]
+    },
+    {
+      "id": 17,
+      "doctype": "medical_discharge_summary",
+      "text": "DISCHARGE SUMMARY\n\nPatient: Sebastián Ferreira da Silva\nMRN: 9982156\nDOB: 04 May 1965 (age 59)\nAdmitting Service: Cardiology\nAttending: Dr. Aiyana Lightfoot-Garcia (NPI 1502938476)\nAdmit date: 2024-11-22  Discharge date: 2024-11-26\n\nPrincipal Dx: Acute MI s/p PCI with DES to LAD.\nDischarge Address: 1817 Crescent Bay Blvd, Apt 4, Tampa FL 33611\nDischarge Phone: 813-555-0102\nFollow-up: Cardiology clinic 12/3 with Dr. Lightfoot-Garcia; PCP follow-up with Dr. Hyungjun Park within 1 week.\nEmergency contact: Daughter, Mariana Ferreira, 813-555-0103.",
+      "expected_pii": ["Sebastián Ferreira da Silva", "9982156", "04 May 1965", "Aiyana Lightfoot-Garcia", "1502938476", "1817 Crescent Bay Blvd, Apt 4, Tampa FL 33611", "813-555-0102", "Hyungjun Park", "Mariana Ferreira", "813-555-0103"]
+    },
+    {
+      "id": 18,
+      "doctype": "medical_lab_report",
+      "text": "Quest Diagnostics — Laboratory Report\n\nPatient: Lucinda Brzozowska\nDOB: 08/14/1982  Patient ID: PT-7821934\nReferring Physician: Dr. Erika Christensen (NPI 1488274910)\nSpecimen collected: 2024-12-03 09:14  Received: 2024-12-03 11:22\n\nResults — Comprehensive Metabolic Panel:\n  Glucose       102 mg/dL    [70-99]   *H\n  BUN            14 mg/dL    [7-25]\n  Creatinine     0.92 mg/dL  [0.6-1.2]\n  Sodium        140 mmol/L   [136-145]\n\nResults sent to: Dr. Christensen, 4400 Pinecrest Dr, Charlotte NC 28210, fax 704-555-7188.",
+      "expected_pii": ["Lucinda Brzozowska", "08/14/1982", "PT-7821934", "Erika Christensen", "1488274910", "4400 Pinecrest Dr, Charlotte NC 28210", "704-555-7188"]
+    },
+    {
+      "id": 19,
+      "doctype": "medical_prescription",
+      "text": "Rx\n\nPrescriber: Dr. Hassan El-Bashir, MD\nDEA: BE-1234567  NPI: 1937485620\nClinic: Stratford Medical Group, 2100 Pelham Pkwy, Bronx NY 10461  ☎ 718-555-3344\n\nPatient: Florencia Pereira-Mendes\nDOB: 02/28/1990\nAddress: 4422 Grand Concourse, Apt 5C, Bronx NY 10457\n\nMedication: Methylphenidate ER 36mg\nSig: 1 tab PO QAM\nDispense: #30  Refills: 0  Date: 11/04/2024\n\nSignature: H. El-Bashir, MD",
+      "expected_pii": ["Hassan El-Bashir", "BE-1234567", "1937485620", "2100 Pelham Pkwy, Bronx NY 10461", "718-555-3344", "Florencia Pereira-Mendes", "02/28/1990", "4422 Grand Concourse, Apt 5C, Bronx NY 10457"]
+    },
+    {
+      "id": 20,
+      "doctype": "medical_referral",
+      "text": "Referral Letter\n\nFrom: Dr. Konstantin Volodin, MD (Internal Medicine)\nTo: Dr. Wendy Achterberg-Klein, MD (Endocrinology)\nDate: October 18, 2024\n\nRe: Tomasz Wojciechowski (DOB 9/14/1958, MRN 882194)\n\nDear Dr. Achterberg-Klein,\n\nI am referring my patient Tomasz for evaluation of newly diagnosed Type 2 diabetes (HbA1c 9.2). He has been on metformin 500mg BID for two weeks. Address on file: 91 Hawthorn Hill, Lansing MI 48910. Phone 517-555-2018.\n\nPlease forward your evaluation to my office (770 Capitol Ave, Lansing MI 48933, fax 517-555-7710).\n\nRespectfully,\nKonstantin Volodin, MD",
+      "expected_pii": ["Konstantin Volodin", "Wendy Achterberg-Klein", "Tomasz Wojciechowski", "9/14/1958", "882194", "91 Hawthorn Hill, Lansing MI 48910", "517-555-2018", "770 Capitol Ave, Lansing MI 48933", "517-555-7710"]
+    },
+    {
+      "id": 21,
+      "doctype": "legal_complaint",
+      "text": "IN THE SUPERIOR COURT OF CALIFORNIA, COUNTY OF SAN MATEO\n\nCASE NO. 2024-CV-78421\n\nDolores Espinosa-Vargas, Plaintiff,\nv.\nMercer Properties LLC, Defendant.\n\nCOMPLAINT FOR BREACH OF CONTRACT AND NEGLIGENCE\n\nPlaintiff Dolores Espinosa-Vargas, by and through counsel Wexford & Donelson LLP (lead attorney Mortimer Wexford, mwex@wexford-law.com, (650) 555-4421, 200 Middlefield Rd, Suite 400, Menlo Park CA 94025), hereby alleges:\n\n1. Plaintiff is an individual residing at 1840 Kingfisher Ct, Belmont CA 94002.\n2. On or about June 14, 2024, Plaintiff entered into a residential lease with Defendant...",
+      "expected_pii": ["2024-CV-78421", "Dolores Espinosa-Vargas", "Mortimer Wexford", "mwex@wexford-law.com", "(650) 555-4421", "200 Middlefield Rd, Suite 400, Menlo Park CA 94025", "1840 Kingfisher Ct, Belmont CA 94002"]
+    },
+    {
+      "id": 22,
+      "doctype": "legal_motion",
+      "text": "UNITED STATES DISTRICT COURT, NORTHERN DISTRICT OF ILLINOIS\n\nCase No. 24-CR-00382\nUnited States v. Caleb Stovall\n\nDEFENDANT'S MOTION TO SUPPRESS EVIDENCE\n\nNOW COMES Defendant Caleb Stovall, by and through his counsel of record (Aurelia Singh-Maxwell, asingh-maxwell@federal-defenders.org, (312) 555-2210), and respectfully moves this Court for an order suppressing evidence obtained at 4422 South Lockwood Ave, Chicago IL 60638, on August 14, 2024, on the grounds that...\n\nDefendant: Caleb Stovall (DOB 6/30/1995, FBI ID 9981234)\nFiled by: Aurelia Singh-Maxwell, Bar No. IL-6312218",
+      "expected_pii": ["24-CR-00382", "Caleb Stovall", "Aurelia Singh-Maxwell", "asingh-maxwell@federal-defenders.org", "(312) 555-2210", "4422 South Lockwood Ave, Chicago IL 60638", "6/30/1995", "9981234", "IL-6312218"]
+    },
+    {
+      "id": 23,
+      "doctype": "legal_deposition_excerpt",
+      "text": "Deposition of Witness — Excerpt\nCase: Hartwell v. Caspian Insurance, 2024-CIV-99102\nDate: November 14, 2024\n\nQ. State your full name for the record.\nA. Mervyn Eustace Pemberton-Smythe.\nQ. And your current address?\nA. 14 Boundary Lane, Henley-on-Thames RG9 2DJ, England.\nQ. Date of birth?\nA. The third of June, 1957.\nQ. Telephone?\nA. 020 7946 0833. My mobile is 07700 900482.\nQ. Email?\nA. m.pemberton-smythe@btinternet.com.\nQ. Are you employed?\nA. Yes, I am the Chief Executive of Pemberton Holdings Limited, registered company number 04382119.",
+      "expected_pii": ["Hartwell v. Caspian Insurance", "2024-CIV-99102", "Mervyn Eustace Pemberton-Smythe", "14 Boundary Lane, Henley-on-Thames RG9 2DJ", "third of June, 1957", "020 7946 0833", "07700 900482", "m.pemberton-smythe@btinternet.com", "04382119"]
+    },
+    {
+      "id": 24,
+      "doctype": "legal_settlement",
+      "text": "SETTLEMENT AGREEMENT AND MUTUAL RELEASE\n\nThis agreement is entered into between:\n\nPlaintiff: Hyacinth Bukowski, 2218 Linden Avenue, Saint Paul MN 55104, hyacinth.b@email.com.\nDefendant: Pillar Marine Logistics, Inc., a Minnesota corporation.\n\nIn settlement of Civil Action No. 24-CV-2018 filed in Hennepin County, the parties agree:\n\n1. Defendant shall pay $87,500 to Plaintiff via wire to Wells Fargo Bank, routing 091000019, account 7748219034 in the name of Hyacinth Bukowski.\n\n2. Plaintiff releases all claims against Defendant arising from the incident of February 8, 2024, at 1100 Industrial Drive, Eagan MN 55121.",
+      "expected_pii": ["Hyacinth Bukowski", "2218 Linden Avenue, Saint Paul MN 55104", "hyacinth.b@email.com", "24-CV-2018", "091000019", "7748219034", "1100 Industrial Drive, Eagan MN 55121"]
+    },
+    {
+      "id": 25,
+      "doctype": "legal_court_order",
+      "text": "ORDER ON DEFENDANT'S MOTION FOR SUMMARY JUDGMENT\n\nCase: Reynolds v. Bramwell, 2024-PR-00882, in the Probate Court of Cook County\n\nThe Court, having considered the submissions of the parties and oral argument heard on November 4, 2024, hereby ORDERS:\n\n1. Defendant's motion is GRANTED IN PART.\n2. The estate of decedent Yolanda Reyes-Caraballo (DOB 5/14/1942, deceased 8/22/2024) shall be administered consistent with the Will dated 3/12/2018, executed at 1820 Clark Street, Evanston IL 60201.\n\nSO ORDERED.\n\nHonorable Patrice McCullough-Stein, Judge\nDated: November 8, 2024",
+      "expected_pii": ["Reynolds v. Bramwell", "2024-PR-00882", "Yolanda Reyes-Caraballo", "5/14/1942", "8/22/2024", "1820 Clark Street, Evanston IL 60201", "Patrice McCullough-Stein"]
+    },
+    {
+      "id": 26,
+      "doctype": "report_audit",
+      "text": "INTERNAL AUDIT REPORT — Q3 2024\n\nReport No: AUD-2024-Q3-018\nAudit Lead: Tobias Gunderssen (CISA, t.gunderssen@acme.com, x4421)\nDate: October 14, 2024\n\nFINDINGS:\n\nFinding 1 (HIGH): Privileged access to production database `prod-acme-1` was not removed within 24h of role change for the following users:\n  - Henrietta Carmichael (henrietta.c@acme.com) — role change effective Sept 14, access revoked Sept 22\n  - Dimitrios Papadopoulos (dimitrios.p@acme.com) — role change effective Aug 30, access revoked Sept 5\n\nFinding 2 (MEDIUM): Quarterly access review for the AWS root account (login: aws-root@acme.com) was not completed by the deadline of August 31.",
+      "expected_pii": ["Tobias Gunderssen", "t.gunderssen@acme.com", "x4421", "Henrietta Carmichael", "henrietta.c@acme.com", "Dimitrios Papadopoulos", "dimitrios.p@acme.com", "aws-root@acme.com"]
+    },
+    {
+      "id": 27,
+      "doctype": "report_incident",
+      "text": "SECURITY INCIDENT REPORT\n\nIncident #: INC-2024-1108-A\nDate detected: November 8, 2024 03:42 UTC\nReporter: Wojciech Stanisław Nowakowski (SecOps, w.nowakowski@acme.com, on-call mobile +48 600 555 444)\n\nSummary: Suspicious login activity from IP 185.220.101.47 to admin portal at 03:18 UTC. Account compromised: ben.ng@acme.com (employee Benjamin Ng, EMP-22184).\n\nResponse:\n- 03:42: SIEM alert, paged on-call (Wojciech)\n- 03:45: Account ben.ng@acme.com password rotated, sessions revoked\n- 03:50: User Benjamin Ng contacted at +1 415 555 8821 (home), confirmed not active\n- 04:15: Forensics initiated. Lead investigator: Constance Halverson (c.halverson@acme.com).",
+      "expected_pii": ["Wojciech Stanisław Nowakowski", "w.nowakowski@acme.com", "+48 600 555 444", "185.220.101.47", "ben.ng@acme.com", "Benjamin Ng", "EMP-22184", "+1 415 555 8821", "Constance Halverson", "c.halverson@acme.com"]
+    },
+    {
+      "id": 28,
+      "doctype": "report_investigation",
+      "text": "HR INVESTIGATION REPORT — Confidential\n\nFile #: HRI-2024-0812-C\nInvestigator: Eleni Papageorgiou-Stathis (Senior HR Investigator, e.papageorgiou@firm.com, x7821)\nDate range: August 12 – September 4, 2024\n\nComplainant: Anonymous (per company policy, name redacted from this version of the report)\nRespondent: Frederick Ashworth-Pemberton (Director of Marketing, f.ashworth@firm.com, EMP-44218)\nWitnesses interviewed:\n  - Salima Bouzidi (Account Manager, EMP-77912)\n  - Liam O'Donoghue (Designer, EMP-88102)\n  - Mei-Lin Tsai-Goldberg (Project Lead, EMP-66541)\n\nFindings: Substantiated. Recommendation: termination effective immediately with one-week notice period.",
+      "expected_pii": ["Eleni Papageorgiou-Stathis", "e.papageorgiou@firm.com", "x7821", "Frederick Ashworth-Pemberton", "f.ashworth@firm.com", "EMP-44218", "Salima Bouzidi", "EMP-77912", "Liam O'Donoghue", "EMP-88102", "Mei-Lin Tsai-Goldberg", "EMP-66541"]
+    },
+    {
+      "id": 29,
+      "doctype": "report_performance_review",
+      "text": "ANNUAL PERFORMANCE REVIEW — FY 2024\n\nEmployee: Saoirse Ní Mhurchú\nEmployee ID: EMP-99102\nReports to: Augusto Bertinotti (a.bertinotti@firm.com)\nDepartment: Engineering — Platform\nDate of review: December 5, 2024\nReviewer: Augusto Bertinotti, Engineering Director\n\nOverall rating: Exceeds Expectations (4/5)\n\nPay action: Salary increase from $145,000 to $158,500 effective January 1, 2025. New direct deposit account on file: Bank of Ireland, IBAN IE29 AIBK 9311 5212 3456 78.\n\nDevelopment goals for FY 2025: Lead the migration of the user-service team to the new platform. Pair with mentor Theron Brookenfield (theron.b@firm.com).",
+      "expected_pii": ["Saoirse Ní Mhurchú", "EMP-99102", "Augusto Bertinotti", "a.bertinotti@firm.com", "IE29 AIBK 9311 5212 3456 78", "Theron Brookenfield", "theron.b@firm.com"]
+    },
+    {
+      "id": 30,
+      "doctype": "report_compliance",
+      "text": "GDPR DATA SUBJECT REQUEST — RESPONSE LETTER\n\nDate: November 22, 2024\nReference: DSR-2024-0911-EU\n\nDear Ms. Klausen,\n\nFurther to your data subject access request received on October 28, 2024, we have completed our search for personal data we hold about you. The following data is held:\n\n  • Full name: Greta Margrethe Klausen\n  • Email: greta.klausen@example.dk\n  • CPR-nummer: 140585-1234\n  • Address: Strandvejen 142, 2900 Hellerup, Denmark\n  • Telephone: +45 22 33 44 55\n\nThis data was collected via our customer portal on June 14, 2021. Our DPO, Anders Vestergaard-Holm (dpo@firm.eu, +45 33 22 11 00), is your point of contact for any further questions.\n\nYours sincerely,\nThe Compliance Team",
+      "expected_pii": ["Greta Margrethe Klausen", "greta.klausen@example.dk", "140585-1234", "Strandvejen 142, 2900 Hellerup", "+45 22 33 44 55", "Anders Vestergaard-Holm", "dpo@firm.eu", "+45 33 22 11 00"]
+    }
+  ]
+}

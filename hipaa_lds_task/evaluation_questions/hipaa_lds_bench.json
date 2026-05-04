@@ -1,0 +1,911 @@
+{
+  "name": "PrivacyBenchHIPAA",
+  "version": "0.1",
+  "description": "HIPAA Limited Data Set (§164.514(e)(2)) compliance benchmark for PII redaction filters. Tests the 16 LDS identifier categories that must be removed AND the 'retained' carve-outs (city/state/ZIP, dates, ages, larger-than-street geographic) that must NOT be removed. Unlike PrivacyBench (which tests subjective PII-association judgement), this benchmark is wooden: every email is PHI, every phone is PHI, every name is PHI — definitional, not contextual. Designed to score a true HIPAA filter at >=99%.",
+  "scoring": "Per-question: 5 = perfect (all PHI removed with right LDS class, all retained signals preserved). 4 = all PHI removed but 1 class miscategorized OR 1 retained signal over-redacted. 3 = all PHI removed but >=2 issues. 2 = >=1 PHI missed (HIPAA violation). 1 = >=2 PHI missed. 0 = catastrophic.",
+  "questions": [
+    {
+      "id": 1,
+      "category": "name_basic",
+      "text": "Patient John Smith presented for f/u.",
+      "phi_spans": [
+        {
+          "start": 8,
+          "end": 18,
+          "label": "name"
+        }
+      ],
+      "retained_signals": []
+    },
+    {
+      "id": 2,
+      "category": "name_compound",
+      "text": "Pt seen by Dr. Sarah O'Connor and resident Dr. Michael Chen-Wong.",
+      "phi_spans": [
+        {
+          "start": 15,
+          "end": 29,
+          "label": "name"
+        },
+        {
+          "start": 47,
+          "end": 64,
+          "label": "name"
+        }
+      ],
+      "retained_signals": [],
+      "_note": "Per Q38 convention, the proper name is PHI; titles like Dr. are not part of the span."
+    },
+    {
+      "id": 3,
+      "category": "street_address_with_carveout",
+      "text": "Patient resides at 1247 Cedar Lane, Boston, MA 02115.",
+      "phi_spans": [
+        {
+          "start": 19,
+          "end": 34,
+          "label": "street_address"
+        }
+      ],
+      "retained_signals": [
+        {
+          "start": 36,
+          "end": 52,
+          "kind": "city_state_zip"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "category": "phone_basic",
+      "text": "Contact: (617) 555-2349 for scheduling.",
+      "phi_spans": [
+        {
+          "start": 9,
+          "end": 23,
+          "label": "phone"
+        }
+      ],
+      "retained_signals": []
+    },
+    {
+      "id": 5,
+      "category": "fax_vs_phone_disambiguation",
+      "text": "Office phone (617) 555-2349, fax (617) 555-2350.",
+      "phi_spans": [
+        {
+          "start": 13,
+          "end": 27,
+          "label": "phone"
+        },
+        {
+          "start": 33,
+          "end": 47,
+          "label": "fax"
+        }
+      ],
+      "retained_signals": []
+    },
+    {
+      "id": 6,
+      "category": "email_definitional",
+      "text": "Correspondence: info@hospital.org and j.smith@hospital.org.",
+      "phi_spans": [
+        {
+          "start": 16,
+          "end": 33,
+          "label": "email"
+        },
+        {
+          "start": 38,
+          "end": 58,
+          "label": "email"
+        }
+      ],
+      "retained_signals": [],
+      "_note": "Per LDS, ALL emails are PHI definitionally. info@... is PHI under LDS even though PrivacyBench would say it's not."
+    },
+    {
+      "id": 7,
+      "category": "ssn",
+      "text": "SSN on file: 412-89-7456. Spouse SSN: 533-21-9087.",
+      "phi_spans": [
+        {
+          "start": 13,
+          "end": 24,
+          "label": "ssn"
+        },
+        {
+          "start": 38,
+          "end": 49,
+          "label": "ssn"
+        }
+      ],
+      "retained_signals": []
+    },
+    {
+      "id": 8,
+      "category": "mrn_format_variety",
+      "text": "MRN-7849213 - chart # M58392041 - patient ID: P00738492.",
+      "phi_spans": [
+        {
+          "start": 0,
+          "end": 11,
+          "label": "mrn"
+        },
+        {
+          "start": 22,
+          "end": 31,
+          "label": "mrn"
+        },
+        {
+          "start": 46,
+          "end": 55,
+          "label": "mrn"
+        }
+      ],
+      "retained_signals": [],
+      "_note": "Three different MRN formats — model must recognize all as MRN."
+    },
+    {
+      "id": 9,
+      "category": "health_plan_payer_specific",
+      "text": "Member ID BCBS-A47829301, Medicare MBI 1EG4-TE5-MK73, Aetna ID AETNA827493051.",
+      "phi_spans": [
+        {
+          "start": 10,
+          "end": 24,
+          "label": "health_plan"
+        },
+        {
+          "start": 39,
+          "end": 52,
+          "label": "health_plan"
+        },
+        {
+          "start": 63,
+          "end": 77,
+          "label": "health_plan"
+        }
+      ],
+      "retained_signals": []
+    },
+    {
+      "id": 10,
+      "category": "account_basic",
+      "text": "Patient account 8847291036 has a balance of $1,247.",
+      "phi_spans": [
+        {
+          "start": 16,
+          "end": 26,
+          "label": "account"
+        }
+      ],
+      "retained_signals": []
+    },
+    {
+      "id": 11,
+      "category": "license_dl_and_professional",
+      "text": "DL D8472916 issued to driver. Provider NPI 1437592018, DEA AB7392841.",
+      "phi_spans": [
+        {
+          "start": 3,
+          "end": 11,
+          "label": "license"
+        },
+        {
+          "start": 43,
+          "end": 53,
+          "label": "license"
+        },
+        {
+          "start": 59,
+          "end": 68,
+          "label": "license"
+        }
+      ],
+      "retained_signals": []
+    },
+    {
+      "id": 12,
+      "category": "vehicle_vin_and_plate",
+      "text": "Vehicle VIN: 1HGCM82633A123456. Plate: ABC-7392.",
+      "phi_spans": [
+        {
+          "start": 13,
+          "end": 30,
+          "label": "vehicle"
+        },
+        {
+          "start": 39,
+          "end": 47,
+          "label": "vehicle"
+        }
+      ],
+      "retained_signals": []
+    },
+    {
+      "id": 13,
+      "category": "device_serial",
+      "text": "Insulin pump S/N PUMP-7392841. Telemetry MAC: 02:42:AC:13:00:FA.",
+      "phi_spans": [
+        {
+          "start": 17,
+          "end": 29,
+          "label": "device"
+        },
+        {
+          "start": 46,
+          "end": 63,
+          "label": "device"
+        }
+      ],
+      "retained_signals": []
+    },
+    {
+      "id": 14,
+      "category": "url_basic",
+      "text": "Records portal: https://portal.hospital.org/patient/abc123.",
+      "phi_spans": [
+        {
+          "start": 16,
+          "end": 58,
+          "label": "url"
+        }
+      ],
+      "retained_signals": []
+    },
+    {
+      "id": 15,
+      "category": "ip_address",
+      "text": "Login from IP 192.168.42.107 at 14:32 UTC.",
+      "phi_spans": [
+        {
+          "start": 14,
+          "end": 28,
+          "label": "ip"
+        }
+      ],
+      "retained_signals": []
+    },
+    {
+      "id": 16,
+      "category": "biometric",
+      "text": "Fingerprint ID FP-739284 enrolled. Voice print VP-3927 verified.",
+      "phi_spans": [
+        {
+          "start": 15,
+          "end": 24,
+          "label": "biometric"
+        },
+        {
+          "start": 47,
+          "end": 54,
+          "label": "biometric"
+        }
+      ],
+      "retained_signals": []
+    },
+    {
+      "id": 17,
+      "category": "photo_reference",
+      "text": "Patient photo: face_photo_7392.jpg. Insurance card: IMG_847291.png.",
+      "phi_spans": [
+        {
+          "start": 15,
+          "end": 34,
+          "label": "photo"
+        },
+        {
+          "start": 52,
+          "end": 66,
+          "label": "photo"
+        }
+      ],
+      "retained_signals": []
+    },
+    {
+      "id": 18,
+      "category": "carveout_dates_must_remain",
+      "text": "Admitted 2024-03-15, discharged 2024-03-22 after 7 days.",
+      "phi_spans": [],
+      "retained_signals": [
+        {
+          "start": 9,
+          "end": 19,
+          "kind": "date"
+        },
+        {
+          "start": 32,
+          "end": 42,
+          "kind": "date"
+        },
+        {
+          "start": 49,
+          "end": 55,
+          "kind": "duration"
+        }
+      ],
+      "_note": "Pure carve-out test. Dates and durations are LDS-retained — must NOT be redacted."
+    },
+    {
+      "id": 19,
+      "category": "carveout_geography_must_remain",
+      "text": "The clinic in Cleveland, OH 44109 serves the metropolitan area.",
+      "phi_spans": [],
+      "retained_signals": [
+        {
+          "start": 14,
+          "end": 33,
+          "kind": "city_state_zip"
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "category": "carveout_age_must_remain",
+      "text": "75-year-old male presented to ED.",
+      "phi_spans": [],
+      "retained_signals": [
+        {
+          "start": 0,
+          "end": 11,
+          "kind": "age"
+        }
+      ]
+    },
+    {
+      "id": 21,
+      "category": "hard_negative_apt_suite",
+      "text": "Patient assigned to Room 412B in Building 5, Suite 102.",
+      "phi_spans": [],
+      "retained_signals": [],
+      "_note": "Room/Building/Suite numbers are NOT PHI under LDS. Hard negative."
+    },
+    {
+      "id": 22,
+      "category": "hard_negative_anonymized_id",
+      "text": "Subject 14-A in trial protocol 7-B completed visit 3.",
+      "phi_spans": [],
+      "retained_signals": [],
+      "_note": "Already-anonymized study subject IDs are not PHI."
+    },
+    {
+      "id": 23,
+      "category": "hard_negative_codes",
+      "text": "Diagnosis ICD-10 Z51.11, procedure CPT 99213, drug NDC 12345-678.",
+      "phi_spans": [],
+      "retained_signals": [],
+      "_note": "Medical codes (ICD-10, CPT, NDC, LOINC, SNOMED) are not PHI."
+    },
+    {
+      "id": 24,
+      "category": "hard_negative_streetname_with_personname",
+      "text": "Clinic on Nicholas Causeway in Cleveland, OH 44109.",
+      "phi_spans": [],
+      "retained_signals": [
+        {
+          "start": 31,
+          "end": 50,
+          "kind": "city_state_zip"
+        }
+      ],
+      "_note": "'Nicholas Causeway' is a STREET NAME, not a person. Clinic name itself isn't PHI. Hard negative."
+    },
+    {
+      "id": 25,
+      "category": "complex_clinical_note",
+      "text": "PROGRESS NOTE\nPatient Maria Rodriguez (MRN-4729183), 67 years old, admitted 2024-03-12 from Cleveland, OH 44109. SSN 412-58-7392. Insurance Aetna AETNA827493051. Contact: (440) 555-2837, fax (440) 555-2838. Email: mrodriguez@email.com.",
+      "phi_spans": [
+        {
+          "start": 22,
+          "end": 37,
+          "label": "name"
+        },
+        {
+          "start": 39,
+          "end": 50,
+          "label": "mrn"
+        },
+        {
+          "start": 117,
+          "end": 128,
+          "label": "ssn"
+        },
+        {
+          "start": 146,
+          "end": 160,
+          "label": "health_plan"
+        },
+        {
+          "start": 171,
+          "end": 185,
+          "label": "phone"
+        },
+        {
+          "start": 191,
+          "end": 205,
+          "label": "fax"
+        },
+        {
+          "start": 214,
+          "end": 234,
+          "label": "email"
+        }
+      ],
+      "retained_signals": [
+        {
+          "start": 53,
+          "end": 65,
+          "kind": "age"
+        },
+        {
+          "start": 76,
+          "end": 86,
+          "kind": "date"
+        },
+        {
+          "start": 92,
+          "end": 111,
+          "kind": "city_state_zip"
+        }
+      ]
+    },
+    {
+      "id": 26,
+      "category": "complex_billing",
+      "text": "Statement for Robert Johnson, account 8847291036, plan member UHC73928410528. Date of service 2024-03-15. Amount due $342.\nMail to: 1247 Cedar Lane, Boston, MA 02115.",
+      "phi_spans": [
+        {
+          "start": 14,
+          "end": 28,
+          "label": "name"
+        },
+        {
+          "start": 38,
+          "end": 48,
+          "label": "account"
+        },
+        {
+          "start": 62,
+          "end": 76,
+          "label": "health_plan"
+        },
+        {
+          "start": 132,
+          "end": 147,
+          "label": "street_address"
+        }
+      ],
+      "retained_signals": [
+        {
+          "start": 94,
+          "end": 104,
+          "kind": "date"
+        },
+        {
+          "start": 149,
+          "end": 165,
+          "kind": "city_state_zip"
+        }
+      ]
+    },
+    {
+      "id": 27,
+      "category": "complex_intake_form",
+      "text": "INTAKE FORM\nName: Sarah Williams\nAddress: 482 Pine Street\nCity/State/ZIP: Portland, OR 97205\nPhone: 503-555-1827\nFax: 503-555-1828\nEmail: swilliams@example.com\nDOB: 1978-09-23\nAge: 47\nSSN: 392-58-1947\nDriver's License: D8472916",
+      "phi_spans": [
+        {
+          "start": 18,
+          "end": 32,
+          "label": "name"
+        },
+        {
+          "start": 42,
+          "end": 57,
+          "label": "street_address"
+        },
+        {
+          "start": 100,
+          "end": 112,
+          "label": "phone"
+        },
+        {
+          "start": 118,
+          "end": 130,
+          "label": "fax"
+        },
+        {
+          "start": 138,
+          "end": 159,
+          "label": "email"
+        },
+        {
+          "start": 189,
+          "end": 200,
+          "label": "ssn"
+        },
+        {
+          "start": 219,
+          "end": 227,
+          "label": "license"
+        }
+      ],
+      "retained_signals": [
+        {
+          "start": 74,
+          "end": 92,
+          "kind": "city_state_zip"
+        },
+        {
+          "start": 165,
+          "end": 175,
+          "kind": "date"
+        },
+        {
+          "start": 181,
+          "end": 183,
+          "kind": "age"
+        }
+      ]
+    },
+    {
+      "id": 28,
+      "category": "complex_pharmacy_fax",
+      "text": "Walgreens Pharmacy fax 503-555-1928 — Rx for James Anderson (DOB 1972-04-15), MRN-7392841, member ID BCBS-7392841.",
+      "phi_spans": [
+        {
+          "start": 23,
+          "end": 35,
+          "label": "fax"
+        },
+        {
+          "start": 45,
+          "end": 59,
+          "label": "name"
+        },
+        {
+          "start": 78,
+          "end": 89,
+          "label": "mrn"
+        },
+        {
+          "start": 101,
+          "end": 113,
+          "label": "health_plan"
+        }
+      ],
+      "retained_signals": [
+        {
+          "start": 65,
+          "end": 75,
+          "kind": "date"
+        }
+      ]
+    },
+    {
+      "id": 29,
+      "category": "complex_audit_log",
+      "text": "2024-03-15 14:32 [AUDIT] user dr.jchen@hospital.org accessed MRN-7392841 from IP 10.0.18.42 via device SN-A847-2C9F.",
+      "phi_spans": [
+        {
+          "start": 30,
+          "end": 51,
+          "label": "email"
+        },
+        {
+          "start": 61,
+          "end": 72,
+          "label": "mrn"
+        },
+        {
+          "start": 81,
+          "end": 91,
+          "label": "ip"
+        },
+        {
+          "start": 103,
+          "end": 115,
+          "label": "device"
+        }
+      ],
+      "retained_signals": [
+        {
+          "start": 0,
+          "end": 10,
+          "kind": "date"
+        }
+      ]
+    },
+    {
+      "id": 30,
+      "category": "complex_referral",
+      "text": "Referral: 67 y/o Maria Lopez from Portland, OR referred to Dr. James Chen on 2024-04-12. Records to 482 Pine Street.",
+      "phi_spans": [
+        {
+          "start": 17,
+          "end": 28,
+          "label": "name"
+        },
+        {
+          "start": 63,
+          "end": 73,
+          "label": "name"
+        },
+        {
+          "start": 100,
+          "end": 115,
+          "label": "street_address"
+        }
+      ],
+      "retained_signals": [
+        {
+          "start": 10,
+          "end": 16,
+          "kind": "age"
+        },
+        {
+          "start": 34,
+          "end": 46,
+          "kind": "city_state"
+        },
+        {
+          "start": 77,
+          "end": 87,
+          "kind": "date"
+        }
+      ]
+    },
+    {
+      "id": 31,
+      "category": "complex_biometric_enrollment",
+      "text": "Biometric enrollment for Anna Martinez: fingerprint FP-739284, voice print VP-3927, retina scan RETINA-847291. Photo: face_photo_7392.jpg.",
+      "phi_spans": [
+        {
+          "start": 25,
+          "end": 38,
+          "label": "name"
+        },
+        {
+          "start": 52,
+          "end": 61,
+          "label": "biometric"
+        },
+        {
+          "start": 75,
+          "end": 82,
+          "label": "biometric"
+        },
+        {
+          "start": 96,
+          "end": 109,
+          "label": "biometric"
+        },
+        {
+          "start": 118,
+          "end": 137,
+          "label": "photo"
+        }
+      ],
+      "retained_signals": []
+    },
+    {
+      "id": 32,
+      "category": "complex_dl_record",
+      "text": "Driver's License D8472916 issued to Michael Chen, Cleveland, OH. Plate: 7ABC123. DOB 1985-06-12.",
+      "phi_spans": [
+        {
+          "start": 17,
+          "end": 25,
+          "label": "license"
+        },
+        {
+          "start": 36,
+          "end": 48,
+          "label": "name"
+        },
+        {
+          "start": 72,
+          "end": 79,
+          "label": "vehicle"
+        }
+      ],
+      "retained_signals": [
+        {
+          "start": 50,
+          "end": 63,
+          "kind": "city_state"
+        },
+        {
+          "start": 85,
+          "end": 95,
+          "kind": "date"
+        }
+      ]
+    },
+    {
+      "id": 33,
+      "category": "carveout_research_summary",
+      "text": "Cohort study: 1,247 patients aged 65-80 in Boston, MA from 2023-01-01 to 2023-12-31. Mean LOS 4.2 days.",
+      "phi_spans": [],
+      "retained_signals": [
+        {
+          "start": 29,
+          "end": 39,
+          "kind": "age"
+        },
+        {
+          "start": 43,
+          "end": 53,
+          "kind": "city_state"
+        },
+        {
+          "start": 59,
+          "end": 69,
+          "kind": "date"
+        },
+        {
+          "start": 73,
+          "end": 83,
+          "kind": "date"
+        }
+      ],
+      "_note": "Pure research summary — already de-identified. No PHI to redact, plenty of retained signals."
+    },
+    {
+      "id": 34,
+      "category": "hard_negative_drug_brand_names",
+      "text": "Patient on Adderall, Lipitor, and Xanax. Allergic to Boniva.",
+      "phi_spans": [],
+      "retained_signals": [],
+      "_note": "Drug brand names are not PHI. Hard negative — easy to mistake for proper names."
+    },
+    {
+      "id": 35,
+      "category": "hard_negative_hospital_names",
+      "text": "Patient transferred from Mount Sinai to Mass General on 2024-03-15.",
+      "phi_spans": [],
+      "retained_signals": [
+        {
+          "start": 56,
+          "end": 66,
+          "kind": "date"
+        }
+      ],
+      "_note": "Hospital names are not PHI. The fact a patient went there might be associated, but institution names themselves are public."
+    },
+    {
+      "id": 36,
+      "category": "ip_v6",
+      "text": "Connection from IPv6 2001:db8::8a2e:370:7334 logged.",
+      "phi_spans": [
+        {
+          "start": 21,
+          "end": 44,
+          "label": "ip"
+        }
+      ],
+      "retained_signals": []
+    },
+    {
+      "id": 37,
+      "category": "phone_international",
+      "text": "International contact: +44 20 7946 0958, also +1 415 555 8273.",
+      "phi_spans": [
+        {
+          "start": 23,
+          "end": 39,
+          "label": "phone"
+        },
+        {
+          "start": 46,
+          "end": 61,
+          "label": "phone"
+        }
+      ],
+      "retained_signals": []
+    },
+    {
+      "id": 38,
+      "category": "name_with_titles",
+      "text": "Reviewed by Dr. Sarah Patel, MD, PhD and Nurse Practitioner Jamie Wong, FNP-BC.",
+      "phi_spans": [
+        {
+          "start": 16,
+          "end": 27,
+          "label": "name"
+        },
+        {
+          "start": 60,
+          "end": 70,
+          "label": "name"
+        }
+      ],
+      "retained_signals": [],
+      "_note": "Titles (Dr., MD, PhD, NP, FNP-BC) are NOT part of the name span — only the proper name itself is PHI."
+    },
+    {
+      "id": 39,
+      "category": "complex_negative_only",
+      "text": "Quality metrics for fiscal year 2024 across Cleveland and Akron facilities. Average length of stay 4.2 days for 65-79 age cohort.",
+      "phi_spans": [],
+      "retained_signals": [
+        {
+          "start": 32,
+          "end": 36,
+          "kind": "date"
+        },
+        {
+          "start": 44,
+          "end": 53,
+          "kind": "city"
+        },
+        {
+          "start": 58,
+          "end": 63,
+          "kind": "city"
+        },
+        {
+          "start": 112,
+          "end": 117,
+          "kind": "age"
+        }
+      ],
+      "_note": "Aggregate metrics — no individual identifiers. All city/date/age must be retained."
+    },
+    {
+      "id": 40,
+      "category": "complex_handoff",
+      "text": "Handoff from Dr. Patel to Dr. Chen for Maria Rodriguez (MRN-4729183, age 67, Cleveland, OH). Pt has htn, dm2. Last seen 2024-03-15. Direct: (440) 555-2837. Fax cure summary to (440) 555-2838.",
+      "phi_spans": [
+        {
+          "start": 17,
+          "end": 22,
+          "label": "name"
+        },
+        {
+          "start": 30,
+          "end": 34,
+          "label": "name"
+        },
+        {
+          "start": 39,
+          "end": 54,
+          "label": "name"
+        },
+        {
+          "start": 56,
+          "end": 67,
+          "label": "mrn"
+        },
+        {
+          "start": 140,
+          "end": 154,
+          "label": "phone"
+        },
+        {
+          "start": 176,
+          "end": 190,
+          "label": "fax"
+        }
+      ],
+      "retained_signals": [
+        {
+          "start": 69,
+          "end": 75,
+          "kind": "age"
+        },
+        {
+          "start": 77,
+          "end": 90,
+          "kind": "city_state"
+        },
+        {
+          "start": 120,
+          "end": 130,
+          "kind": "date"
+        }
+      ]
+    }
+  ]
+}

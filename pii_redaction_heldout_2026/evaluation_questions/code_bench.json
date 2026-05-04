@@ -1,0 +1,131 @@
+{
+  "_meta": {
+    "name": "Code Paste Bench",
+    "purpose": "Held-out OOD eval. Tests detection of secrets and PII embedded in real-shaped code paste — the most common production use case after chat. v8 partial-credit on the gen-bench code-paste question (40%) suggests detection works on isolated secrets but loses signal in real surrounding code.",
+    "author": "Claude (in conversation), 2026-04-30, distribution-keyed",
+    "scoring": "GPT-4o judge, 0-100% per question",
+    "structure": "5 questions × 4 categories = 20 total"
+  },
+  "questions": [
+    {
+      "id": 1,
+      "category": "api_keys",
+      "text": "Quick test:\n\n```python\nimport openai\nopenai.api_key = 'sk-proj-AB12cdEF34GhIJklMNopQR56sTuVWXYZ7890aBCDEfgHIJklMno'\n\nresponse = openai.ChatCompletion.create(\n    model='gpt-4',\n    messages=[{'role': 'user', 'content': 'hello'}]\n)\nprint(response.choices[0].message.content)\n```\n\nThis works locally but fails in CI — please debug.",
+      "expected_pii": ["sk-proj-AB12cdEF34GhIJklMNopQR56sTuVWXYZ7890aBCDEfgHIJklMno"]
+    },
+    {
+      "id": 2,
+      "category": "api_keys",
+      "text": "Stripe webhook handler — getting 401s:\n\n```javascript\nimport Stripe from 'stripe';\nconst stripe = new Stripe('sk_demo_51N8Hd2FaTpL2mZRq3yUoL9vKx6Z4eWqA8HpC2bNm');\n\nexport async function POST(req) {\n  const sig = req.headers.get('stripe-signature');\n  const event = stripe.webhooks.constructEvent(\n    await req.text(),\n    sig,\n    'whsec_dEf78gHi90JkLmNoPqRsTuVwXyZ12abCdEfGh'\n  );\n  return Response.json({ received: true });\n}\n```",
+      "expected_pii": ["sk_demo_51N8Hd2FaTpL2mZRq3yUoL9vKx6Z4eWqA8HpC2bNm", "whsec_dEf78gHi90JkLmNoPqRsTuVwXyZ12abCdEfGh"]
+    },
+    {
+      "id": 3,
+      "category": "api_keys",
+      "text": "AWS Lambda failing on cold start. Here's the deploy config:\n\n```yaml\nenv:\n  AWS_ACCESS_KEY_ID: AKIAIOSFODNN7EXAMPLE\n  AWS_SECRET_ACCESS_KEY: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY\n  GITHUB_TOKEN: ghd_Wt3kRpL9zXc7vN2mQ8jP6sH1bF0aDe5gIxYu\n  ANTHROPIC_API_KEY: sk-ant-api03-XYZ123abc-deadbeef-cafefeed-1234567890abcdef-AAAAAAAA\n```\n\nIs the secret manager pulling these correctly?",
+      "expected_pii": ["AKIAIOSFODNN7EXAMPLE", "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY", "ghd_Wt3kRpL9zXc7vN2mQ8jP6sH1bF0aDe5gIxYu", "sk-ant-api03-XYZ123abc-deadbeef-cafefeed-1234567890abcdef-AAAAAAAA"]
+    },
+    {
+      "id": 4,
+      "category": "api_keys",
+      "text": "JWT verification keeps failing. Token I'm getting from the auth server:\n\n```\neyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyXzEyMyIsImVtYWlsIjoiamFuZS5kb2VAZXhhbXBsZS5jb20iLCJpYXQiOjE2OTcxMjM0NTYsImV4cCI6MTY5NzIwOTg1Nn0.A1bC2dE3fG4hI5jK6lM7nO8pQ9rS0tU1vW2xY3zZaB4\n```\n\nDecoded payload claims user_id=user_123, email=jane.doe@example.com. Sig validation fails with HS256.",
+      "expected_pii": ["eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyXzEyMyIsImVtYWlsIjoiamFuZS5kb2VAZXhhbXBsZS5jb20iLCJpYXQiOjE2OTcxMjM0NTYsImV4cCI6MTY5NzIwOTg1Nn0.A1bC2dE3fG4hI5jK6lM7nO8pQ9rS0tU1vW2xY3zZaB4", "jane.doe@example.com"]
+    },
+    {
+      "id": 5,
+      "category": "api_keys",
+      "text": "Setting up the MCP server:\n\n```bash\nexport SLACK_BOT_TOKEN=xoxz-1234567890-9876543210-AbCdEfGhIjKlMnOpQrStUvWx\nexport NOTION_API_KEY=secret_AbCdEf123456GhIjKl789012MnOpQrStUvWxYzAbCdEfGhIj\nexport GOOGLE_API_KEY=AIdemoyBcDeFgHiJkLmNoPqRsTuVwXyZ012345678\n```\n\nRunning the MCP now... only Notion is responding, the other two return auth errors.",
+      "expected_pii": ["xoxz-1234567890-9876543210-AbCdEfGhIjKlMnOpQrStUvWx", "secret_AbCdEf123456GhIjKl789012MnOpQrStUvWxYzAbCdEfGhIj", "AIdemoyBcDeFgHiJkLmNoPqRsTuVwXyZ012345678"]
+    },
+    {
+      "id": 6,
+      "category": "db_connection_strings",
+      "text": "Migration is failing in staging. Connection string:\n\n```\nDATABASE_URL=postgres://acme_user:Pa$$w0rd!2024@db-prod-east-1.acme.internal:5432/acme_main?sslmode=require\nREDIS_URL=redis://:R3d1sP@ssword@redis-prod-1.acme.internal:6379/0\nMONGO_URL=mongodb+srv://admin:M0ng0$ecret@cluster0.acme.mongodb.net/?retryWrites=true&w=majority\n```\n\nIs DNS resolving the internal hostnames? Logs show ECONNREFUSED.",
+      "expected_pii": ["postgres://acme_user:Pa$$w0rd!2024@db-prod-east-1.acme.internal:5432/acme_main?sslmode=require", "redis://:R3d1sP@ssword@redis-prod-1.acme.internal:6379/0", "mongodb+srv://admin:M0ng0$ecret@cluster0.acme.mongodb.net/?retryWrites=true&w=majority"]
+    },
+    {
+      "id": 7,
+      "category": "db_connection_strings",
+      "text": "Dev environment .env:\n\n```\nDB_HOST=localhost\nDB_USER=postgres\nDB_PASSWORD=local-dev-pwd-do-not-use-in-prod\nDB_NAME=acme_dev\n\n# Production overrides — DO NOT COMMIT\n# DB_HOST=prod-replica-1.acme.internal\n# DB_USER=acme_readonly\n# DB_PASSWORD=Pr0d_R3pl1c@_2024_very_secret\n```\n\nWe accidentally pushed this with the prod overrides uncommented. Need to rotate.",
+      "expected_pii": ["local-dev-pwd-do-not-use-in-prod", "Pr0d_R3pl1c@_2024_very_secret"]
+    },
+    {
+      "id": 8,
+      "category": "db_connection_strings",
+      "text": "Snowflake account, asking for help debugging:\n\n```python\nimport snowflake.connector\n\nconn = snowflake.connector.connect(\n    user='ANALYTICS_PROD',\n    password='SnowL@kePr0d_pwd_2024!',\n    account='xy12345.us-east-1',\n    warehouse='ANALYTICS_WH',\n    database='ACME_PROD',\n    schema='public'\n)\n```\n\nError: 'JWT token is invalid'. But we're using password auth, not key-pair?",
+      "expected_pii": ["ANALYTICS_PROD", "SnowL@kePr0d_pwd_2024!", "xy12345.us-east-1"]
+    },
+    {
+      "id": 9,
+      "category": "db_connection_strings",
+      "text": "Terraform is creating the RDS instance. Resource block:\n\n```hcl\nresource \"aws_db_instance\" \"main\" {\n  identifier        = \"acme-prod-db\"\n  engine            = \"postgres\"\n  engine_version    = \"15.4\"\n  instance_class    = \"db.r6g.xlarge\"\n  allocated_storage = 500\n  username          = \"acmeadmin\"\n  password          = \"InitialP@ssw0rd!2024_change_immediately\"\n  db_name           = \"acme_main\"\n}\n```\n\nThe initial password is ephemeral — we rotate via secretsmanager on first boot.",
+      "expected_pii": ["acmeadmin", "InitialP@ssw0rd!2024_change_immediately"]
+    },
+    {
+      "id": 10,
+      "category": "db_connection_strings",
+      "text": "BigQuery service account JSON I generated for the ETL job:\n\n```json\n{\n  \"type\": \"service_account\",\n  \"project_id\": \"acme-analytics-prod\",\n  \"private_key_id\": \"a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0\",\n  \"private_key\": \"-----BEGIN PRIVATE KEY-----\\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDQ2u8...truncated...\\n-----END PRIVATE KEY-----\\n\",\n  \"client_email\": \"etl-service-account@acme-analytics-prod.iam.gserviceaccount.com\",\n  \"client_id\": \"123456789012345678901\"\n}\n```\n\nThis works in dev but fails in prod with 'Invalid grant'.",
+      "expected_pii": ["acme-analytics-prod", "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0", "-----BEGIN PRIVATE KEY-----\\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDQ2u8...truncated...\\n-----END PRIVATE KEY-----", "etl-service-account@acme-analytics-prod.iam.gserviceaccount.com", "123456789012345678901"]
+    },
+    {
+      "id": 11,
+      "category": "secrets_files",
+      "text": "Cleaning up our k8s secrets. Current secrets.yaml:\n\n```yaml\napiVersion: v1\nkind: Secret\nmetadata:\n  name: app-secrets\ntype: Opaque\nstringData:\n  database-password: 'P0stgreSQL_pr0d_p@ss_8821!'\n  redis-password: 'R3d1sCach3_pr0d_4422!'\n  smtp-password: 'M@ilGun_pr0d_99182!'\n  jwt-secret: 'jwt-signing-secret-do-not-leak-2024-edition-7728'\n  webhook-shared-secret: 'webhook-acme-prod-shared-9982-secret'\n```",
+      "expected_pii": ["P0stgreSQL_pr0d_p@ss_8821!", "R3d1sCach3_pr0d_4422!", "M@ilGun_pr0d_99182!", "jwt-signing-secret-do-not-leak-2024-edition-7728", "webhook-acme-prod-shared-9982-secret"]
+    },
+    {
+      "id": 12,
+      "category": "secrets_files",
+      "text": "GitHub Actions workflow secrets section:\n\n```yaml\nsecrets:\n  PYPI_TOKEN: 'pypi-AgEIcHlwaS5vcmcCJDk4ODhmZjkwLTQ0MjEtNDgxNi1hYjY1LTRkOWQ2NDkyMmM3MAACG1tdRVF1B...truncated...'\n  NPM_TOKEN: 'npm_x1Y2z3A4b5C6d7E8f9G0h1I2j3K4l5M6n7O8p9'\n  DOCKER_USERNAME: acme_deploy_bot\n  DOCKER_PASSWORD: 'D0ck3r_h@b_r3g1stry_pr0d_887721!'\n  CODECOV_TOKEN: '8a72b911-4c33-4e5f-b290-1f8d5e2a7b3c'\n```",
+      "expected_pii": ["pypi-AgEIcHlwaS5vcmcCJDk4ODhmZjkwLTQ0MjEtNDgxNi1hYjY1LTRkOWQ2NDkyMmM3MAACG1tdRVF1B", "npm_x1Y2z3A4b5C6d7E8f9G0h1I2j3K4l5M6n7O8p9", "acme_deploy_bot", "D0ck3r_h@b_r3g1stry_pr0d_887721!", "8a72b911-4c33-4e5f-b290-1f8d5e2a7b3c"]
+    },
+    {
+      "id": 13,
+      "category": "secrets_files",
+      "text": "SSH config from my dotfiles, planning to share. Probably should sanitize:\n\n```\nHost prod-bastion\n    HostName bastion.acme.io\n    User alex.wall\n    IdentityFile ~/.ssh/acme_prod_ed25519\n    IdentitiesOnly yes\n\nHost github-personal\n    HostName github.com\n    User git\n    IdentityFile ~/.ssh/personal_id_rsa\n```\n\nAnd the actual private key content (oh no):\n\n-----BEGIN OPENSSH PRIVATE KEY-----\nb3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW\n-----END OPENSSH PRIVATE KEY-----",
+      "expected_pii": ["alex.wall", "-----BEGIN OPENSSH PRIVATE KEY-----\nb3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW\n-----END OPENSSH PRIVATE KEY-----"]
+    },
+    {
+      "id": 14,
+      "category": "secrets_files",
+      "text": "Vault kv put output for the new service:\n\n```\n$ vault kv put -mount=secret payments/stripe \\\n    api_key=sk_demo_a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7 \\\n    webhook_secret=whsec_x1y2z3a4b5c6d7e8f9g0h1i2j3k4l5m6n7 \\\n    publishable_key=pk_demo_e9f8g7h6i5j4k3l2m1n0o9p8q7r6s5t4u3 \\\n    customer_email=billing@acme.com\n```",
+      "expected_pii": ["sk_demo_a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7", "whsec_x1y2z3a4b5c6d7e8f9g0h1i2j3k4l5m6n7", "pk_demo_e9f8g7h6i5j4k3l2m1n0o9p8q7r6s5t4u3", "billing@acme.com"]
+    },
+    {
+      "id": 15,
+      "category": "secrets_files",
+      "text": "OAuth client config I just generated (rotating after this paste):\n\n```json\n{\n  \"client_id\": \"acme-app-prod-44218.apps.googleusercontent.com\",\n  \"client_secret\": \"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T0uV1\",\n  \"redirect_uris\": [\n    \"https://acme.com/auth/google/callback\",\n    \"http://localhost:3000/auth/google/callback\"\n  ],\n  \"javascript_origins\": [\"https://acme.com\", \"http://localhost:3000\"]\n}\n```",
+      "expected_pii": ["acme-app-prod-44218.apps.googleusercontent.com", "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T0uV1"]
+    },
+    {
+      "id": 16,
+      "category": "sql_with_pii",
+      "text": "Need to dedupe these customer rows — they look identical but have different IDs:\n\n```sql\nINSERT INTO customers (id, full_name, email, phone, dob, ssn_last4)\nVALUES\n  (4421, 'Patricia Hernández-Lopez', 'patricia.hl@gmail.com', '215-555-0918', '1985-04-12', '4471'),\n  (4422, 'Patricia Hernandez Lopez', 'patricia.hl@gmail.com', '215-555-0918', '1985-04-12', '4471'),\n  (4423, 'Patricia H. Lopez', 'patricia.hl@gmail.com', '215-555-0918', '1985-04-12', '4471');\n```",
+      "expected_pii": ["Patricia Hernández-Lopez", "patricia.hl@gmail.com", "215-555-0918", "1985-04-12", "4471", "Patricia Hernandez Lopez", "Patricia H. Lopez"]
+    },
+    {
+      "id": 17,
+      "category": "sql_with_pii",
+      "text": "Quick query to find orders by a specific customer:\n\n```sql\nSELECT o.order_id, o.total, o.created_at\nFROM orders o\nJOIN customers c ON c.id = o.customer_id\nWHERE c.email = 'liam.osullivan@example.ie'\n  AND c.phone = '+353 86 555 7821'\n  AND c.address LIKE '%Grafton Street%Dublin%'\nORDER BY o.created_at DESC;\n```",
+      "expected_pii": ["liam.osullivan@example.ie", "+353 86 555 7821", "Grafton Street", "Dublin"]
+    },
+    {
+      "id": 18,
+      "category": "sql_with_pii",
+      "text": "Found this in the audit log dump — possible data exfiltration?\n\n```sql\n-- 2024-11-08 03:14:22 UTC, executed by user alex.wall@acme.com, source IP 185.220.101.47\nSELECT id, full_name, email, phone, ssn, dob\nFROM customers\nWHERE state = 'CA'\n  AND created_at >= '2024-01-01'\nLIMIT 10000;\n-- Returned 8,742 rows. Result set sent to s3://acme-exports/dump_2024_11_08.csv.gz\n```",
+      "expected_pii": ["alex.wall@acme.com", "185.220.101.47"]
+    },
+    {
+      "id": 19,
+      "category": "sql_with_pii",
+      "text": "Test fixture data we use locally:\n\n```python\nTEST_USERS = [\n    {'name': 'Hiroko Yamamoto', 'email': 'hiroko.y@test.local', 'phone': '+81-3-1234-5678'},\n    {'name': 'Olusegun Adeyemi', 'email': 'segun.a@test.local', 'phone': '+234-803-555-2210'},\n    {'name': 'Kateřina Nováková', 'email': 'katerina.n@test.local', 'phone': '+420-602-555-882'},\n]\n```\n\nThese are fake but get logged in error traces — should we sanitize the logs?",
+      "expected_pii": ["Hiroko Yamamoto", "hiroko.y@test.local", "+81-3-1234-5678", "Olusegun Adeyemi", "segun.a@test.local", "+234-803-555-2210", "Kateřina Nováková", "katerina.n@test.local", "+420-602-555-882"]
+    },
+    {
+      "id": 20,
+      "category": "sql_with_pii",
+      "text": "Customer support pulled this from the support tool, sharing for engineering:\n\n```\nTicket #88172\nReporter: Wendell Brookenfield-Klein <wendell.bk@example.com>\nReporter Phone: (617) 555-9182\nReporter Address: 4400 Beacon St., Apt 3B, Brookline MA 02446\nReporter Account: ACC-2018-77182\nReporter DOB: 03/22/1982\n\nDescription:\nUnable to reset password. Last successful login was October 14 from IP 73.167.221.49.\nAccount has been locked since 5 failed attempts.\n```",
+      "expected_pii": ["Wendell Brookenfield-Klein", "wendell.bk@example.com", "(617) 555-9182", "4400 Beacon St., Apt 3B, Brookline MA 02446", "ACC-2018-77182", "03/22/1982", "73.167.221.49"]
+    }
+  ]
+}

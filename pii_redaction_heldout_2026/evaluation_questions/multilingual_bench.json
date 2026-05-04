@@ -1,0 +1,291 @@
+{
+  "_meta": {
+    "name": "Multilingual Bench",
+    "purpose": "Held-out OOD eval. Tests detection in 10 non-English locales with native government-ID formats. v8 averaged 60% on multilingual gen-bench questions — partial coverage across languages with strong patches in romance languages, weaker in CJK and Slavic. This bench probes systematically.",
+    "author": "Claude (in conversation), 2026-04-30, distribution-keyed",
+    "scoring": "GPT-4o judge, 0-100% per question. Uses each locale's native gov-ID format.",
+    "structure": "4 questions × 10 locales = 40 total. Each locale has: self-intro, document, third-person mention, dense business context."
+  },
+  "questions": [
+    {
+      "id": 1,
+      "locale": "es",
+      "qtype": "self_intro",
+      "text": "Hola, me llamo Sofía Carolina Vázquez Mendoza. Vivo en Calle Goya 47, 4º D, 28001 Madrid. Mi DNI es 51234567-X. Trabajo en Banco Santander; mi número de empleado es 882194. Mi teléfono es +34 666 12 34 56 y mi correo es sofia.vazquez@bancos.es.",
+      "expected_pii": ["Sofía Carolina Vázquez Mendoza", "Calle Goya 47, 4º D, 28001 Madrid", "51234567-X", "882194", "+34 666 12 34 56", "sofia.vazquez@bancos.es"]
+    },
+    {
+      "id": 2,
+      "locale": "es",
+      "qtype": "document",
+      "text": "JUSTIFICANTE DE EMPADRONAMIENTO\nNombre: Octavio Joaquín Aguirre Roldán\nDNI: 78293461-Q\nDirección: Avenida del Puerto 218, 4º B, 46011 Valencia\nTeléfono de contacto: 963 11 22 33\nFecha de empadronamiento: 14 de marzo de 2019\nEmitido el 22 de octubre de 2024 por el Ayuntamiento de Valencia.",
+      "expected_pii": ["Octavio Joaquín Aguirre Roldán", "78293461-Q", "Avenida del Puerto 218, 4º B, 46011 Valencia", "963 11 22 33"]
+    },
+    {
+      "id": 3,
+      "locale": "es",
+      "qtype": "third_person",
+      "text": "Ayer comí con mi amigo Esteban Núñez Ortega. Acaba de mudarse al barrio de Chamberí, calle Trafalgar 22, 28010 Madrid. Te dejo su nuevo número por si quieres llamarlo: 654 78 90 12. Su correo nuevo es esteban.nunez@gmail.com. Su mujer Lucía cumple años el 12 de noviembre.",
+      "expected_pii": ["Esteban Núñez Ortega", "calle Trafalgar 22, 28010 Madrid", "654 78 90 12", "esteban.nunez@gmail.com", "Lucía"]
+    },
+    {
+      "id": 4,
+      "locale": "es",
+      "qtype": "dense_business",
+      "text": "Estimado cliente, su pedido (referencia PED-2024-77182) está listo para recogida. Pago realizado: tarjeta terminada en 4421 a nombre de Concepción Bardají Castellanos, NIE X-1234567-L, IBAN ES91 2100 0418 4502 0005 1332. Entrega: Calle Mayor 18, 3º A, 50001 Zaragoza. Tel: 976 55 66 77.",
+      "expected_pii": ["Concepción Bardají Castellanos", "X-1234567-L", "ES91 2100 0418 4502 0005 1332", "Calle Mayor 18, 3º A, 50001 Zaragoza", "976 55 66 77"]
+    },
+    {
+      "id": 5,
+      "locale": "de",
+      "qtype": "self_intro",
+      "text": "Sehr geehrte Damen und Herren, mein Name ist Friederike Elsbeth Schäfer-Hartmann. Ich wohne in der Kantstraße 142, 10623 Berlin. Meine Steuer-Identifikationsnummer ist 65 928 477 391, meine Rentenversicherungsnummer 12 040585 H 543. Mein Telefon: +49 30 12345678. E-Mail: f.schaefer-hartmann@web.de.",
+      "expected_pii": ["Friederike Elsbeth Schäfer-Hartmann", "Kantstraße 142, 10623 Berlin", "65 928 477 391", "12 040585 H 543", "+49 30 12345678", "f.schaefer-hartmann@web.de"]
+    },
+    {
+      "id": 6,
+      "locale": "de",
+      "qtype": "document",
+      "text": "Krankenversicherungsnachweis\n\nVersicherter: Wolfgang Heinrich Brandstätter\nGeburtsdatum: 04.03.1972\nKrankenversicherung: Techniker Krankenkasse\nVersichertennummer: V123456789\nAnschrift: Bismarckring 8, 80539 München\nTelefon: +49 89 22334455\n\nAusgestellt am 14. November 2024.",
+      "expected_pii": ["Wolfgang Heinrich Brandstätter", "04.03.1972", "V123456789", "Bismarckring 8, 80539 München", "+49 89 22334455"]
+    },
+    {
+      "id": 7,
+      "locale": "de",
+      "qtype": "third_person",
+      "text": "Heute habe ich meine Kollegin Annelies Brigitte Holzapfel-Wagner getroffen. Sie ist gerade nach Hamburg gezogen — neue Adresse Mönckebergstraße 12, 20095 Hamburg. Du erreichst sie am besten über ihre neue Mobilnummer 0151 23456789 oder E-Mail annelies.holzapfel@beispiel.de.",
+      "expected_pii": ["Annelies Brigitte Holzapfel-Wagner", "Mönckebergstraße 12, 20095 Hamburg", "0151 23456789", "annelies.holzapfel@beispiel.de"]
+    },
+    {
+      "id": 8,
+      "locale": "de",
+      "qtype": "dense_business",
+      "text": "RECHNUNG Nr. 2024-RE-44218 — Lieferadresse: Klaus-Dieter Müller-Lippstadt, Hauptstraße 47, 50667 Köln. Zahlungsweise: SEPA-Lastschrift, IBAN DE89 3704 0044 0532 0130 00. Kundennummer K-78421936. Telefon Rückfragen: 0221 887 7665. E-Mail: k.mueller-lippstadt@kunde.de.",
+      "expected_pii": ["Klaus-Dieter Müller-Lippstadt", "Hauptstraße 47, 50667 Köln", "DE89 3704 0044 0532 0130 00", "K-78421936", "0221 887 7665", "k.mueller-lippstadt@kunde.de"]
+    },
+    {
+      "id": 9,
+      "locale": "fr",
+      "qtype": "self_intro",
+      "text": "Bonjour, je m'appelle Élodie Marie-Antoinette Beauchamp-Devereaux. J'habite au 47 Rue du Faubourg Saint-Honoré, 75008 Paris. Mon numéro de sécurité sociale est 2 88 04 75 116 178 92. Je suis joignable au +33 6 12 34 56 78 ou par mail à elodie.beauchamp@laposte.fr.",
+      "expected_pii": ["Élodie Marie-Antoinette Beauchamp-Devereaux", "47 Rue du Faubourg Saint-Honoré, 75008 Paris", "2 88 04 75 116 178 92", "+33 6 12 34 56 78", "elodie.beauchamp@laposte.fr"]
+    },
+    {
+      "id": 10,
+      "locale": "fr",
+      "qtype": "document",
+      "text": "Attestation de domicile\n\nNom: Jean-Baptiste Henri Lacroix-Marchand\nDate de naissance: 18 mai 1968\nAdresse: 14 Avenue de la République, 33000 Bordeaux\nNuméro de téléphone: 05 56 12 34 56\nMail: jb.lacroix@orange.fr\n\nCertifié à Bordeaux, le 22 octobre 2024, par M. le Maire.",
+      "expected_pii": ["Jean-Baptiste Henri Lacroix-Marchand", "18 mai 1968", "14 Avenue de la République, 33000 Bordeaux", "05 56 12 34 56", "jb.lacroix@orange.fr"]
+    },
+    {
+      "id": 11,
+      "locale": "fr",
+      "qtype": "third_person",
+      "text": "Hier soir j'ai dîné avec Geneviève Marie-Claude Boulanger-Pichon. Elle vient de déménager à Lyon — son nouveau quartier est le 6e arrondissement, 8 Rue Vauban, 69006 Lyon. Numéro fixe: 04 78 22 33 44. Mobile: 06 78 90 12 34. Mail: g.boulanger@laposte.fr.",
+      "expected_pii": ["Geneviève Marie-Claude Boulanger-Pichon", "8 Rue Vauban, 69006 Lyon", "04 78 22 33 44", "06 78 90 12 34", "g.boulanger@laposte.fr"]
+    },
+    {
+      "id": 12,
+      "locale": "fr",
+      "qtype": "dense_business",
+      "text": "Bon de commande N° BC-2024-99182 — Client: Mlle Solène Apolline Charpentier, 88 Boulevard Haussmann, 75009 Paris. Tél: 01 42 88 77 66. Mail: solene.charpentier@gmail.com. Mode de paiement: prélèvement SEPA, IBAN FR76 3000 6000 0112 3456 7890 189. Numéro client: CL-887211.",
+      "expected_pii": ["Solène Apolline Charpentier", "88 Boulevard Haussmann, 75009 Paris", "01 42 88 77 66", "solene.charpentier@gmail.com", "FR76 3000 6000 0112 3456 7890 189", "CL-887211"]
+    },
+    {
+      "id": 13,
+      "locale": "ja",
+      "qtype": "self_intro",
+      "text": "はじめまして、佐々木彩奈と申します。東京都品川区西五反田3-12-7-405に住んでいます。マイナンバーは1234-5678-9012、生年月日は1992年8月14日です。携帯電話は090-1234-5678、メールアドレスはayana.sasaki@example.jpです。よろしくお願いいたします。",
+      "expected_pii": ["佐々木彩奈", "東京都品川区西五反田3-12-7-405", "1234-5678-9012", "1992年8月14日", "090-1234-5678", "ayana.sasaki@example.jp"]
+    },
+    {
+      "id": 14,
+      "locale": "ja",
+      "qtype": "document",
+      "text": "住民票の写し\n\n氏名:山本健一郎\n生年月日:昭和55年4月3日\n住所:大阪府大阪市淀川区西中島5-14-22\n本籍:京都府京都市左京区銀閣寺町2\n電話番号:06-6303-5544\n発行日:令和6年11月8日\n発行者:大阪市淀川区役所",
+      "expected_pii": ["山本健一郎", "昭和55年4月3日", "大阪府大阪市淀川区西中島5-14-22", "京都府京都市左京区銀閣寺町2", "06-6303-5544"]
+    },
+    {
+      "id": 15,
+      "locale": "ja",
+      "qtype": "third_person",
+      "text": "昨日、大学時代の同期、田中麻衣子と久しぶりに会いました。最近、横浜に引っ越したそうで、新しい住所は神奈川県横浜市中区山下町45-1-803。連絡先も変わって、携帯は080-9988-7766、メールはmaiko.tanaka@gmail.comに変わったとのこと。お子さんの大翔くんはもう8歳らしい。",
+      "expected_pii": ["田中麻衣子", "神奈川県横浜市中区山下町45-1-803", "080-9988-7766", "maiko.tanaka@gmail.com", "大翔"]
+    },
+    {
+      "id": 16,
+      "locale": "ja",
+      "qtype": "dense_business",
+      "text": "ご注文確認 — 注文番号 ORD-2024-7789。お届け先:〒106-0032 東京都港区六本木7-8-12-1502 小林雅彦様。電話番号:03-5775-2210。お支払い:三菱UFJ銀行 口座番号 1234567 名義 コバヤシ マサヒコ。会員ID:M-887211。",
+      "expected_pii": ["ORD-2024-7789", "〒106-0032 東京都港区六本木7-8-12-1502", "小林雅彦", "03-5775-2210", "1234567", "コバヤシ マサヒコ", "M-887211"]
+    },
+    {
+      "id": 17,
+      "locale": "zh",
+      "qtype": "self_intro",
+      "text": "您好,我叫张文博。住在北京市朝阳区建国门外大街18号国贸大厦A座2204室,邮编100022。我的身份证号是110105198805121234,手机号13901234567,电子邮箱zhang.wenbo@example.cn。出生日期:1988年5月12日。",
+      "expected_pii": ["张文博", "北京市朝阳区建国门外大街18号国贸大厦A座2204室", "100022", "110105198805121234", "13901234567", "zhang.wenbo@example.cn", "1988年5月12日"]
+    },
+    {
+      "id": 18,
+      "locale": "zh",
+      "qtype": "document",
+      "text": "户口本影印件\n\n姓名:李美慧\n性别:女\n出生日期:1975年3月22日\n籍贯:广东省广州市\n住址:上海市徐汇区淮海中路1788号18楼\n身份证号:440103197503223456\n联系电话:021-6422-5588",
+      "expected_pii": ["李美慧", "1975年3月22日", "广东省广州市", "上海市徐汇区淮海中路1788号18楼", "440103197503223456", "021-6422-5588"]
+    },
+    {
+      "id": 19,
+      "locale": "zh",
+      "qtype": "third_person",
+      "text": "昨天和我大学同学王晓东聚了一下。他最近搬到了深圳南山区科技园南区,新地址是深圳市南山区科苑南路3128号深圳湾科技生态园9栋A2-1801,他的新手机号是13855667788,邮箱wang.xiaodong@tencent.com。他女儿小米快上小学了。",
+      "expected_pii": ["王晓东", "深圳市南山区科苑南路3128号深圳湾科技生态园9栋A2-1801", "13855667788", "wang.xiaodong@tencent.com", "小米"]
+    },
+    {
+      "id": 20,
+      "locale": "zh",
+      "qtype": "dense_business",
+      "text": "订单确认通知 — 订单号 DD-2024-88172。收货人:陈秀英,联系电话13988776655,收货地址:四川省成都市锦江区春熙路88号3单元1502室。付款方式:招商银行尾号4421信用卡。客户编号:KH-77821。",
+      "expected_pii": ["DD-2024-88172", "陈秀英", "13988776655", "四川省成都市锦江区春熙路88号3单元1502室", "KH-77821"]
+    },
+    {
+      "id": 21,
+      "locale": "ko",
+      "qtype": "self_intro",
+      "text": "안녕하세요, 저는 박지영입니다. 서울특별시 강남구 테헤란로 152, 강남파이낸스센터 33층 3318호에 살고 있습니다. 주민등록번호는 920315-2345678입니다. 연락처는 010-2345-6789이고 이메일은 jiyoung.park@example.kr입니다.",
+      "expected_pii": ["박지영", "서울특별시 강남구 테헤란로 152, 강남파이낸스센터 33층 3318호", "920315-2345678", "010-2345-6789", "jiyoung.park@example.kr"]
+    },
+    {
+      "id": 22,
+      "locale": "ko",
+      "qtype": "document",
+      "text": "건강보험증\n\n성명: 김태영\n주민등록번호: 850424-1234567\n주소: 부산광역시 해운대구 마린시티1로 33, 해운대두산위브포세이돈 802호\n전화번호: 051-749-8821\n발급일: 2024년 11월 8일\n발급기관: 국민건강보험공단",
+      "expected_pii": ["김태영", "850424-1234567", "부산광역시 해운대구 마린시티1로 33, 해운대두산위브포세이돈 802호", "051-749-8821"]
+    },
+    {
+      "id": 23,
+      "locale": "ko",
+      "qtype": "third_person",
+      "text": "어제 대학 동기 정민호 씨를 오랜만에 만났어요. 최근에 인천으로 이사하셨대요. 새 주소는 인천광역시 연수구 송도과학로 16, 105동 2402호입니다. 연락처도 바뀌어서 010-7788-1122로 받고 있고 이메일은 mh.jung@kakao.com이에요. 아드님 도윤이는 벌써 일곱 살이래요.",
+      "expected_pii": ["정민호", "인천광역시 연수구 송도과학로 16, 105동 2402호", "010-7788-1122", "mh.jung@kakao.com", "도윤"]
+    },
+    {
+      "id": 24,
+      "locale": "ko",
+      "qtype": "dense_business",
+      "text": "주문 확인 — 주문번호 ORD-2024-99182. 받으시는 분: 윤서연 님, 연락처 010-3344-5566, 배송지: 경기도 성남시 분당구 판교역로 235, 알파돔타워 1804호. 결제수단: 신한카드 끝자리 4421. 회원번호: M-887211.",
+      "expected_pii": ["ORD-2024-99182", "윤서연", "010-3344-5566", "경기도 성남시 분당구 판교역로 235, 알파돔타워 1804호", "M-887211"]
+    },
+    {
+      "id": 25,
+      "locale": "ar",
+      "qtype": "self_intro",
+      "text": "مرحبًا، اسمي عبد الرحمن محمد الحسن. أعيش في شارع الملك فهد، حي العليا، مبنى ١٢، شقة ٤٠١، الرياض ١١٤٢١، المملكة العربية السعودية. رقم الهوية الوطنية ١٠٢٣٤٥٦٧٨٩. هاتفي ٠٥٥١٢٣٤٥٦٧، بريدي الإلكتروني abdulrahman.alhassan@example.sa.",
+      "expected_pii": ["عبد الرحمن محمد الحسن", "شارع الملك فهد، حي العليا، مبنى ١٢، شقة ٤٠١، الرياض ١١٤٢١", "١٠٢٣٤٥٦٧٨٩", "٠٥٥١٢٣٤٥٦٧", "abdulrahman.alhassan@example.sa"]
+    },
+    {
+      "id": 26,
+      "locale": "ar",
+      "qtype": "document",
+      "text": "بطاقة هوية\n\nالاسم: فاطمة الزهراء بنت محمد الزرعوني\nتاريخ الميلاد: ١٢ مارس ١٩٨٨\nرقم البطاقة: ٧٨٤-١٩٨٨-١٢٣٤٥٦٧-٨\nالعنوان: شارع جميرا، فيلا ٢٢، دبي، الإمارات العربية المتحدة\nرقم الهاتف: ٠٥٥٧٧٨٨٩٩٢",
+      "expected_pii": ["فاطمة الزهراء بنت محمد الزرعوني", "١٢ مارس ١٩٨٨", "٧٨٤-١٩٨٨-١٢٣٤٥٦٧-٨", "شارع جميرا، فيلا ٢٢، دبي", "٠٥٥٧٧٨٨٩٩٢"]
+    },
+    {
+      "id": 27,
+      "locale": "ar",
+      "qtype": "third_person",
+      "text": "تناولت الغداء أمس مع زميلي القديم خالد ابن سعيد المنصوري. انتقل مؤخرًا إلى مقر جديد في شارع الكورنيش، أبراج الإتحاد، الطابق ٣٢، أبوظبي. رقمه الجديد ٠٢٢٣٣٤٤٥٥٦ والبريد الإلكتروني khalid.almansoori@example.ae.",
+      "expected_pii": ["خالد ابن سعيد المنصوري", "شارع الكورنيش، أبراج الإتحاد، الطابق ٣٢، أبوظبي", "٠٢٢٣٣٤٤٥٥٦", "khalid.almansoori@example.ae"]
+    },
+    {
+      "id": 28,
+      "locale": "ar",
+      "qtype": "dense_business",
+      "text": "تأكيد الطلب — رقم الطلب ORD-2024-77182. المستلم: السيدة منى عبد العزيز الشمري. الهاتف ٠٥٠١٢٣٤٥٦٧. العنوان: شارع التحلية، مبنى الواحة، شقة ١٢٠٤، جدة ٢١٤٤٢. طريقة الدفع: مدى، البطاقة المنتهية في ٨٨٢١. رقم العميل: ١٠٢٣٤٥٦.",
+      "expected_pii": ["ORD-2024-77182", "منى عبد العزيز الشمري", "٠٥٠١٢٣٤٥٦٧", "شارع التحلية، مبنى الواحة، شقة ١٢٠٤، جدة ٢١٤٤٢", "١٠٢٣٤٥٦"]
+    },
+    {
+      "id": 29,
+      "locale": "pt",
+      "qtype": "self_intro",
+      "text": "Olá, sou Mariana Beatriz Costa Albuquerque. Moro na Rua Oscar Freire 1234, apto 1801, Jardins, São Paulo, SP, 01426-001. Meu CPF é 234.567.890-12 e meu RG é 23.456.789-0 SSP-SP. Telefone: (11) 98877-6655. Email: mariana.albuquerque@gmail.com.",
+      "expected_pii": ["Mariana Beatriz Costa Albuquerque", "Rua Oscar Freire 1234, apto 1801, Jardins, São Paulo, SP, 01426-001", "234.567.890-12", "23.456.789-0 SSP-SP", "(11) 98877-6655", "mariana.albuquerque@gmail.com"]
+    },
+    {
+      "id": 30,
+      "locale": "pt",
+      "qtype": "document",
+      "text": "Comprovante de Residência\n\nNome: Joaquim Eduardo dos Santos Ferreira\nCPF: 345.678.901-23\nData de nascimento: 14 de junho de 1972\nEndereço: Avenida Atlântica 4000, apto 305, Copacabana, Rio de Janeiro, RJ, 22070-001\nTelefone: (21) 3456-7890\n\nEmitido em 8 de novembro de 2024 pelo cartório do 5º Ofício de Notas.",
+      "expected_pii": ["Joaquim Eduardo dos Santos Ferreira", "345.678.901-23", "14 de junho de 1972", "Avenida Atlântica 4000, apto 305, Copacabana, Rio de Janeiro, RJ, 22070-001", "(21) 3456-7890"]
+    },
+    {
+      "id": 31,
+      "locale": "pt",
+      "qtype": "third_person",
+      "text": "Ontem encontrei meu antigo amigo Henrique Pereira da Silva-Mendonça depois de uns 5 anos. Ele se mudou pra Belo Horizonte, novo endereço: Rua Sapucaí 414, apto 1002, Floresta, Belo Horizonte, MG, 30150-051. Telefone novo: (31) 99887-7665. Email: henrique.silva@uol.com.br. A esposa dele, Patrícia, faz aniversário em dezembro.",
+      "expected_pii": ["Henrique Pereira da Silva-Mendonça", "Rua Sapucaí 414, apto 1002, Floresta, Belo Horizonte, MG, 30150-051", "(31) 99887-7665", "henrique.silva@uol.com.br", "Patrícia"]
+    },
+    {
+      "id": 32,
+      "locale": "pt",
+      "qtype": "dense_business",
+      "text": "Confirmação de pedido — código PED-BR-2024-44218. Cliente: Sra. Conceição Aparecida do Nascimento. CPF 456.789.012-34. Endereço de entrega: Rua das Laranjeiras 218, apto 405, Laranjeiras, Rio de Janeiro, RJ, 22240-002. Telefone (21) 98765-4321. Email conceicao.nascimento@oi.com.br. Pagamento: cartão Itaú final 8821. Cód cliente: CLI-77182.",
+      "expected_pii": ["PED-BR-2024-44218", "Conceição Aparecida do Nascimento", "456.789.012-34", "Rua das Laranjeiras 218, apto 405, Laranjeiras, Rio de Janeiro, RJ, 22240-002", "(21) 98765-4321", "conceicao.nascimento@oi.com.br", "CLI-77182"]
+    },
+    {
+      "id": 33,
+      "locale": "ru",
+      "qtype": "self_intro",
+      "text": "Здравствуйте, меня зовут Екатерина Алексеевна Воронцова-Дашкова. Я живу по адресу: Тверская улица, дом 18, квартира 42, Москва, 125009. Мой ИНН 771234567890, СНИЛС 123-456-789 00, паспорт 4517 №123456. Телефон: +7 (916) 123-45-67. Email: e.vorontsova@yandex.ru.",
+      "expected_pii": ["Екатерина Алексеевна Воронцова-Дашкова", "Тверская улица, дом 18, квартира 42, Москва, 125009", "771234567890", "123-456-789 00", "4517 №123456", "+7 (916) 123-45-67", "e.vorontsova@yandex.ru"]
+    },
+    {
+      "id": 34,
+      "locale": "ru",
+      "qtype": "document",
+      "text": "Справка о составе семьи\n\nГражданин: Константин Дмитриевич Соколовский-Бондаренко\nДата рождения: 12 апреля 1968 года\nПаспорт: 4012 №445566\nАдрес регистрации: г. Санкт-Петербург, Невский проспект, д. 88, кв. 14, 191025\nТелефон: +7 (812) 345-67-89\n\nВыдано 22 октября 2024 г. УВМ ГУ МВД России по г. Санкт-Петербургу.",
+      "expected_pii": ["Константин Дмитриевич Соколовский-Бондаренко", "12 апреля 1968 года", "4012 №445566", "г. Санкт-Петербург, Невский проспект, д. 88, кв. 14, 191025", "+7 (812) 345-67-89"]
+    },
+    {
+      "id": 35,
+      "locale": "ru",
+      "qtype": "third_person",
+      "text": "Вчера встретилась с подругой по университету Анастасией Игоревной Кузнецовой-Михайловой. Она недавно переехала в Новосибирск, новый адрес: ул. Красный проспект, д. 28, кв. 101, Новосибирск, 630099. Новый номер: +7 (913) 234-56-78. Почта: a.kuznetsova@mail.ru. Сын Артём пошёл в первый класс.",
+      "expected_pii": ["Анастасией Игоревной Кузнецовой-Михайловой", "ул. Красный проспект, д. 28, кв. 101, Новосибирск, 630099", "+7 (913) 234-56-78", "a.kuznetsova@mail.ru", "Артём"]
+    },
+    {
+      "id": 36,
+      "locale": "ru",
+      "qtype": "dense_business",
+      "text": "Подтверждение заказа № ZK-2024-77821. Покупатель: Виктория Олеговна Лебедева-Петренко. ИНН: 772999888777. Адрес доставки: Ленинский проспект, д. 158, кв. 412, Москва, 119421. Телефон: +7 (915) 678-90-12. Email: viktoriya.lebedeva@list.ru. Карта Сбербанка ****8821. Номер клиента: KL-887211.",
+      "expected_pii": ["ZK-2024-77821", "Виктория Олеговна Лебедева-Петренко", "772999888777", "Ленинский проспект, д. 158, кв. 412, Москва, 119421", "+7 (915) 678-90-12", "viktoriya.lebedeva@list.ru", "KL-887211"]
+    },
+    {
+      "id": 37,
+      "locale": "hi",
+      "qtype": "self_intro",
+      "text": "नमस्ते, मेरा नाम प्रियंका शर्मा है। मैं फ्लैट नंबर 502, ग्रीन व्यू अपार्टमेंट्स, सेक्टर 56, गुड़गांव, हरियाणा 122002 में रहती हूँ। मेरा आधार नंबर 1234 5678 9012 है और पैन कार्ड नंबर AAACS1234B है। मेरा फोन +91 98765 43210 है और ईमेल priyanka.sharma@example.in है।",
+      "expected_pii": ["प्रियंका शर्मा", "फ्लैट नंबर 502, ग्रीन व्यू अपार्टमेंट्स, सेक्टर 56, गुड़गांव, हरियाणा 122002", "1234 5678 9012", "AAACS1234B", "+91 98765 43210", "priyanka.sharma@example.in"]
+    },
+    {
+      "id": 38,
+      "locale": "hi",
+      "qtype": "document",
+      "text": "पते का प्रमाण-पत्र\n\nनाम: राजेश कुमार वर्मा\nजन्म तिथि: 14 अगस्त 1965\nआधार संख्या: 4321 8765 2109\nपता: मकान नं. 22, गली नं. 5, राम नगर, मेरठ, उत्तर प्रदेश 250001\nफोन: +91 12 1234 5678\n\nजारी दिनांक: 8 नवंबर 2024",
+      "expected_pii": ["राजेश कुमार वर्मा", "14 अगस्त 1965", "4321 8765 2109", "मकान नं. 22, गली नं. 5, राम नगर, मेरठ, उत्तर प्रदेश 250001", "+91 12 1234 5678"]
+    },
+    {
+      "id": 39,
+      "locale": "hi",
+      "qtype": "third_person",
+      "text": "कल मेरे कॉलेज के पुराने दोस्त अमित सिंह से मुलाकात हुई। वो हाल ही में बैंगलोर शिफ्ट हुए हैं — नया पता: फ्लैट 1204, प्रेस्टीज शांतिनिकेतन, व्हाइटफील्ड, बैंगलोर, कर्नाटक 560066। उनका नया मोबाइल +91 99887 76655 है और ईमेल amit.singh@gmail.com है। उनकी बेटी आर्या अब 6 साल की है।",
+      "expected_pii": ["अमित सिंह", "फ्लैट 1204, प्रेस्टीज शांतिनिकेतन, व्हाइटफील्ड, बैंगलोर, कर्नाटक 560066", "+91 99887 76655", "amit.singh@gmail.com", "आर्या"]
+    },
+    {
+      "id": 40,
+      "locale": "hi",
+      "qtype": "dense_business",
+      "text": "ऑर्डर कन्फर्मेशन — ऑर्डर नंबर ORD-IN-2024-77182। ग्राहक: श्रीमती सुनीता गुप्ता, आधार 9876 5432 1098। डिलीवरी पता: मकान 88, सेक्टर 14, फरीदाबाद, हरियाणा 121007। फोन: +91 88776 65544। ईमेल: sunita.gupta@yahoo.in। भुगतान: SBI डेबिट कार्ड ****8821। ग्राहक संख्या: GR-887211।",
+      "expected_pii": ["ORD-IN-2024-77182", "सुनीता गुप्ता", "9876 5432 1098", "मकान 88, सेक्टर 14, फरीदाबाद, हरियाणा 121007", "+91 88776 65544", "sunita.gupta@yahoo.in", "GR-887211"]
+    }
+  ]
+}

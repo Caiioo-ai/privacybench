@@ -1,0 +1,161 @@
+{
+  "_meta": {
+    "name": "Negative-Control Bench",
+    "purpose": "Held-out OOD eval of FALSE POSITIVE control. Tests whether the detector correctly LEAVES non-personal-data prose alone. Multiple v8 failures on gen-bench were over-detection (template placeholders, business addresses, fictional characters). This bench probes those failure modes systematically.",
+    "author": "Claude (in conversation), 2026-04-30, distribution-keyed",
+    "scoring": "GPT-4o judge, 0-100% per question. Score 100 if NOTHING redacted; score 0 if significant non-PII content was redacted; partial credit for minor over-redaction.",
+    "structure": "6 questions × 5 categories = 30 total"
+  },
+  "questions": [
+    {
+      "id": 1,
+      "category": "news_public_figure",
+      "text": "Apple CEO Tim Cook delivered the keynote at WWDC last month, announcing Apple Intelligence and a slate of OS updates. The company's headquarters at Apple Park in Cupertino has hosted the event since 2017."
+    },
+    {
+      "id": 2,
+      "category": "news_public_figure",
+      "text": "President Joe Biden signed the executive order yesterday at a press conference in the Rose Garden. Vice President Kamala Harris and Secretary of State Antony Blinken were in attendance."
+    },
+    {
+      "id": 3,
+      "category": "news_public_figure",
+      "text": "OpenAI CEO Sam Altman testified before Congress today, calling for federal regulation of AI. The hearing was chaired by Senator Richard Blumenthal of Connecticut. Mira Murati, OpenAI's CTO, was also present."
+    },
+    {
+      "id": 4,
+      "category": "news_public_figure",
+      "text": "Taylor Swift's Eras Tour grossed over $2 billion globally according to Pollstar. Beyoncé's Renaissance World Tour and Bruce Springsteen's E Street Band tour rounded out the top three earners of 2023."
+    },
+    {
+      "id": 5,
+      "category": "news_public_figure",
+      "text": "The new Chancellor of Germany, Friedrich Merz, met with French President Emmanuel Macron in Paris today to discuss European defense coordination. The meeting was hosted at the Élysée Palace."
+    },
+    {
+      "id": 6,
+      "category": "news_public_figure",
+      "text": "Roger Federer announced his retirement from professional tennis at the Laver Cup in 2022. His final match was a doubles game alongside long-time rival Rafael Nadal."
+    },
+    {
+      "id": 7,
+      "category": "fiction_quoted",
+      "text": "From the novel: \"Ishmael\" — that's how it began. Captain Ahab's obsession with the white whale would consume him and the crew of the Pequod. Moby-Dick remains one of American literature's defining works."
+    },
+    {
+      "id": 8,
+      "category": "fiction_quoted",
+      "text": "In Pride and Prejudice, Elizabeth Bennet's wit is matched only by Mr. Darcy's pride. The novel, set at Longbourn estate, explores Regency-era courtship through the Bennet family's five daughters."
+    },
+    {
+      "id": 9,
+      "category": "fiction_quoted",
+      "text": "Sherlock Holmes lived at 221B Baker Street with his friend Dr. John Watson, according to Conan Doyle's stories. Holmes never had a phone — the stories are set in late Victorian London."
+    },
+    {
+      "id": 10,
+      "category": "fiction_quoted",
+      "text": "The Lord of the Rings follows Frodo Baggins of the Shire on a quest to destroy the One Ring. He is accompanied by Samwise Gamgee, Meriadoc Brandybuck, and Peregrin Took, with Gandalf the Grey as their guide."
+    },
+    {
+      "id": 11,
+      "category": "fiction_quoted",
+      "text": "Hermione Granger, Ron Weasley, and Harry Potter formed the central trio of Rowling's Wizarding World series. Hogwarts School of Witchcraft and Wizardry served as the primary setting across seven books."
+    },
+    {
+      "id": 12,
+      "category": "fiction_quoted",
+      "text": "Anna Karenina opens with one of the most famous lines in literature: 'All happy families are alike; each unhappy family is unhappy in its own way.' Tolstoy's novel follows the title character's tragic affair with Count Vronsky in 19th-century Russia."
+    },
+    {
+      "id": 13,
+      "category": "form_template",
+      "text": "Please complete the following:\n\nFull Name: ___________________\nEmail Address: ___________@___________\nPhone Number: (___) ___-____\nDate of Birth: ___/___/_____\nAddress Line 1: _______________________\nCity: _________ State: ___ ZIP: _____\n\nAll fields required."
+    },
+    {
+      "id": 14,
+      "category": "form_template",
+      "text": "Sample format guidance:\n  Phone numbers must be in format (NNN) NNN-NNNN\n  Emails must be of the form local@domain.tld\n  Dates must be MM/DD/YYYY\n  ZIP codes must be 5 or 9 digits"
+    },
+    {
+      "id": 15,
+      "category": "form_template",
+      "text": "INVOICE TEMPLATE\n\nBill To:\n  [Customer Name]\n  [Customer Address Line 1]\n  [Customer Address Line 2]\n  [Customer City], [State] [ZIP]\n  [Customer Phone]\n\nInvoice #: [INV-####]\nDate: [MM/DD/YYYY]\nAmount Due: $[Amount]"
+    },
+    {
+      "id": 16,
+      "category": "form_template",
+      "text": "Sample SQL schema:\n\nCREATE TABLE users (\n  id SERIAL PRIMARY KEY,\n  email VARCHAR(255) UNIQUE NOT NULL,\n  full_name VARCHAR(200) NOT NULL,\n  phone VARCHAR(20),\n  date_of_birth DATE,\n  ssn_last4 CHAR(4),\n  created_at TIMESTAMP DEFAULT NOW()\n);"
+    },
+    {
+      "id": 17,
+      "category": "form_template",
+      "text": "Use the following placeholder values when testing your code:\n  {{user.firstName}}, {{user.lastName}}, {{user.email}}, {{user.phone}}, {{user.address.street}}, {{user.address.city}}, {{user.dateOfBirth}}\nThese are template variables, not actual user data."
+    },
+    {
+      "id": 18,
+      "category": "form_template",
+      "text": "Standard contact form fields:\n  - Name: ___\n  - Email: ___\n  - Subject: ___\n  - Message: ___\n  - reCAPTCHA: ___\n\nValidate all fields client-side and server-side."
+    },
+    {
+      "id": 19,
+      "category": "corp_boilerplate",
+      "text": "About Us: Acme Corporation has been a leader in industrial fasteners since 1947. Headquartered in Cleveland, Ohio, we operate manufacturing facilities across North America and serve customers in over 60 countries. Our mission is to deliver engineered solutions that meet the most demanding specifications."
+    },
+    {
+      "id": 20,
+      "category": "corp_boilerplate",
+      "text": "Privacy Policy Excerpt: This Privacy Policy describes how Acme Corp ('we', 'us', 'our') collects, uses, and shares your information. We collect personal information you provide to us directly, including names, email addresses, phone numbers, and postal addresses. We use this information to provide and improve our services."
+    },
+    {
+      "id": 21,
+      "category": "corp_boilerplate",
+      "text": "Terms of Service: By using our services, you agree to these terms. You may not use our services for unlawful purposes. We reserve the right to terminate accounts that violate these terms. Disputes shall be resolved by binding arbitration under the rules of the American Arbitration Association."
+    },
+    {
+      "id": 22,
+      "category": "corp_boilerplate",
+      "text": "Investor Relations: Our stock trades on the New York Stock Exchange under the symbol ACME. Quarterly earnings calls are typically held the second Tuesday following quarter close. Investor inquiries can be directed to our Investor Relations team via the form on our website."
+    },
+    {
+      "id": 23,
+      "category": "corp_boilerplate",
+      "text": "Mission Statement: Our mission is to make work better for everyone. We do this by building tools that simplify collaboration, reduce friction, and help teams ship great products. Our values are: customer obsession, ownership, continuous learning, and intellectual honesty."
+    },
+    {
+      "id": 24,
+      "category": "corp_boilerplate",
+      "text": "FAQ: Q: What payment methods do you accept? A: All major credit cards, PayPal, and bank transfer. Q: Is there a free trial? A: Yes, 14 days, no credit card required. Q: Do you offer refunds? A: Yes, within 30 days of purchase, for unused portions of subscriptions."
+    },
+    {
+      "id": 25,
+      "category": "abstract_about_pii",
+      "text": "Personal data under GDPR includes any information relating to an identified or identifiable natural person. This encompasses names, identification numbers, location data, online identifiers, and factors specific to physical, physiological, genetic, mental, economic, cultural, or social identity."
+    },
+    {
+      "id": 26,
+      "category": "abstract_about_pii",
+      "text": "When designing a privacy-preserving system, consider data minimization: collect only what is necessary for the stated purpose. Implement appropriate safeguards: encryption at rest, access controls, audit logging. Limit retention to the period required to fulfill the purpose."
+    },
+    {
+      "id": 27,
+      "category": "abstract_about_pii",
+      "text": "Common categories of sensitive personal information include government-issued IDs (such as social security numbers, passport numbers, and driver's licenses), financial account details, health and medical information, biometric identifiers, and precise geolocation data."
+    },
+    {
+      "id": 28,
+      "category": "abstract_about_pii",
+      "text": "Anonymization techniques include suppression (removing identifiers entirely), generalization (replacing precise values with broader categories), and pseudonymization (replacing identifiers with synthetic substitutes). True anonymization is irreversible; pseudonymization is reversible with the mapping."
+    },
+    {
+      "id": 29,
+      "category": "abstract_about_pii",
+      "text": "Re-identification risk arises when supposedly anonymized data can be linked back to individuals using auxiliary information. Famous examples include the Netflix Prize dataset and the AOL search query release, where researchers showed that even sparse de-identified records could be re-identified."
+    },
+    {
+      "id": 30,
+      "category": "abstract_about_pii",
+      "text": "Differential privacy provides mathematical guarantees on the privacy loss from analyzing a dataset. By adding calibrated noise to query results, differential privacy bounds the influence of any single individual's data on the output, making it difficult to determine whether a specific person was in the dataset."
+    }
+  ]
+}
