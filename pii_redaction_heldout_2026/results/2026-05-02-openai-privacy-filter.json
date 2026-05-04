@@ -1,0 +1,1380 @@
+{
+  "label": "privacy-filter",
+  "benches": {
+    "gen": {
+      "overall": 74.67,
+      "rows": [
+        {
+          "id": 1,
+          "context": "casual_chat_dense",
+          "expected_count": 5,
+          "detected_count": 5,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: All ground-truth items were correctly replaced by placeholders, and no non-PII content was redacted.",
+          "redacted_excerpt": "yo it's [NAME][PHONE] if u need to reach me \u2014 moved to [ADDRESS]. [EMAIL]. dob [DATE]"
+        },
+        {
+          "id": 2,
+          "context": "form_paste",
+          "expected_count": 9,
+          "detected_count": 9,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: All ground-truth items were correctly replaced by placeholders, and no non-PII content was redacted.",
+          "redacted_excerpt": "Application Form\nLast Name: [NAME]\nFirst Name: [NAME]\nDOB: [DATE]\nPassport: [ACCOUNT_NUMBER]\nNHS Number: [PHONE]\nAddress: [ADDRESS], UK\nMobile: [PHONE]\nEmail: [EMAIL]\nNext of kin: [NAME]"
+        },
+        {
+          "id": 3,
+          "context": "email_signature",
+          "expected_count": 6,
+          "detected_count": 11,
+          "score_pct": 60.0,
+          "feedback": "Grade: 3  \nJustification: Most items were redacted, but there were multiple misses, including the incorrect placeholders for phone numbers and address components.",
+          "redacted_excerpt": "Best,\n\n[NAME]\nDirector of Research, Innovative Diagnostics Inc.\n[NAME]\nDirect: [ACCOUNT_NUMBER] | Mobile: [PHONE][ACCOUNT_NUMBER]\n[EMAIL]\n[ADDRESS], [ADDRESS], [ADDRESS], [ADDRESS] CA [ADDRESS]"
+        },
+        {
+          "id": 4,
+          "context": "self_introduction_multilingual_es",
+          "expected_count": 5,
+          "detected_count": 5,
+          "score_pct": 60.0,
+          "feedback": "Grade: 3  \nJustification: Most items were redacted, but the placeholders used were inconsistent, and the model incorrectly labeled the DNI and NIE as account numbers.",
+          "redacted_excerpt": "Hola, me llamo [NAME]. Vivo en [ADDRESS]. Mi DNI es [ACCOUNT_NUMBER] y mi NIE es [ACCOUNT_NUMBER]. Trabajo en BBVA, mi n\u00famero de cuenta es [ACCOUNT_NUMBER]."
+        },
+        {
+          "id": 5,
+          "context": "self_introduction_multilingual_de",
+          "expected_count": 6,
+          "detected_count": 6,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: All ground-truth items were correctly replaced by placeholders, and no non-PII content was redacted.",
+          "redacted_excerpt": "Sehr geehrte Damen und Herren, mein Name ist [NAME]. Ich wohne in der [ADDRESS]. Meine Steuer-ID lautet [ACCOUNT_NUMBER] und meine Versichertennummer bei der TK ist [ACCOUNT_NUMBER]. Sie erreichen mich unter [PHONE] oder [EMAIL]."
+        },
+        {
+          "id": 6,
+          "context": "self_introduction_multilingual_ja",
+          "expected_count": 6,
+          "detected_count": 8,
+          "score_pct": 40.0,
+          "feedback": "Grade: 2  \nJustification: The model redacted most PII items but incorrectly replaced the national ID number with multiple placeholders and failed to redact the name correctly.",
+          "redacted_excerpt": "\u306f\u3058\u3081\u307e\u3057\u3066\u3001[NAME]\u3067\u3059\u3002[ADDRESS]\u306b\u4f4f\u3093\u3067\u3044\u307e\u3059\u3002\u643a\u5e2f\u756a\u53f7\u306f[PHONE]\u3001\u30e1\u30fc\u30eb\u306f[EMAIL]\u3067\u3059\u3002\u30de\u30a4\u30ca\u30f3\u30d0\u30fc\u306f[PHONE][ACCOUNT_NUMBER][PHONE]\u3001\u8a95\u751f\u65e5\u306f[DATE]\u3067\u3059\u3002"
+        },
+        {
+          "id": 7,
+          "context": "self_introduction_multilingual_fr",
+          "expected_count": 6,
+          "detected_count": 6,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: All ground-truth items were correctly replaced by placeholders, and no non-PII content was redacted.",
+          "redacted_excerpt": "Bonjour, je m'appelle [NAME]. J'habite au [ADDRESS]. Mon num\u00e9ro de s\u00e9curit\u00e9 sociale est [ACCOUNT_NUMBER] et mon IBAN est [ACCOUNT_NUMBER]. T\u00e9l\u00e9phone : [PHONE]. Mail : [EMAIL]."
+        },
+        {
+          "id": 8,
+          "context": "self_introduction_multilingual_pt",
+          "expected_count": 6,
+          "detected_count": 6,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: All ground-truth items were correctly replaced by placeholders, and no non-PII content was redacted.",
+          "redacted_excerpt": "Ol\u00e1, sou [NAME]. Moro na [ADDRESS]. Meu CPF \u00e9 [ACCOUNT_NUMBER] e meu RG \u00e9 [ACCOUNT_NUMBER]. Telefone: [PHONE]. Email: [EMAIL]."
+        },
+        {
+          "id": 9,
+          "context": "third_person_about_other",
+          "expected_count": 4,
+          "detected_count": 4,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: All ground-truth items were correctly replaced by placeholders, and no non-PII content was redacted.",
+          "redacted_excerpt": "I had lunch with my old colleague [NAME] yesterday. She just took a senior role at Roche and bought a place at [ADDRESS]. Her new direct line at the office is [PHONE] if you ever need to reach her. Apparently her son [NAME] just turned 8."
+        },
+        {
+          "id": 10,
+          "context": "code_paste_with_secrets",
+          "expected_count": 5,
+          "detected_count": 4,
+          "score_pct": 60.0,
+          "feedback": "Grade: 3  \nJustification: The model redacted most sensitive items but missed the IP address, which is a significant oversight.",
+          "redacted_excerpt": "Here's the snippet that's failing:\n\n```python\nopenai_key = \"[SECRET]\"\nstripe_key = \"[SECRET]\"\ndatabase_url = \"postgres://[SECRET]\"\n```\n\nI keep getting `auth_error: 401`. The user record has email `[EMAIL]` and the API user-agent is recording IP 192.168.1.47."
+        },
+        {
+          "id": 11,
+          "context": "negative_control_meta",
+          "expected_count": 0,
+          "detected_count": 0,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: The model correctly did not redact any content, aligning with the expectation for a negative-control example.",
+          "redacted_excerpt": "Privacy regulations like GDPR and CCPA require that personal data such as names, addresses, phone numbers, and government-issued IDs (e.g. passport numbers, social security numbers) be protected. Data minimization means collecting only what is necessary."
+        },
+        {
+          "id": 12,
+          "context": "negative_control_public_figure",
+          "expected_count": 1,
+          "detected_count": 0,
+          "score_pct": 0.0,
+          "feedback": "Grade: 0  \nJustification: The model failed completely as it did not redact the ground-truth item \"Tim Cook.\"",
+          "redacted_excerpt": "The CEO of Apple, Tim Cook, gave a keynote at WWDC last month. Apple Park's main address is 1 Apple Park Way, Cupertino, CA 95014 \u2014 but obviously that's a corporate address, not anyone's home."
+        },
+        {
+          "id": 13,
+          "context": "negative_control_fictional",
+          "expected_count": 0,
+          "detected_count": 1,
+          "score_pct": 0.0,
+          "feedback": "Grade: 0  \nJustification: The model incorrectly redacted non-PII content by replacing \"221B Baker Street\" with \"[ADDRESS]\", which is a false positive in this negative-control example.",
+          "redacted_excerpt": "In the novel I'm reading, the protagonist is Sherlock Holmes and he lives at [ADDRESS]. His phone \u2014 well, he doesn't have one, it's set in 1895."
+        },
+        {
+          "id": 14,
+          "context": "long_passage_doc_paste",
+          "expected_count": 10,
+          "detected_count": 13,
+          "score_pct": 60.0,
+          "feedback": "Grade: 3  \nJustification: The model redacted most PII items but missed \"Mei-Ling\" and over-redacted dates and part of an employee ID.",
+          "redacted_excerpt": "MEMORANDUM\n\nTo: All Staff\nFrom: HR Department\nDate: [DATE]\nSubject: Annual benefits enrollment reminder\n\nDear team,\n\nAs we approach year-end, please remember to log into the benefits portal at https://benefits.acme-corp.com/login and complete your selections by [DATE]. If you've moved during the yea"
+        },
+        {
+          "id": 15,
+          "context": "self_other_mix",
+          "expected_count": 6,
+          "detected_count": 6,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: All ground-truth items were correctly replaced by placeholders, and no non-PII content was redacted.",
+          "redacted_excerpt": "I'm writing on behalf of my client, [NAME], regarding the medical bill from his recent visit. His MRN is [ACCOUNT_NUMBER] and his date of birth is [DATE]. My contact info is below \u2014 I'm [NAME] at Patel Legal Group, [EMAIL], [PHONE]."
+        },
+        {
+          "id": 16,
+          "context": "casual_chat_with_handles",
+          "expected_count": 4,
+          "detected_count": 4,
+          "score_pct": 60.0,
+          "feedback": "Grade: 3  \nJustification: The model redacted most items but missed the Discord tag \"#4729\" and incorrectly labeled it as [PHONE].",
+          "redacted_excerpt": "lol yeah i saw that \u2014 DM [NAME] on twitter, she'll know. or her main is [EMAIL]. also ping [NAME] on discord [PHONE]), he was also there"
+        },
+        {
+          "id": 17,
+          "context": "biometric_dense",
+          "expected_count": 6,
+          "detected_count": 4,
+          "score_pct": 40.0,
+          "feedback": "Grade: 2  \nJustification: Only two out of six ground-truth items were redacted, with multiple misses and inconsistent placeholder usage.",
+          "redacted_excerpt": "Subject enrollment complete. Patient: [NAME]. Fingerprint scan: [ACCOUNT_NUMBER], voice template VP-AK-4421, retinal pattern hash IRIS-AK-77[ACCOUNT_NUMBER]3. Backup biometric (face): FACE-AK-MX2024. All four biometrics tied to subject ID [ACCOUNT_NUMBER]."
+        },
+        {
+          "id": 18,
+          "context": "case_records_dense",
+          "expected_count": 7,
+          "detected_count": 7,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: All ground-truth items were correctly replaced by placeholders, and no non-PII content was redacted.",
+          "redacted_excerpt": "Case file summary: Defendant [NAME], criminal docket [ACCOUNT_NUMBER], Eastern District. Civil suit cross-reference: [ACCOUNT_NUMBER]. Police report [ACCOUNT_NUMBER] filed by [NAME] ([ACCOUNT_NUMBER]). Inmate # if remanded: [ACCOUNT_NUMBER]."
+        },
+        {
+          "id": 19,
+          "context": "negative_control_corp_url",
+          "expected_count": 0,
+          "detected_count": 0,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: The model correctly did not redact any content, as there were no items that required redaction.",
+          "redacted_excerpt": "Check out openai.com for the latest API docs. The community forum is at community.openai.com \u2014 lots of helpful threads. Their main office is in San Francisco."
+        },
+        {
+          "id": 20,
+          "context": "geolocation_explicit",
+          "expected_count": 3,
+          "detected_count": 3,
+          "score_pct": 80.0,
+          "feedback": "Grade: 4  \nJustification: All ground-truth items were redacted, but the placeholder for the three-word geocode was incorrect.",
+          "redacted_excerpt": "Tracker last pinged at [ADDRESS] at 14:32 UTC. Subsequent ping at [ADDRESS] (Marylebone) ten minutes later. Three-word geocode: [NAME]."
+        },
+        {
+          "id": 21,
+          "context": "vehicle_id_explicit",
+          "expected_count": 4,
+          "detected_count": 4,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: All ground-truth items were correctly replaced by placeholders, and no non-PII content was redacted.",
+          "redacted_excerpt": "Reported vehicle: 2019 Honda Civic, [ACCOUNT_NUMBER], plate [ACCOUNT_NUMBER] (CA). Owner of record: [NAME] of [ADDRESS]."
+        },
+        {
+          "id": 22,
+          "context": "device_id_explicit",
+          "expected_count": 4,
+          "detected_count": 11,
+          "score_pct": 60.0,
+          "feedback": "Grade: 3  \nJustification: All ground-truth items were redacted, but the placeholders used are inconsistent and incorrect, suggesting multiple misses in the redaction process.",
+          "redacted_excerpt": "Lost phone: [ACCOUNT_NUMBER], MAC address [URL][ACCOUNT_NUMBER][URL][ACCOUNT_NUMBER], advertising ID [ACCOUNT_NUMBER][SECRET][ACCOUNT_NUMBER][SECRET][ACCOUNT_NUMBER]. Last login from [URL]."
+        },
+        {
+          "id": 23,
+          "context": "multilingual_zh",
+          "expected_count": 6,
+          "detected_count": 4,
+          "score_pct": 40.0,
+          "feedback": "Grade: 2  \nJustification: The model redacted the address, phone number, and email but failed to redact the name, postal code, and ID number.",
+          "redacted_excerpt": "\u4f60\u597d,\u6211\u53eb\u738b\u4f1f,\u4f4f\u5728[ADDRESS]\u3002\u624b\u673a\u53f7\u7801[PHONE],[ACCOUNT_NUMBER],\u90ae\u7bb1[EMAIL]\u3002"
+        },
+        {
+          "id": 24,
+          "context": "multilingual_ar",
+          "expected_count": 5,
+          "detected_count": 5,
+          "score_pct": 60.0,
+          "feedback": "Grade: 3  \nJustification: Most items were redacted, but the model incorrectly labeled the ID number and phone number as dates, indicating multiple misses.",
+          "redacted_excerpt": "[NAME]. \u0623\u0639\u064a\u0634 \u0641\u064a [ADDRESS]. \u0631\u0642\u0645 \u0647\u0648\u064a\u062a\u064a \u0627\u0644\u0648\u0637\u0646\u064a\u0629 [DATE]. \u0647\u0627\u062a\u0641\u064a [DATE]\u060c [EMAIL]"
+        },
+        {
+          "id": 25,
+          "context": "negative_control_template_placeholder",
+          "expected_count": 0,
+          "detected_count": 0,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: The model correctly did not redact any content, aligning with the expectation for a negative-control example.",
+          "redacted_excerpt": "Please fill out the form: Name: ___________ Phone: ___-___-____ Email: ___________@___________ Address: ___________________________ DOB: __/__/____"
+        },
+        {
+          "id": 26,
+          "context": "long_unstructured_paste",
+          "expected_count": 5,
+          "detected_count": 6,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: All ground-truth items were correctly replaced by placeholders, and no non-PII content was redacted.",
+          "redacted_excerpt": "i went to the doctor today and they said i need to follow up about the lab results so they want me to call back at like 9[DATE] to schedule. dr [NAME] is the one i'd ask for, she was super nice. anyway her direct line is [PHONE] and they emailed me at [EMAIL] but i can also book online if i log in w"
+        },
+        {
+          "id": 27,
+          "context": "multilingual_ru",
+          "expected_count": 6,
+          "detected_count": 6,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: All ground-truth items were correctly replaced by placeholders, and no non-PII content was redacted.",
+          "redacted_excerpt": "\u0417\u0434\u0440\u0430\u0432\u0441\u0442\u0432\u0443\u0439\u0442\u0435, \u043c\u0435\u043d\u044f \u0437\u043e\u0432\u0443\u0442 [NAME]. \u042f \u0436\u0438\u0432\u0443 \u043f\u043e \u0430\u0434\u0440\u0435\u0441\u0443: [ADDRESS]. \u041c\u043e\u0439 \u0418\u041d\u041d [ACCOUNT_NUMBER], [ACCOUNT_NUMBER]. \u0422\u0435\u043b\u0435\u0444\u043e\u043d: [PHONE], email: [EMAIL]."
+        },
+        {
+          "id": 28,
+          "context": "multilingual_ko",
+          "expected_count": 5,
+          "detected_count": 5,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: All ground-truth items were correctly replaced by placeholders, and no non-PII content was redacted.",
+          "redacted_excerpt": "\uc548\ub155\ud558\uc138\uc694, \uc800\ub294 [NAME]\uc785\ub2c8\ub2e4. [ADDRESS]\uc5d0 \uc0b4\uace0 \uc788\uc2b5\ub2c8\ub2e4. \uc8fc\ubbfc\ub4f1\ub85d\ubc88\ud638\ub294 [ACCOUNT_NUMBER]\uc785\ub2c8\ub2e4. \uc5f0\ub77d\ucc98\ub294 [PHONE]\uc774\uace0 \uc774\uba54\uc77c\uc740 [EMAIL]\uc785\ub2c8\ub2e4."
+        },
+        {
+          "id": 29,
+          "context": "edge_case_typo_unicode",
+          "expected_count": 3,
+          "detected_count": 2,
+          "score_pct": 20.0,
+          "feedback": "Grade: 1  \nJustification: The model failed to redact the name and only partially redacted the phone number, leaving obvious PII intact.",
+          "redacted_excerpt": "name: \uff71\uff9a\uff6f\uff78\uff7d \uff73\uff6b\uff70\uff99 (half-width katakana version) // [EMAIL] (with diacritics) // phone: [PHONE]415\u2012555\u20120123 (figure dash, not hyphen)"
+        },
+        {
+          "id": 30,
+          "context": "negative_control_business_only",
+          "expected_count": 0,
+          "detected_count": 0,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: The model correctly did not redact any content, aligning with the expectation for a negative-control example.",
+          "redacted_excerpt": "Q3 revenue: $4.2M. Headcount: 27 (up from 19). Office: WeWork at 555 California Street, San Francisco. Investor of record: Sequoia Capital. We're closing the Series A by end of Q4."
+        }
+      ]
+    },
+    "doc": {
+      "overall": 74.0,
+      "rows": [
+        {
+          "id": 1,
+          "context": "corp_memo_hr",
+          "expected_count": 7,
+          "detected_count": 10,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: All ground-truth items were correctly replaced by placeholders, and no non-PII content was redacted.",
+          "redacted_excerpt": "MEMORANDUM\n\nTo: All Engineering Staff\nFrom: [NAME], VP Human Resources\nDate: [DATE]\nRe: Updated benefits enrollment\n\nBenefits open enrollment runs through [DATE]. Log in at benefits.acme.com using your employee ID. For [NAME] [ACCOUNT_NUMBER]; for [NAME], [ACCOUNT_NUMBER].\n\nQuestions: contact [NAME]"
+        },
+        {
+          "id": 2,
+          "context": "corp_memo_finance",
+          "expected_count": 6,
+          "detected_count": 7,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: All ground-truth items were correctly replaced by placeholders, and no non-PII content was redacted.",
+          "redacted_excerpt": "INTERNAL MEMO\n\nFrom: Office of the CFO\nTo: Department Heads\nDate: [DATE]\nSubject: Q3 expense reporting\n\nPlease ensure all Q3 receipts are submitted via Expensify by October 5. The new approval flow routes through [NAME] (Controller, [EMAIL], [PHONE]) for amounts >$500. Direct billing inquiries to Ve"
+        },
+        {
+          "id": 3,
+          "context": "corp_memo_security",
+          "expected_count": 8,
+          "detected_count": 9,
+          "score_pct": 80.0,
+          "feedback": "Grade: 4  \nJustification: The model successfully redacted all email addresses and IP addresses but failed to fully redact the phone extension \"x9111\".",
+          "redacted_excerpt": "SECURITY NOTICE\n\nFrom: IT Security <[EMAIL]>\nTo: All Staff\nDate: [DATE]\n\nWe detected unusual login activity for the following accounts. If you are listed below, your password has been auto-rotated. Confirm via the portal:\n\n  - [EMAIL] (login from [URL])\n  - [EMAIL] (login from [URL])\n  - [EMAIL] (lo"
+        },
+        {
+          "id": 4,
+          "context": "corp_memo_exec",
+          "expected_count": 6,
+          "detected_count": 5,
+          "score_pct": 40.0,
+          "feedback": "Grade: 2  \nJustification: The model redacted only half of the required items, missing \"Yusuf\" and \"450 Mission St., 8th floor,\" while correctly redacting other names and the email address.",
+          "redacted_excerpt": "FROM THE OFFICE OF THE CEO\n\nDate: April 2, 2024\n\nTeam,\n\nI'm pleased to announce that [NAME] will join us as VP of Engineering, starting [DATE]. Yusuf brings 15 years from his prior roles at Google and Stripe. He joins us from his most recent post at Plaid where he reported to [NAME]. Welcome him at "
+        },
+        {
+          "id": 5,
+          "context": "corp_memo_legal",
+          "expected_count": 11,
+          "detected_count": 13,
+          "score_pct": 60.0,
+          "feedback": "Grade: 3  \nJustification: Most items were redacted, but the case number and internal extension number were missed, and there was a minor over-redaction of the date.",
+          "redacted_excerpt": "LEGAL HOLD NOTICE\n\nFrom: Office of General Counsel\nTo: All employees in Customer Success and Sales\nDate: February [DATE], [DATE]\nSubject: Pending litigation \u2014 preserve documents\n\nA litigation hold is now in effect for the matter [NAME] v. Acme Inc., [ACCOUNT_NUMBER] No[ACCOUNT_NUMBER]. Do not delete"
+        },
+        {
+          "id": 6,
+          "context": "personal_letter_complaint",
+          "expected_count": 6,
+          "detected_count": 8,
+          "score_pct": 60.0,
+          "feedback": "Grade: 3  \nJustification: Most items were correctly redacted, but there was a significant error with the teller's badge number being replaced by the placeholder for account numbers.",
+          "redacted_excerpt": "Dear Customer Service Manager,\n\nI am writing to formally complain about the service I received at your branch on [DATE]. I am [NAME], account holder #[ACCOUNT_NUMBER], and I have been a customer of First National since 2008. On the date in question, your teller ([ACCOUNT_NUMBER]) refused to process "
+        },
+        {
+          "id": 7,
+          "context": "personal_letter_medical_billing",
+          "expected_count": 7,
+          "detected_count": 9,
+          "score_pct": 60.0,
+          "feedback": "Grade: 3  \nJustification: Most PII items were redacted, but the model incorrectly redacted the date of the charge, which is non-PII content.",
+          "redacted_excerpt": "Dear Billing Department,\n\nI am disputing the charge dated [DATE], on my bill (account #[ACCOUNT_NUMBER]). The amount of $1,247 for emergency room services is incorrect \u2014 I was admitted as an inpatient, not seen in the ER.\n\nMy details: [NAME], DOB [DATE], [ACCOUNT_NUMBER]. Address: [ADDRESS]. Phone: "
+        },
+        {
+          "id": 8,
+          "context": "personal_letter_employment",
+          "expected_count": 8,
+          "detected_count": 8,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: All ground-truth items were correctly replaced by placeholders, and no non-PII content was redacted.",
+          "redacted_excerpt": "Dear [NAME],\n\nI am writing to follow up on my application for the Senior Designer role advertised on your career page (req #[ACCOUNT_NUMBER]). I had the pleasure of meeting your team on November 2 \u2014 [NAME] walked me through the studio, and I spoke at length with [NAME] about the brand work for the H"
+        },
+        {
+          "id": 9,
+          "context": "personal_letter_lease",
+          "expected_count": 7,
+          "detected_count": 10,
+          "score_pct": 60.0,
+          "feedback": "Grade: 3  \nJustification: Most items were redacted, but the lease number was missed, and there was significant over-redaction of non-PII dates.",
+          "redacted_excerpt": "October 30, 2024\n\nDear [NAME],\n\nI am giving formal 60-day notice that I will be vacating apartment 7B at [ADDRESS], on [DATE] 2024. As you know, I, [NAME], have been your tenant since [DATE] (lease #LEASE-2019-0612).\n\nMy new contact info effective [DATE]: [PHONE], [EMAIL]. Forwarding address: [ADDRE"
+        },
+        {
+          "id": 10,
+          "context": "personal_letter_legal",
+          "expected_count": 8,
+          "detected_count": 12,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: All ground-truth items were correctly replaced by placeholders, and no non-PII content was redacted.",
+          "redacted_excerpt": "Date: [DATE]\n\nDear [NAME],\n\nThis letter constitutes formal notice that I will be retaining counsel regarding the matter we discussed on [DATE]. My attorney is [NAME], [ADDRESS], [EMAIL], [PHONE][ACCOUNT_NUMBER]). All future correspondence regarding case [ACCOUNT_NUMBER] should be directed to him.\n\nI"
+        },
+        {
+          "id": 11,
+          "context": "contract_nda",
+          "expected_count": 6,
+          "detected_count": 7,
+          "score_pct": 60.0,
+          "feedback": "Grade: 3  \nJustification: Most items were redacted, but the address for Akira Industries was missed, which is a significant oversight.",
+          "redacted_excerpt": "MUTUAL NON-DISCLOSURE AGREEMENT\n\nThis Agreement is entered into as of [DATE], by and between:\n\nDISCLOSING PARTY: Akira Industries, Inc., a Delaware corporation, with principal offices at 800 Tech Plaza, San Jose CA 95110.\n\nRECEIVING PARTY: [NAME] (an individual residing at [ADDRESS], phone [PHONE], "
+        },
+        {
+          "id": 12,
+          "context": "contract_employment",
+          "expected_count": 10,
+          "detected_count": 12,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: All ground-truth items were correctly replaced by placeholders, and no non-PII content was redacted.",
+          "redacted_excerpt": "EMPLOYMENT AGREEMENT \u2014 Schedule A\n\nEmployee Name: [NAME]\nDate of Birth: [DATE]\nNational Insurance Number: [ACCOUNT_NUMBER]\nResidential Address: [ADDRESS]\nNext of Kin: [NAME] [PHONE]\nBank Details (for salary deposit): HSBC, sort code [ACCOUNT_NUMBER], account [ACCOUNT_NUMBER]\n\nStart Date: [DATE]\nRepo"
+        },
+        {
+          "id": 13,
+          "context": "contract_lease_residential",
+          "expected_count": 10,
+          "detected_count": 13,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: All ground-truth items were replaced by placeholders, and no non-PII content was redacted.",
+          "redacted_excerpt": "RESIDENTIAL LEASE AGREEMENT \u2014 Cover Page\n\nLandlord: [NAME] (sole owner)\nLandlord Address: [ADDRESS] TX [ADDRESS]\nLandlord Contact: [EMAIL] / [PHONE]\n\nTenant: [NAME]\nTenant DOB: [DATE]\nTenant SSN: [ACCOUNT_NUMBER]\nCo-tenant: [NAME] (DOB [DATE])\n\nLeased Premises: [ADDRESS]\nLease Term: [DATE] to [DATE]"
+        },
+        {
+          "id": 14,
+          "context": "contract_service",
+          "expected_count": 9,
+          "detected_count": 11,
+          "score_pct": 60.0,
+          "feedback": "Grade: 3  \nJustification: Most PII items were redacted, but the model incorrectly redacted the execution date, which is not PII, resulting in a significant over-redaction.",
+          "redacted_excerpt": "SERVICE AGREEMENT\n\nProvider: Westover Consulting LLC\nClient: [NAME]\nClient Address: [ADDRESS]\nClient Phone: [PHONE]\nClient Email: [EMAIL]\n\nServices: Personal financial planning. Provider's lead consultant assigned: [NAME] ([ACCOUNT_NUMBER]), reachable at [EMAIL].\n\nFee: $4,500 retainer. Wired to Bank"
+        },
+        {
+          "id": 15,
+          "context": "contract_partnership",
+          "expected_count": 12,
+          "detected_count": 13,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: All ground-truth items were replaced by placeholders, and no non-PII content was redacted.",
+          "redacted_excerpt": "PARTNERSHIP AGREEMENT \u2014 Article I (Parties)\n\nThis Partnership Agreement is made and entered into this [DATE], by and among:\n\n  Partner 1: [NAME], residing at [ADDRESS]. Email: [EMAIL]. Mobile: [PHONE].\n  Partner 2: [NAME], residing at [ADDRESS]. Email: [EMAIL]. Mobile: [PHONE].\n  Partner 3: [NAME], "
+        },
+        {
+          "id": 16,
+          "context": "medical_clinic_visit",
+          "expected_count": 8,
+          "detected_count": 10,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: All ground-truth items were correctly replaced by placeholders, and no non-PII content was redacted.",
+          "redacted_excerpt": "Riverside Family Practice \u2014 Encounter Note\n\nPatient: [NAME]\nDOB: [DATE]  Sex: F  MRN: [ACCOUNT_NUMBER]\nAddress: [ADDRESS]\nPhone: [PHONE]\nInsurance: Aetna PPO, member ID [ACCOUNT_NUMBER]\nProvider: Dr. [NAME] (NPI [ACCOUNT_NUMBER])\nDate of service: [DATE]\n\nCC: Persistent migraines, 3-month history.\nHP"
+        },
+        {
+          "id": 17,
+          "context": "medical_discharge_summary",
+          "expected_count": 10,
+          "detected_count": 14,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: All ground-truth items were correctly replaced by placeholders, and no non-PII content was redacted.",
+          "redacted_excerpt": "DISCHARGE SUMMARY\n\nPatient: [NAME]\nMRN: [ACCOUNT_NUMBER]\nDOB: [DATE] (age 59)\nAdmitting Service: Cardiology\nAttending: [NAME] ([ACCOUNT_NUMBER])\nAdmit date: [DATE]  Discharge date: [DATE]\n\nPrincipal Dx: Acute MI s/p PCI with DES to LAD.\nDischarge Address: [ADDRESS]\nDischarge Phone: [PHONE]\nFollow-up"
+        },
+        {
+          "id": 18,
+          "context": "medical_lab_report",
+          "expected_count": 7,
+          "detected_count": 10,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: All ground-truth items were correctly replaced by placeholders, and no non-PII content was redacted.",
+          "redacted_excerpt": "Quest Diagnostics \u2014 Laboratory Report\n\nPatient: [NAME]\nDOB: [DATE]  Patient ID: [ACCOUNT_NUMBER]\nReferring Physician: [NAME] (NPI [ACCOUNT_NUMBER])\nSpecimen collected: [DATE]  Received: [DATE]\n\nResults \u2014 Comprehensive Metabolic Panel:\n  Glucose       102 mg/dL    [70-99]   *H\n  BUN            14 mg/"
+        },
+        {
+          "id": 19,
+          "context": "medical_prescription",
+          "expected_count": 8,
+          "detected_count": 13,
+          "score_pct": 40.0,
+          "feedback": "Grade: 2  \nJustification: The model redacted most PII items but failed to redact \"Hassan El-Bashir\" in the signature and over-redacted non-PII content like \"tab\" and \"El-Bashir.\"",
+          "redacted_excerpt": "Rx\n\nPrescriber: [NAME]\nDEA: [ACCOUNT_NUMBER]  NPI: [ACCOUNT_NUMBER]\nClinic: Stratford Medical Group, [ADDRESS] Bronx NY [ADDRESS]  \u260e [PHONE]\n\nPatient: [NAME]\nDOB: [DATE]\nAddress: [ADDRESS] NY [ADDRESS]\n\nMedication: Methylphenidate ER 36mg\nSig: 1 [ADDRESS] PO QAM\nDispense: #30  Refills: 0  Date: [DAT"
+        },
+        {
+          "id": 20,
+          "context": "medical_referral",
+          "expected_count": 9,
+          "detected_count": 13,
+          "score_pct": 60.0,
+          "feedback": "Grade: 3  \nJustification: Most PII items were redacted, but the model failed to redact the MRN completely and over-redacted the date.",
+          "redacted_excerpt": "Referral Letter\n\nFrom: [NAME] (Internal Medicine)\nTo: [NAME] (Endocrinology)\nDate: [DATE]\n\nRe: [NAME] (DOB [DATE], MRN 882[ACCOUNT_NUMBER])\n\nDear [NAME],\n\nI am referring my patient [NAME] for evaluation of newly diagnosed Type 2 diabetes (HbA1c 9.2). He has been on metformin 500mg BID for two weeks."
+        },
+        {
+          "id": 21,
+          "context": "legal_complaint",
+          "expected_count": 7,
+          "detected_count": 9,
+          "score_pct": 60.0,
+          "feedback": "Grade: 3  \nJustification: Most PII items were redacted, but the address was only partially redacted, and the date, which should not have been redacted, was incorrectly replaced.",
+          "redacted_excerpt": "IN THE SUPERIOR COURT OF CALIFORNIA, COUNTY OF SAN MATEO\n\nCASE NO. [ACCOUNT_NUMBER]\n\n[NAME], Plaintiff,\nv.\nMercer Properties LLC, Defendant.\n\nCOMPLAINT FOR BREACH OF CONTRACT AND NEGLIGENCE\n\nPlaintiff [NAME], by and through counsel Wexford & Donelson LLP (lead attorney [NAME], [EMAIL], [PHONE], 200 "
+        },
+        {
+          "id": 22,
+          "context": "legal_motion",
+          "expected_count": 9,
+          "detected_count": 12,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: All ground-truth items were correctly replaced by placeholders, and no non-PII content was redacted.",
+          "redacted_excerpt": "UNITED STATES DISTRICT COURT, NORTHERN DISTRICT OF ILLINOIS\n\nCase [ACCOUNT_NUMBER]\nUnited States v. [NAME]\n\nDEFENDANT'S MOTION TO SUPPRESS EVIDENCE\n\nNOW COMES Defendant [NAME], by and through his counsel of record ([NAME], [EMAIL], [PHONE]), and respectfully moves this Court for an order suppressing"
+        },
+        {
+          "id": 23,
+          "context": "legal_deposition_excerpt",
+          "expected_count": 9,
+          "detected_count": 9,
+          "score_pct": 60.0,
+          "feedback": "Grade: 3  \nJustification: The model redacted most PII items but failed to redact the case name and number, and over-redacted part of the address.",
+          "redacted_excerpt": "Deposition of Witness \u2014 Excerpt\nCase: Hartwell v. Caspian Insurance, 2024-CIV-99102\nDate: [DATE]\n\nQ. State your full name for the record.\nA. [NAME].\nQ. And your current address?\nA. 14 [ADDRESS] Lane[ADDRESS] England.\nQ. Date of birth?\nA. The third of [DATE].\nQ. Telephone?\nA. [PHONE]. My mobile is [P"
+        },
+        {
+          "id": 24,
+          "context": "legal_settlement",
+          "expected_count": 7,
+          "detected_count": 8,
+          "score_pct": 40.0,
+          "feedback": "Grade: 2  \nJustification: The model redacted some PII but missed several key items, including the routing number and the incident address, and incorrectly redacted the civil action number as an account number.",
+          "redacted_excerpt": "SETTLEMENT AGREEMENT AND MUTUAL RELEASE\n\nThis agreement is entered into between:\n\nPlaintiff: [NAME], [ADDRESS], [EMAIL].\nDefendant: Pillar Marine Logistics, Inc., a Minnesota corporation.\n\nIn settlement of Civil Action No. [ACCOUNT_NUMBER] filed in Hennepin County, the parties agree:\n\n1. Defendant s"
+        },
+        {
+          "id": 25,
+          "context": "legal_court_order",
+          "expected_count": 7,
+          "detected_count": 10,
+          "score_pct": 60.0,
+          "feedback": "Grade: 3  \nJustification: Most items were redacted, but the judge's name was missed, and there was a significant over-redaction of the case number.",
+          "redacted_excerpt": "ORDER ON DEFENDANT'S MOTION FOR SUMMARY JUDGMENT\n\nCase: [NAME] v. [NAME], [DATE][ACCOUNT_NUMBER], in the Probate Court of Cook County\n\nThe Court, having considered the submissions of the parties and oral argument heard on [DATE], hereby ORDERS:\n\n1. Defendant's motion is GRANTED IN PART.\n2. The estat"
+        },
+        {
+          "id": 26,
+          "context": "report_audit",
+          "expected_count": 8,
+          "detected_count": 12,
+          "score_pct": 60.0,
+          "feedback": "Grade: 3  \nJustification: Most PII items were redacted, but the AWS root account email was missed, and there was a minor over-redaction of the date in Finding 1.",
+          "redacted_excerpt": "INTERNAL AUDIT REPORT \u2014 Q3 2024\n\nReport No: [ACCOUNT_NUMBER]\nAudit Lead: [NAME] (CISA, [EMAIL], x4421)\nDate: [DATE]\n\nFINDINGS:\n\nFinding 1 (HIGH): Privileged access to production database `prod-acme-1` was not removed within 24h of role change for the following users:\n  - [NAME] ([EMAIL]) \u2014 role chan"
+        },
+        {
+          "id": 27,
+          "context": "report_incident",
+          "expected_count": 10,
+          "detected_count": 13,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: All ground-truth items were replaced by placeholders, and no non-PII content was redacted.",
+          "redacted_excerpt": "SECURITY INCIDENT REPORT\n\nIncident #: INC-2024-1108-A\nDate detected: [DATE]\nReporter: [NAME] [EMAIL], on-call mobile [PHONE])\n\nSummary: Suspicious login activity from IP [URL] to admin portal at 03:18 UTC. Account compromised: [EMAIL] (employee [NAME]).\n\nResponse:\n- 03:42: SIEM alert, paged on-call "
+        },
+        {
+          "id": 28,
+          "context": "report_investigation",
+          "expected_count": 12,
+          "detected_count": 12,
+          "score_pct": 40.0,
+          "feedback": "Grade: 2  \nJustification: The model redacted some PII but missed several identifiers and had inconsistent placeholder usage, leaving multiple items unredacted.",
+          "redacted_excerpt": "HR INVESTIGATION REPORT \u2014 Confidential\n\nFile #: [ACCOUNT_NUMBER]-C\nInvestigator: [NAME] (Senior HR Investigator, [EMAIL], [PHONE]782[PHONE])\nDate range: [DATE]\n\nComplainant: Anonymous (per company policy, name redacted from this version of the report)\nRespondent: [NAME] (Director of Marketing, [EMAI"
+        },
+        {
+          "id": 29,
+          "context": "report_performance_review",
+          "expected_count": 7,
+          "detected_count": 9,
+          "score_pct": 60.0,
+          "feedback": "Grade: 3  \nJustification: The model redacted most PII items but missed \"EMP-99102\" and over-redacted the review date.",
+          "redacted_excerpt": "ANNUAL PERFORMANCE REVIEW \u2014 FY 2024\n\nEmployee: [NAME]\nEmployee ID: EMP-99102\nReports to: [NAME] ([EMAIL])\nDepartment: Engineering \u2014 Platform\nDate of review: [DATE]\nReviewer: [NAME], Engineering Director\n\nOverall rating: Exceeds Expectations (4/5)\n\nPay action: Salary increase from $145,000 to $158,50"
+        },
+        {
+          "id": 30,
+          "context": "report_compliance",
+          "expected_count": 8,
+          "detected_count": 17,
+          "score_pct": 60.0,
+          "feedback": "Grade: 3  \nJustification: Most PII items were redacted, but the address was only partially redacted, and there was a significant over-redaction of non-PII content such as dates and reference numbers.",
+          "redacted_excerpt": "GDPR DATA SUBJECT REQUEST \u2014 RESPONSE LETTER\n\nDate: [DATE]\nReference: D[ACCOUNT_NUMBER]-202[ACCOUNT_NUMBER]-[ACCOUNT_NUMBER]U\n\nDear [NAME],\n\nFurther to your data subject access request received on [DATE], we have completed our search for personal data we hold about you. The following data is held:\n\n "
+        }
+      ]
+    },
+    "multilingual": {
+      "overall": 67.5,
+      "rows": [
+        {
+          "id": 1,
+          "context": "es/self_intro",
+          "expected_count": 6,
+          "detected_count": 6,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: All ground-truth items were correctly replaced by placeholders, and no non-PII content was redacted.",
+          "redacted_excerpt": "Hola, me llamo [NAME]. Vivo en [ADDRESS]. Mi DNI es [ACCOUNT_NUMBER]. Trabajo en Banco Santander; mi n\u00famero de empleado es [ACCOUNT_NUMBER]. Mi tel\u00e9fono es [PHONE] y mi correo es [EMAIL]."
+        },
+        {
+          "id": 2,
+          "context": "es/document",
+          "expected_count": 4,
+          "detected_count": 6,
+          "score_pct": 0.0,
+          "feedback": "Grade: 0  \nJustification: The model incorrectly redacted non-PII content such as dates, which are not in the ground truth list, indicating significant false-positive over-redaction.",
+          "redacted_excerpt": "JUSTIFICANTE DE EMPADRONAMIENTO\nNombre: [NAME]\nDNI: [ACCOUNT_NUMBER]\nDirecci\u00f3n: [ADDRESS]\nTel\u00e9fono de contacto: [PHONE]\nFecha de empadronamiento: [DATE]\nEmitido el [DATE] por el Ayuntamiento de Valencia."
+        },
+        {
+          "id": 3,
+          "context": "es/third_person",
+          "expected_count": 5,
+          "detected_count": 6,
+          "score_pct": 80.0,
+          "feedback": "Grade: 4  \nJustification: All ground-truth items were redacted correctly, but the date \"12 de noviembre\" was unnecessarily redacted, which is a minor over-redaction.",
+          "redacted_excerpt": "Ayer com\u00ed con mi amigo [NAME]. Acaba de mudarse al barrio de [ADDRESS]. Te dejo su nuevo n\u00famero por si quieres llamarlo: [PHONE]. Su correo nuevo es [EMAIL]. Su mujer [NAME] cumple a\u00f1os el [DATE]."
+        },
+        {
+          "id": 4,
+          "context": "es/dense_business",
+          "expected_count": 5,
+          "detected_count": 7,
+          "score_pct": 60.0,
+          "feedback": "Grade: 3  \nJustification: Most items were redacted, but there were multiple misses with inconsistent placeholder usage and over-redaction of non-PII content like \"referencia PED-2024-77182\" and \"tarjeta terminada en 4421\".",
+          "redacted_excerpt": "Estimado cliente, su pedido (refer[ACCOUNT_NUMBER]) est\u00e1 listo para recogida. Pago realizado: tarjeta terminada en [ADDRESS]1 a nombre de [NAME], [ACCOUNT_NUMBER], [ACCOUNT_NUMBER]. Entrega: [ADDRESS]. Tel: [PHONE]."
+        },
+        {
+          "id": 5,
+          "context": "de/self_intro",
+          "expected_count": 6,
+          "detected_count": 6,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: All ground-truth items were correctly replaced by placeholders, and no non-PII content was redacted.",
+          "redacted_excerpt": "Sehr geehrte Damen und Herren, mein Name ist [NAME]. Ich wohne in der [ADDRESS]. Meine Steuer-Identifikationsnummer ist [ACCOUNT_NUMBER], meine Rentenversicherungsnummer [ACCOUNT_NUMBER]. Mein Telefon: [PHONE]. E-Mail: [EMAIL]."
+        },
+        {
+          "id": 6,
+          "context": "de/document",
+          "expected_count": 5,
+          "detected_count": 6,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: All ground-truth items were correctly replaced by placeholders, and no non-PII content was redacted.",
+          "redacted_excerpt": "Krankenversicherungsnachweis\n\nVersicherter: [NAME]\nGeburtsdatum: [DATE]\nKrankenversicherung: Techniker Krankenkasse\nVersichertennummer: [ACCOUNT_NUMBER]\nAnschrift: [ADDRESS]\nTelefon: [PHONE]\n\nAusgestellt am [DATE]."
+        },
+        {
+          "id": 7,
+          "context": "de/third_person",
+          "expected_count": 4,
+          "detected_count": 4,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: All ground-truth items were correctly replaced by placeholders, and no non-PII content was redacted.",
+          "redacted_excerpt": "Heute habe ich meine Kollegin Annelies [NAME] getroffen. Sie ist gerade nach Hamburg gezogen \u2014 neue Adresse [ADDRESS]. Du erreichst sie am besten \u00fcber ihre neue Mobilnummer [PHONE] oder E-Mail [EMAIL]."
+        },
+        {
+          "id": 8,
+          "context": "de/dense_business",
+          "expected_count": 6,
+          "detected_count": 9,
+          "score_pct": 60.0,
+          "feedback": "Grade: 3  \nJustification: Most items were redacted, but there was a significant over-redaction with \"RECHNUNG Nr.\" being partially redacted as \"[DATE]\".",
+          "redacted_excerpt": "RECHNUNG Nr. [DATE] \u2014 Lieferadresse: [ADDRESS], [ADDRESS], [ADDRESS]. Zahlungsweise: SEPA-Lastschrift, [ACCOUNT_NUMBER]AN [ACCOUNT_NUMBER]. Kundennummer [ACCOUNT_NUMBER]. Telefon R\u00fcckfragen: [PHONE]. E-Mail: [EMAIL]."
+        },
+        {
+          "id": 9,
+          "context": "fr/self_intro",
+          "expected_count": 5,
+          "detected_count": 5,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: All ground-truth items were correctly replaced by placeholders, and no non-PII content was redacted.",
+          "redacted_excerpt": "Bonjour, je m'appelle [NAME]. J'habite au [ADDRESS]. Mon num\u00e9ro de s\u00e9curit\u00e9 sociale est [ACCOUNT_NUMBER]. Je suis joignable au [PHONE] ou par mail \u00e0 [EMAIL]."
+        },
+        {
+          "id": 10,
+          "context": "fr/document",
+          "expected_count": 5,
+          "detected_count": 8,
+          "score_pct": 60.0,
+          "feedback": "Grade: 3  \nJustification: The model redacted all ground-truth items but incorrectly redacted the non-PII date \"22 octobre 2024\" and the non-PII name \"M. le Maire.\"",
+          "redacted_excerpt": "Attestation de domicile\n\nNom: [NAME]\nDate de naissance: [DATE]\nAdresse: [ADDRESS], [ADDRESS]\nNum\u00e9ro de t\u00e9l\u00e9phone: [PHONE]\nMail: [EMAIL]\n\nCertifi\u00e9 \u00e0 Bordeaux, le [DATE], par [NAME]."
+        },
+        {
+          "id": 11,
+          "context": "fr/third_person",
+          "expected_count": 5,
+          "detected_count": 5,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: All ground-truth items were correctly replaced by placeholders, and no non-PII content was redacted.",
+          "redacted_excerpt": "Hier soir j'ai d\u00een\u00e9 avec [NAME]. Elle vient de d\u00e9m\u00e9nager \u00e0 Lyon \u2014 son nouveau quartier est le [ADDRESS]. Num\u00e9ro fixe: [PHONE]. Mobile: [PHONE]. Mail: [EMAIL]."
+        },
+        {
+          "id": 12,
+          "context": "fr/dense_business",
+          "expected_count": 6,
+          "detected_count": 9,
+          "score_pct": 60.0,
+          "feedback": "Grade: 3  \nJustification: Most items were redacted, but the model failed to fully redact the client number and over-redacted the order number.",
+          "redacted_excerpt": "Bon de commande [ACCOUNT_NUMBER]\u00b0 [ACCOUNT_NUMBER] \u2014 Client: [NAME], [ADDRESS], [ADDRESS]. T\u00e9l: [PHONE]. Mail: [EMAIL]. Mode de paiement: pr\u00e9l\u00e8vement SEPA, [ACCOUNT_NUMBER]. Num\u00e9ro client: [ACCOUNT_NUMBER]211."
+        },
+        {
+          "id": 13,
+          "context": "ja/self_intro",
+          "expected_count": 6,
+          "detected_count": 5,
+          "score_pct": 40.0,
+          "feedback": "Grade: 2  \nJustification: The model redacted the name, address, phone number, and email but failed to redact the birthdate and incorrectly labeled the My Number as a phone number.",
+          "redacted_excerpt": "\u306f\u3058\u3081\u307e\u3057\u3066\u3001[NAME]\u3068\u7533\u3057\u307e\u3059\u3002[ADDRESS]\u306b\u4f4f\u3093\u3067\u3044\u307e\u3059\u3002\u30de\u30a4\u30ca\u30f3\u30d0\u30fc\u306f[PHONE]\u3001\u751f\u5e74\u6708\u65e5\u306f1992\u5e748\u670814\u65e5\u3067\u3059\u3002\u643a\u5e2f\u96fb\u8a71\u306f[PHONE]\u3001\u30e1\u30fc\u30eb\u30a2\u30c9\u30ec\u30b9\u306f[EMAIL]\u3067\u3059\u3002\u3088\u308d\u3057\u304f\u304a\u9858\u3044\u3044\u305f\u3057\u307e\u3059\u3002"
+        },
+        {
+          "id": 14,
+          "context": "ja/document",
+          "expected_count": 5,
+          "detected_count": 5,
+          "score_pct": 40.0,
+          "feedback": "Grade: 2  \nJustification: The model redacted only three out of five ground-truth items and incorrectly redacted the issuer's name, which is not a ground-truth item.",
+          "redacted_excerpt": "\u4f4f\u6c11\u7968\u306e\u5199\u3057\n\n\u6c0f\u540d:[NAME]\n\u751f\u5e74\u6708\u65e5:\u662d\u548c55\u5e744\u67083\u65e5\n\u4f4f\u6240:[ADDRESS]\n\u672c\u7c4d:[ADDRESS]\n\u96fb\u8a71\u756a\u53f7:[PHONE]\n\u767a\u884c\u65e5:\u4ee4\u548c6\u5e7411\u67088\u65e5\n\u767a\u884c\u8005:[NAME]"
+        },
+        {
+          "id": 15,
+          "context": "ja/third_person",
+          "expected_count": 5,
+          "detected_count": 3,
+          "score_pct": 40.0,
+          "feedback": "Grade: 2  \nJustification: The model redacted the address, phone number, and email but failed to redact the names \"\u7530\u4e2d\u9ebb\u8863\u5b50\" and \"\u5927\u7fd4\".",
+          "redacted_excerpt": "\u6628\u65e5\u3001\u5927\u5b66\u6642\u4ee3\u306e\u540c\u671f\u3001\u7530\u4e2d\u9ebb\u8863\u5b50\u3068\u4e45\u3057\u3076\u308a\u306b\u4f1a\u3044\u307e\u3057\u305f\u3002\u6700\u8fd1\u3001\u6a2a\u6d5c\u306b\u5f15\u3063\u8d8a\u3057\u305f\u305d\u3046\u3067\u3001\u65b0\u3057\u3044\u4f4f\u6240\u306f[ADDRESS]\u3002\u9023\u7d61\u5148\u3082\u5909\u308f\u3063\u3066\u3001\u643a\u5e2f\u306f[PHONE]\u3001\u30e1\u30fc\u30eb\u306f[EMAIL]\u306b\u5909\u308f\u3063\u305f\u3068\u306e\u3053\u3068\u3002\u304a\u5b50\u3055\u3093\u306e\u5927\u7fd4\u304f\u3093\u306f\u3082\u30468\u6b73\u3089\u3057\u3044\u3002"
+        },
+        {
+          "id": 16,
+          "context": "ja/dense_business",
+          "expected_count": 7,
+          "detected_count": 8,
+          "score_pct": 60.0,
+          "feedback": "Grade: 3  \nJustification: Most items were redacted, but the placeholders used were inconsistent, and the model failed to redact the name \"\u5c0f\u6797\u96c5\u5f66\" and the account holder name \"\u30b3\u30d0\u30e4\u30b7 \u30de\u30b5\u30d2\u30b3\".",
+          "redacted_excerpt": "\u3054\u6ce8\u6587\u78ba\u8a8d \u2014 \u6ce8\u6587\u756a\u53f7 [ACCOUNT_NUMBER]\u3002\u304a\u5c4a\u3051\u5148:[ACCOUNT_NUMBER] [ADDRESS][NAME]\u3002\u96fb\u8a71\u756a\u53f7:[PHONE]\u3002\u304a\u652f\u6255\u3044:\u4e09\u83f1UFJ\u9280\u884c [ACCOUNT_NUMBER]\u5ea7\u756a\u53f7 [ACCOUNT_NUMBER]\u4f1a\u54e1ID[ACCOUNT_NUMBER]\u3002"
+        },
+        {
+          "id": 17,
+          "context": "zh/self_intro",
+          "expected_count": 7,
+          "detected_count": 4,
+          "score_pct": 40.0,
+          "feedback": "Grade: 2  \nJustification: The model redacted the address, ID number, phone number, and email, but failed to redact the name, postal code, and birthdate.",
+          "redacted_excerpt": "\u60a8\u597d,\u6211\u53eb\u5f20\u6587\u535a\u3002\u4f4f\u5728[ADDRESS]\u3002\u6211\u7684\u8eab\u4efd\u8bc1\u53f7\u662f[ACCOUNT_NUMBER],\u624b\u673a\u53f7[PHONE],\u7535\u5b50\u90ae\u7bb1[EMAIL]\u3002\u51fa\u751f\u65e5\u671f:1988\u5e745\u670812\u65e5\u3002"
+        },
+        {
+          "id": 18,
+          "context": "zh/document",
+          "expected_count": 6,
+          "detected_count": 6,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: All ground-truth items were correctly replaced by placeholders, and no non-PII content was redacted.",
+          "redacted_excerpt": "\u6237\u53e3\u672c\u5f71\u5370\u4ef6\n\n\u59d3\u540d:[NAME]\n\u6027\u522b:\u5973\n\u51fa\u751f\u65e5\u671f:[DATE]:[DATE]\n\u4f4f\u5740:[ADDRESS]\n\u8eab\u4efd\u8bc1\u53f7:[ACCOUNT_NUMBER]\n\u8054\u7cfb\u7535\u8bdd:[PHONE]"
+        },
+        {
+          "id": 19,
+          "context": "zh/third_person",
+          "expected_count": 5,
+          "detected_count": 3,
+          "score_pct": 40.0,
+          "feedback": "Grade: 2  \nJustification: The model redacted the address, phone number, and email but failed to redact both names, \u738b\u6653\u4e1c and \u5c0f\u7c73.",
+          "redacted_excerpt": "\u6628\u5929\u548c\u6211\u5927\u5b66\u540c\u5b66\u738b\u6653\u4e1c\u805a\u4e86\u4e00\u4e0b\u3002\u4ed6\u6700\u8fd1\u642c\u5230\u4e86\u6df1\u5733\u5357\u5c71\u533a\u79d1\u6280\u56ed\u5357\u533a,\u65b0\u5730\u5740\u662f[ADDRESS],\u4ed6\u7684\u65b0\u624b\u673a\u53f7\u662f[PHONE],\u90ae\u7bb1[EMAIL]\u3002\u4ed6\u5973\u513f\u5c0f\u7c73\u5feb\u4e0a\u5c0f\u5b66\u4e86\u3002"
+        },
+        {
+          "id": 20,
+          "context": "zh/dense_business",
+          "expected_count": 5,
+          "detected_count": 6,
+          "score_pct": 60.0,
+          "feedback": "Grade: 3  \nJustification: Most items were redacted, but the order number \"DD-2024-88172\" and the credit card information were not redacted, resulting in multiple misses.",
+          "redacted_excerpt": "[DATE][ACCOUNT_NUMBER]\u3002\u6536\u8d27\u4eba:[NAME],\u8054\u7cfb\u7535\u8bdd[PHONE],\u6536\u8d27\u5730\u5740:[ADDRESS]\u3002\u4ed8\u6b3e\u65b9\u5f0f:\u62db\u5546\u94f6\u884c\u5c3e\u53f74421\u4fe1\u7528\u5361\u3002\u5ba2\u6237\u7f16\u53f7:[ACCOUNT_NUMBER]\u3002"
+        },
+        {
+          "id": 21,
+          "context": "ko/self_intro",
+          "expected_count": 5,
+          "detected_count": 5,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: All ground-truth items were correctly replaced by placeholders, and no non-PII content was redacted.",
+          "redacted_excerpt": "\uc548\ub155\ud558\uc138\uc694, \uc800\ub294 [NAME]. [ADDRESS]\uc5d0 \uc0b4\uace0 \uc788\uc2b5\ub2c8\ub2e4. \uc8fc\ubbfc\ub4f1\ub85d\ubc88\ud638\ub294 [ACCOUNT_NUMBER]\uc785\ub2c8\ub2e4. \uc5f0\ub77d\ucc98\ub294 [PHONE]\uc774\uace0 \uc774\uba54\uc77c\uc740 [EMAIL]."
+        },
+        {
+          "id": 22,
+          "context": "ko/document",
+          "expected_count": 4,
+          "detected_count": 4,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: All ground-truth items were correctly replaced by placeholders, and no non-PII content was redacted.",
+          "redacted_excerpt": "\uac74\uac15\ubcf4\ud5d8\uc99d\n\n\uc131\uba85: [NAME]\n\uc8fc\ubbfc\ub4f1\ub85d\ubc88\ud638: [ACCOUNT_NUMBER]\n\uc8fc\uc18c: [ADDRESS]\n\uc804\ud654\ubc88\ud638: [PHONE]\n\ubc1c\uae09\uc77c: 2024\ub144 11\uc6d4 8\uc77c\n\ubc1c\uae09\uae30\uad00: \uad6d\ubbfc\uac74\uac15\ubcf4\ud5d8\uacf5\ub2e8"
+        },
+        {
+          "id": 23,
+          "context": "ko/third_person",
+          "expected_count": 5,
+          "detected_count": 7,
+          "score_pct": 60.0,
+          "feedback": "Grade: 3  \nJustification: The model redacted all ground-truth items but over-redacted non-PII content by replacing parts of words with placeholders.",
+          "redacted_excerpt": "\uc5b4\uc81c \ub300\ud559 \ub3d9\uae30 \uc815[NAME] \uc528\ub97c \uc624\ub79c\ub9cc\uc5d0 \ub9cc\ub0ac\uc5b4\uc694. \ucd5c\uadfc\uc5d0 \uc778\ucc9c\uc73c\ub85c \uc774[NAME]\uc168[NAME]\uc694. \uc0c8 \uc8fc\uc18c\ub294 [ADDRESS]\uc785\ub2c8\ub2e4. \uc5f0\ub77d\ucc98\ub3c4 \ubc14\ub00c\uc5b4\uc11c [PHONE] \ubc1b\uace0 \uc788\uace0 \uc774\uba54\uc77c\uc740 [EMAIL]\uc774\uc5d0\uc694. \uc544[NAME]\uc774\ub294 \ubc8c\uc368 \uc77c\uacf1 \uc0b4\uc774\ub798\uc694."
+        },
+        {
+          "id": 24,
+          "context": "ko/dense_business",
+          "expected_count": 5,
+          "detected_count": 5,
+          "score_pct": 40.0,
+          "feedback": "Grade: 2  \nJustification: The model redacted the order number, phone number, address, and member number but failed to redact the name and incorrectly redacted part of the payment method as an address.",
+          "redacted_excerpt": "\uc8fc\ubb38 \ud655\uc778 \u2014 \uc8fc\ubb38\ubc88\ud638 [ACCOUNT_NUMBER]. \ubc1b\uc73c\uc2dc\ub294 \ubd84: \uc724\uc11c\uc5f0 \ub2d8, \uc5f0\ub77d\ucc98 [PHONE], \ubc30\uc1a1\uc9c0: [ADDRESS] \uacb0\uc81c\uc218\ub2e8: \uc2e0\ud55c[ADDRESS]. \ud68c\uc6d0\ubc88\ud638: [ACCOUNT_NUMBER]."
+        },
+        {
+          "id": 25,
+          "context": "ar/self_intro",
+          "expected_count": 5,
+          "detected_count": 7,
+          "score_pct": 40.0,
+          "feedback": "Grade: 2  \nJustification: The model redacted some PII but left parts of the name and account number unredacted, and incorrectly redacted non-PII content like parts of the phone number.",
+          "redacted_excerpt": "\u0645\u0631\u062d\u0628\u064b\u0627\u060c \u0627\u0633\u0645\u064a \u0639\u0628\u062f [NAME]. \u0623\u0639\u064a\u0634 \u0641\u064a [ADDRESS]. \u0631\u0642\u0645 \u0627\u0644\u0647\u0648\u064a\u0629 \u0627\u0644\u0648\u0637\u0646\u064a\u0629 [ACCOUNT_NUMBER]\u0669. \u0647\u0627\u062a\u0641\u064a [DATE][PHONE][DATE]\u060c \u0628\u0631\u064a\u062f\u064a \u0627\u0644\u0625\u0644\u0643\u062a\u0631\u0648\u0646\u064a [EMAIL]"
+        },
+        {
+          "id": 26,
+          "context": "ar/document",
+          "expected_count": 5,
+          "detected_count": 5,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: All ground-truth items were correctly replaced by placeholders, and no non-PII content was redacted.",
+          "redacted_excerpt": "\u0628\u0637\u0627\u0642\u0629 \u0647\u0648\u064a\u0629\n\n\u0627\u0644\u0627\u0633\u0645: [NAME]\n\u062a\u0627\u0631\u064a\u062e \u0627\u0644\u0645\u064a\u0644\u0627\u062f: [DATE]\n\u0631\u0642\u0645 \u0627\u0644\u0628\u0637\u0627\u0642\u0629: [ACCOUNT_NUMBER]\n\u0627\u0644\u0639\u0646\u0648\u0627\u0646: [ADDRESS]\n\u0631\u0642\u0645 \u0627\u0644\u0647\u0627\u062a\u0641: [PHONE]"
+        },
+        {
+          "id": 27,
+          "context": "ar/third_person",
+          "expected_count": 4,
+          "detected_count": 4,
+          "score_pct": 60.0,
+          "feedback": "Grade: 3  \nJustification: The model successfully redacted the address, phone number, and email but failed to fully redact the name, leaving \"\u062e\u0627\u0644\u062f \u0627\u0628\u0646\" visible.",
+          "redacted_excerpt": "\u062a\u0646\u0627\u0648\u0644\u062a \u0627\u0644\u063a\u062f\u0627\u0621 \u0623\u0645\u0633 \u0645\u0639 \u0632\u0645\u064a\u0644\u064a \u0627\u0644\u0642\u062f\u064a\u0645 \u062e\u0627\u0644\u062f \u0627\u0628\u0646 [NAME]. \u0627\u0646\u062a\u0642\u0644 \u0645\u0624\u062e\u0631\u064b\u0627 \u0625\u0644\u0649 \u0645\u0642\u0631 \u062c\u062f\u064a\u062f \u0641\u064a [ADDRESS]. \u0631\u0642\u0645\u0647 \u0627\u0644\u062c\u062f\u064a\u062f [ACCOUNT_NUMBER] \u0648\u0627\u0644\u0628\u0631\u064a\u062f \u0627\u0644\u0625\u0644\u0643\u062a\u0631\u0648\u0646\u064a [EMAIL]."
+        },
+        {
+          "id": 28,
+          "context": "ar/dense_business",
+          "expected_count": 5,
+          "detected_count": 9,
+          "score_pct": 60.0,
+          "feedback": "Grade: 3  \nJustification: Most items were redacted, but there were multiple misses, including the failure to redact the order number and the address completely, and there was an over-redaction of non-PII content with \"[DATE]\".",
+          "redacted_excerpt": "\u062a\u0623\u0643\u064a\u062f \u0627\u0644\u0637\u0644\u0628 \u2014 \u0631\u0642\u0645 \u0627\u0644\u0637\u0644\u0628 [ACCOUNT_NUMBER]. \u0627\u0644\u0645\u0633\u062a\u0644\u0645: [NAME]. \u0627\u0644\u0647\u0627\u062a\u0641 [PHONE]. \u0627\u0644\u0639\u0646\u0648\u0627\u0646: [ADDRESS][DATE]\u0662. \u0637\u0631\u064a\u0642\u0629 \u0627\u0644\u062f\u0641\u0639: \u0645\u062f\u0649\u060c \u0627\u0644\u0628\u0637\u0627\u0642\u0629 \u0627\u0644\u0645\u0646\u062a\u0647\u064a\u0629 \u0641\u064a [ACCOUNT_NUMBER]. \u0631\u0642\u0645 \u0627\u0644\u0639\u0645\u064a\u0644: [ACCOUNT_NUMBER][DATE][ACCOUNT_NUMBER]."
+        },
+        {
+          "id": 29,
+          "context": "pt/self_intro",
+          "expected_count": 6,
+          "detected_count": 10,
+          "score_pct": 40.0,
+          "feedback": "Grade: 2  \nJustification: The model redacted all PII items but incorrectly merged placeholders, resulting in significant errors in the redaction format.",
+          "redacted_excerpt": "Ol\u00e1, sou [NAME]. Moro na [ADDRESS]. Meu CPF \u00e9 [ACCOUNT_NUMBER] e meu RG \u00e9 [ACCOUNT_NUMBER][PHONE][ACCOUNT_NUMBER][PHONE]. Telefone: [PHONE]) [PHONE]. Email: [EMAIL]."
+        },
+        {
+          "id": 30,
+          "context": "pt/document",
+          "expected_count": 5,
+          "detected_count": 8,
+          "score_pct": 60.0,
+          "feedback": "Grade: 3  \nJustification: Most items were redacted, but the address was partially left intact, and there was a significant over-redaction of the date in the non-PII section.",
+          "redacted_excerpt": "Comprovante de Resid\u00eancia\n\nNome: [NAME]\nCPF: [ACCOUNT_NUMBER]\nData de nascimento: [DATE]\nEndere\u00e7o: [ADDRESS], [ADDRESS] RJ, [ADDRESS]\nTelefone: [PHONE]\n\nEmitido em [DATE] pelo cart\u00f3rio do 5\u00ba Of\u00edcio de Notas."
+        },
+        {
+          "id": 31,
+          "context": "pt/third_person",
+          "expected_count": 5,
+          "detected_count": 10,
+          "score_pct": 60.0,
+          "feedback": "Grade: 3  \nJustification: Most items were redacted, but the model failed to redact \"Patr\u00edcia\" and over-redacted \"Belo Horizonte\" once, indicating multiple misses and one significant over-redaction.",
+          "redacted_excerpt": "Ontem encontrei meu antigo amigo [NAME] depois de uns 5 anos. Ele se mudou pra Belo Horizonte, novo endere\u00e7o: [ADDRESS], [ADDRESS]o [ADDRESS], [ADDRESS], MG, [ADDRESS]. Telefone novo: [PHONE]. Email: [EMAIL]. [NAME], [NAME], faz anivers\u00e1rio em dezembro."
+        },
+        {
+          "id": 32,
+          "context": "pt/dense_business",
+          "expected_count": 7,
+          "detected_count": 10,
+          "score_pct": 60.0,
+          "feedback": "Grade: 3  \nJustification: Most items were redacted, but the model failed to redact the payment card information and over-redacted the address by using multiple placeholders.",
+          "redacted_excerpt": "Confirma\u00e7\u00e3o de pedido \u2014 c\u00f3digo PED[ACCOUNT_NUMBER]. Cliente: [NAME]. [ACCOUNT_NUMBER]. Endere\u00e7o de entrega: [ADDRESS], [ADDRESS], [ADDRESS], [ADDRESS]. Telefone ([PHONE]. Email [EMAIL]. Pagamento: cart\u00e3o Ita\u00fa final 8821. C\u00f3d cliente: [ACCOUNT_NUMBER]."
+        },
+        {
+          "id": 33,
+          "context": "ru/self_intro",
+          "expected_count": 7,
+          "detected_count": 7,
+          "score_pct": 60.0,
+          "feedback": "Grade: 3  \nJustification: Most items were redacted, but there were multiple misses, including the incorrect placeholder for the passport number and address repetition.",
+          "redacted_excerpt": "\u0417\u0434\u0440\u0430\u0432\u0441\u0442\u0432\u0443\u0439\u0442\u0435, \u043c\u0435\u043d\u044f \u0437\u043e\u0432\u0443\u0442 [NAME]. \u042f \u0436\u0438\u0432\u0443 \u043f\u043e \u0430\u0434\u0440\u0435\u0441\u0443: [ADDRESS]. \u041c\u043e\u0439 [ADDRESS], [ACCOUNT_NUMBER], \u043f\u0430\u0441\u043f\u043e\u0440\u0442 [ACCOUNT_NUMBER]. \u0422\u0435\u043b\u0435\u0444\u043e\u043d: [PHONE]. Email: [EMAIL]."
+        },
+        {
+          "id": 34,
+          "context": "ru/document",
+          "expected_count": 5,
+          "detected_count": 8,
+          "score_pct": 60.0,
+          "feedback": "Grade: 3  \nJustification: Most items were correctly redacted, but there is significant over-redaction of non-PII content in the issuance date.",
+          "redacted_excerpt": "\u0421\u043f\u0440\u0430\u0432\u043a\u0430 \u043e \u0441\u043e\u0441\u0442\u0430\u0432\u0435 \u0441\u0435\u043c\u044c\u0438\n\n\u0413\u0440\u0430\u0436\u0434\u0430\u043d\u0438\u043d: [NAME]\n\u0414\u0430\u0442\u0430 \u0440\u043e\u0436\u0434\u0435\u043d\u0438\u044f: [DATE]\n\u041f\u0430\u0441\u043f\u043e\u0440\u0442: [ACCOUNT_NUMBER]\n\u0410\u0434\u0440\u0435\u0441 \u0440\u0435\u0433\u0438\u0441\u0442\u0440\u0430\u0446\u0438\u0438: [ADDRESS]\n\u0422\u0435\u043b\u0435\u0444\u043e\u043d: [PHONE]\n\n[DATE]\u0434\u0430\u043d[DATE] \u0433[DATE] \u0423\u0412\u041c \u0413\u0423 \u041c\u0412\u0414 \u0420\u043e\u0441\u0441\u0438\u0438 \u043f\u043e \u0433. \u0421\u0430\u043d\u043a\u0442-\u041f\u0435\u0442\u0435\u0440\u0431\u0443\u0440\u0433\u0443."
+        },
+        {
+          "id": 35,
+          "context": "ru/third_person",
+          "expected_count": 5,
+          "detected_count": 5,
+          "score_pct": 60.0,
+          "feedback": "Grade: 3  \nJustification: Most items were redacted, but the model missed redacting \"\u0410\u0440\u0442\u0451\u043c\" and incorrectly redacted part of the address twice.",
+          "redacted_excerpt": "\u0412\u0447\u0435\u0440\u0430 \u0432\u0441\u0442\u0440\u0435\u0442\u0438\u043b\u0430\u0441\u044c \u0441 \u043f\u043e\u0434\u0440\u0443\u0433\u043e\u0439 \u043f\u043e \u0443\u043d\u0438\u0432\u0435\u0440\u0441\u0438\u0442\u0435\u0442\u0443 [NAME]. \u041e\u043d\u0430 \u043d\u0435\u0434\u0430\u0432\u043d\u043e [ADDRESS]. \u041d\u043e\u0432\u044b\u0439 \u043d\u043e\u043c\u0435\u0440: [PHONE]. \u041f\u043e\u0447\u0442\u0430: [EMAIL][ADDRESS]"
+        },
+        {
+          "id": 36,
+          "context": "ru/dense_business",
+          "expected_count": 7,
+          "detected_count": 9,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: All ground-truth items were correctly replaced by placeholders, and no non-PII content was redacted.",
+          "redacted_excerpt": "[DATE][ACCOUNT_NUMBER]. \u041f\u043e\u043a\u0443\u043f\u0430\u0442\u0435\u043b\u044c: [NAME] \u0418\u041d\u041d: [ACCOUNT_NUMBER]. \u0410\u0434\u0440\u0435\u0441 \u0434\u043e\u0441\u0442\u0430\u0432\u043a\u0438: [ADDRESS]. \u0422\u0435\u043b\u0435\u0444\u043e\u043d: [PHONE]. Email: [EMAIL]. [ACCOUNT_NUMBER]. \u041d\u043e\u043c\u0435\u0440 \u043a\u043b\u0438\u0435\u043d\u0442\u0430: [ACCOUNT_NUMBER]."
+        },
+        {
+          "id": 37,
+          "context": "hi/self_intro",
+          "expected_count": 6,
+          "detected_count": 5,
+          "score_pct": 60.0,
+          "feedback": "Grade: 3  \nJustification: The model redacted most items but missed redacting the PAN card number and part of the Aadhaar number.",
+          "redacted_excerpt": "\u0928\u092e\u0938\u094d\u0924\u0947, \u092e\u0947\u0930\u093e \u0928\u093e\u092e \u092a\u094d\u0930\u093f\u092f[NAME] \u0939\u0948\u0964 \u092e\u0948\u0902 \u092b\u094d\u0932\u0948\u091f \u0928\u0902\u092c\u0930 [ADDRESS] \u092e\u0947\u0902 \u0930\u0939\u0924\u0940 \u0939\u0942\u0901\u0964 \u092e\u0947\u0930\u093e \u0906\u0927\u093e\u0930 \u0928\u0902\u092c\u0930 1234 [ACCOUNT_NUMBER] \u0939\u0948 \u0914\u0930 \u092a\u0948\u0928 \u0915\u093e\u0930\u094d\u0921 \u0928\u0902\u092c\u0930 AAACS1234B \u0939\u0948\u0964 \u092e\u0947\u0930\u093e \u092b\u094b\u0928 [PHONE] \u0939\u0948 \u0914\u0930 \u0908\u092e\u0947\u0932 [EMAIL]\u0964"
+        },
+        {
+          "id": 38,
+          "context": "hi/document",
+          "expected_count": 5,
+          "detected_count": 6,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: All ground-truth items were correctly redacted with placeholders, and no non-PII content was over-redacted.",
+          "redacted_excerpt": "\u092a\u0924\u0947 \u0915\u093e \u092a\u094d\u0930\u092e\u093e\u0923-\u092a\u0924\u094d\u0930\n\n\u0928\u093e\u092e: [NAME]\n\u091c\u0928\u094d\u092e \u0924\u093f\u0925\u093f: [DATE]\n\u0906\u0927\u093e\u0930 \u0938\u0902\u0916\u094d\u092f\u093e: [ACCOUNT_NUMBER]\n\u092a\u0924\u093e: [ADDRESS]\n\u092b\u094b\u0928: [PHONE]\n\n\u091c\u093e\u0930\u0940 \u0926\u093f\u0928\u093e\u0902\u0915: [DATE]"
+        },
+        {
+          "id": 39,
+          "context": "hi/third_person",
+          "expected_count": 5,
+          "detected_count": 3,
+          "score_pct": 40.0,
+          "feedback": "Grade: 2  \nJustification: The model redacted the address, phone number, and email but failed to redact the names \"\u0905\u092e\u093f\u0924 \u0938\u093f\u0902\u0939\" and \"\u0906\u0930\u094d\u092f\u093e,\" leaving significant PII intact.",
+          "redacted_excerpt": "\u0915\u0932 \u092e\u0947\u0930\u0947 \u0915\u0949\u0932\u0947\u091c \u0915\u0947 \u092a\u0941\u0930\u093e\u0928\u0947 \u0926\u094b\u0938\u094d\u0924 \u0905\u092e\u093f\u0924 \u0938\u093f\u0902\u0939 \u0938\u0947 \u092e\u0941\u0932\u093e\u0915\u093e\u0924 \u0939\u0941\u0908\u0964 \u0935\u094b \u0939\u093e\u0932 \u0939\u0940 \u092e\u0947\u0902 \u092c\u0948\u0902\u0917\u0932\u094b\u0930 \u0936\u093f\u092b\u094d\u091f \u0939\u0941\u090f \u0939\u0948\u0902 \u2014 \u0928\u092f\u093e \u092a\u0924\u093e: [ADDRESS]\u0964 \u0909\u0928\u0915\u093e \u0928\u092f\u093e \u092e\u094b\u092c\u093e\u0907\u0932 [PHONE] \u0939\u0948 \u0914\u0930 \u0908\u092e\u0947\u0932 [EMAIL] \u0939\u0948\u0964 \u0909\u0928\u0915\u0940 \u092c\u0947\u091f\u0940 \u0906\u0930\u094d\u092f\u093e \u0905\u092c 6 \u0938\u093e\u0932 \u0915\u0940 \u0939\u0948\u0964"
+        },
+        {
+          "id": 40,
+          "context": "hi/dense_business",
+          "expected_count": 7,
+          "detected_count": 9,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: All ground-truth items were correctly replaced by placeholders, and no non-PII content was redacted.",
+          "redacted_excerpt": "\u0911\u0930\u094d\u0921\u0930 \u0915\u0928\u094d\u092b\u0930\u094d\u092e\u0947\u0936\u0928 \u2014 \u0911\u0930\u094d\u0921\u0930 \u0928\u0902\u092c\u0930 [ACCOUNT_NUMBER]\u0964 \u0917\u094d\u0930\u093e\u0939\u0915: [NAME], \u0906\u0927\u093e\u0930 [ACCOUNT_NUMBER]\u0964 \u0921\u093f\u0932\u0940\u0935\u0930\u0940 \u092a\u0924\u093e: [ADDRESS]\u0964 \u092b\u094b\u0928: [PHONE]\u0964 \u0908\u092e\u0947\u0932: [EMAIL]\u0964 \u092d\u0941\u0917\u0924\u093e\u0928: SBI [ACCOUNT_NUMBER]\u093f\u091f \u0915\u093e\u0930\u094d\u0921 [ACCOUNT_NUMBER]\u0964 \u0917\u094d\u0930\u093e\u0939\u0915 \u0938\u0902\u0916\u094d\u092f\u093e: [ACCOUNT_NUMBER]\u0964"
+        }
+      ]
+    },
+    "code": {
+      "overall": 69.0,
+      "rows": [
+        {
+          "id": 1,
+          "context": "api_keys",
+          "expected_count": 1,
+          "detected_count": 1,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: The model correctly redacted the API key by replacing it with a placeholder and did not redact any non-PII content.",
+          "redacted_excerpt": "Quick test:\n\n```python\nimport openai\nopenai.api_key = '[SECRET]'\n\nresponse = openai.ChatCompletion.create(\n    model='gpt-4',\n    messages=[{'role': 'user', 'content': 'hello'}]\n)\nprint(response.choices[0].message.content)\n```\n\nThis works locally but fails in CI \u2014 please debug."
+        },
+        {
+          "id": 2,
+          "context": "api_keys",
+          "expected_count": 2,
+          "detected_count": 2,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: All ground-truth items were correctly replaced by a placeholder, and no non-PII content was redacted.",
+          "redacted_excerpt": "Stripe webhook handler \u2014 getting 401s:\n\n```javascript\nimport Stripe from 'stripe';\nconst stripe = new Stripe('[SECRET]');\n\nexport async function POST(req) {\n  const sig = req.headers.get('stripe-signature');\n  const event = stripe.webhooks.constructEvent(\n    await req.text(),\n    sig,\n    '[SECRET]"
+        },
+        {
+          "id": 3,
+          "context": "api_keys",
+          "expected_count": 4,
+          "detected_count": 3,
+          "score_pct": 60.0,
+          "feedback": "Grade: 3  \nJustification: The model redacted three out of four ground-truth items but failed to redact the AWS_ACCESS_KEY_ID, leaving a significant piece of PII intact.",
+          "redacted_excerpt": "AWS Lambda failing on cold start. Here's the deploy config:\n\n```yaml\nenv:\n  AWS_ACCESS_KEY_ID: AKIAIOSFODNN7EXAMPLE\n  AWS_SECRET_ACCESS_KEY: [SECRET]\n  GITHUB_TOKEN: [SECRET]\n  ANTHROPIC_API_KEY: [SECRET]\n```\n\nIs the secret manager pulling these correctly?"
+        },
+        {
+          "id": 4,
+          "context": "api_keys",
+          "expected_count": 2,
+          "detected_count": 2,
+          "score_pct": 80.0,
+          "feedback": "Grade: 4  \nJustification: The model successfully redacted the JWT token and the email, but it over-redacted the email placeholder by not including an underscore or space after \"email\".",
+          "redacted_excerpt": "JWT verification keeps failing. Token I'm getting from the auth server:\n\n```\n[SECRET]\n```\n\nDecoded payload claims user_id=user_123, email[EMAIL]. Sig validation fails with HS256."
+        },
+        {
+          "id": 5,
+          "context": "api_keys",
+          "expected_count": 3,
+          "detected_count": 3,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: All ground-truth items were correctly replaced by placeholders, and no non-PII content was redacted.",
+          "redacted_excerpt": "Setting up the MCP server:\n\n```bash\nexport SLACK_BOT_TOKEN[SECRET]\nexport NOTION_API_KEY=[SECRET]\nexport GOOGLE_API_KEY=[SECRET]\n```\n\nRunning the MCP now... only Notion is responding, the other two return auth errors."
+        },
+        {
+          "id": 6,
+          "context": "db_connection_strings",
+          "expected_count": 3,
+          "detected_count": 5,
+          "score_pct": 40.0,
+          "feedback": "Grade: 2  \nJustification: Only one of the three ground-truth items was fully redacted, and there was significant over-redaction in the REDIS_URL.",
+          "redacted_excerpt": "Migration is failing in staging. Connection string:\n\n```\nDATABASE_URL=postgres://acme_user:[SECRET]\nREDIS_URL=redis://:[SECRET][URL][SECRET][URL]0\nMONGO_URL=mongodb+srv://admin:M0ng0$ecret@cluster0.acme.mongodb.net/?retryWrites=true&w=majority\n```\n\nIs DNS resolving the internal hostnames? Logs show "
+        },
+        {
+          "id": 7,
+          "context": "db_connection_strings",
+          "expected_count": 2,
+          "detected_count": 5,
+          "score_pct": 60.0,
+          "feedback": "Grade: 3  \nJustification: The model correctly redacted both passwords but over-redacted the database name and part of the production host URL.",
+          "redacted_excerpt": "Dev environment .env:\n\n```\nDB_HOST=localhost\nDB_USER=postgres\nDB_PASSWORD=[SECRET]\nDB_NAME=[SECRET][NAME]\n\n# Production overrides \u2014 DO NOT COMMIT\n# DB_HOST=prod[URL]\n# DB_USER=acme_readonly\n# DB_PASSWORD=[SECRET]\n```\n\nWe accidentally pushed this with the prod overrides uncommented. Need to rotate."
+        },
+        {
+          "id": 8,
+          "context": "db_connection_strings",
+          "expected_count": 3,
+          "detected_count": 3,
+          "score_pct": 40.0,
+          "feedback": "Grade: 2  \nJustification: Only the password was correctly redacted, while the account and user details were not fully redacted, and there was an incorrect partial redaction of the account number.",
+          "redacted_excerpt": "Snowflake account, asking for help debugging:\n\n```python\nimport snowflake.connector\n\nconn = snowflake.connector.connect(\n    user='ANALYTICS_PROD',\n    password='[SECRET]\n    account='xy12345[ACCOUNT_NUMBER]-east[ACCOUNT_NUMBER]1',\n    warehouse='ANALYTICS_WH',\n    database='ACME_PROD',\n    schema='"
+        },
+        {
+          "id": 9,
+          "context": "db_connection_strings",
+          "expected_count": 2,
+          "detected_count": 2,
+          "score_pct": 40.0,
+          "feedback": "Grade: 2  \nJustification: The model failed to redact the username and only partially redacted the password, leaving identifiable information exposed.",
+          "redacted_excerpt": "Terraform is creating the RDS instance. Resource block:\n\n```hcl\nresource \"aws_db_instance\" \"main\" {\n  identifier        = \"acme-prod-db\"\n  engine            = \"postgres\"\n  engine_version    = \"15.4\"\n  instance_class    = \"db.r6g.xlarge\"\n  allocated_storage = 500\n  username          = \"acmeadmin\"\n  p"
+        },
+        {
+          "id": 10,
+          "context": "db_connection_strings",
+          "expected_count": 5,
+          "detected_count": 3,
+          "score_pct": 40.0,
+          "feedback": "Grade: 2  \nJustification: The model redacted the private key ID, client email, and client ID, but failed to redact the project ID and private key, leaving significant PII intact.",
+          "redacted_excerpt": "BigQuery service account JSON I generated for the ETL job:\n\n```json\n{\n  \"type\": \"service_account\",\n  \"project_id\": \"acme-analytics-prod\",\n  \"private_key_id\": \"[SECRET]\n  \"client_email\": \"[EMAIL]\",\n  \"client_id\": \"[SECRET]\"\n}\n```\n\nThis works in dev but fails in prod with 'Invalid grant'."
+        },
+        {
+          "id": 11,
+          "context": "secrets_files",
+          "expected_count": 5,
+          "detected_count": 5,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: All ground-truth items were correctly replaced by a placeholder, and no non-PII content was redacted.",
+          "redacted_excerpt": "Cleaning up our k8s secrets. Current secrets.yaml:\n\n```yaml\napiVersion: v1\nkind: Secret\nmetadata:\n  name: app-secrets\ntype: Opaque\nstringData:\n  database-password: '[SECRET]\n  redis-password: '[SECRET]\n  smtp-password: '[SECRET]\n  jwt-secret: '[SECRET]'\n  webhook-shared-secret: '[SECRET]'\n```"
+        },
+        {
+          "id": 12,
+          "context": "secrets_files",
+          "expected_count": 5,
+          "detected_count": 4,
+          "score_pct": 60.0,
+          "feedback": "Grade: 3  \nJustification: The model correctly redacted four out of five items, but it failed to redact \"acme_deploy_bot.\"",
+          "redacted_excerpt": "GitHub Actions workflow secrets section:\n\n```yaml\nsecrets:\n  PYPI_TOKEN: '[SECRET]'\n  NPM_TOKEN: '[SECRET]'\n  DOCKER_USERNAME: acme_deploy_bot\n  DOCKER_PASSWORD: '[SECRET]\n  CODECOV_TOKEN: '[SECRET]'\n```"
+        },
+        {
+          "id": 13,
+          "context": "secrets_files",
+          "expected_count": 2,
+          "detected_count": 2,
+          "score_pct": 80.0,
+          "feedback": "Grade: 4  \nJustification: The model successfully redacted the private key but only partially redacted the name \"alex.wall,\" leaving \"wall\" visible.",
+          "redacted_excerpt": "SSH config from my dotfiles, planning to share. Probably should sanitize:\n\n```\nHost prod-bastion\n    HostName bastion.acme.io\n    User [NAME].wall\n    IdentityFile ~/.ssh/acme_prod_ed25519\n    IdentitiesOnly yes\n\nHost github-personal\n    HostName github.com\n    User git\n    IdentityFile ~/.ssh/perso"
+        },
+        {
+          "id": 14,
+          "context": "secrets_files",
+          "expected_count": 4,
+          "detected_count": 4,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: All ground-truth items were correctly replaced by placeholders, and no non-PII content was redacted.",
+          "redacted_excerpt": "Vault kv put output for the new service:\n\n```\n$ vault kv put -mount=secret payments/stripe \\\n    api_key=[SECRET] \\\n    webhook_secret=[SECRET] \\\n    publishable_key=[SECRET] \\\n    customer_email[EMAIL]\n```"
+        },
+        {
+          "id": 15,
+          "context": "secrets_files",
+          "expected_count": 2,
+          "detected_count": 1,
+          "score_pct": 40.0,
+          "feedback": "Grade: 2  \nJustification: The model redacted the client_id but failed to redact the client_secret, leaving significant PII intact.",
+          "redacted_excerpt": "OAuth client config I just generated (rotating after this paste):\n\n```json\n{\n  \"client_id\": \"[SECRET]\",\n  \"redirect_uris\": [\n    \"https://acme.com/auth/google/callback\",\n    \"http://localhost:3000/auth/google/callback\"\n  ],\n  \"javascript_origins\": [\"https://acme.com\", \"http://localhost:3000\"]\n}\n```"
+        },
+        {
+          "id": 16,
+          "context": "sql_with_pii",
+          "expected_count": 7,
+          "detected_count": 12,
+          "score_pct": 80.0,
+          "feedback": "Grade: 4  \nJustification: All ground-truth items were redacted except for the SSN last four digits, which were not replaced by a placeholder.",
+          "redacted_excerpt": "Need to dedupe these customer rows \u2014 they look identical but have different IDs:\n\n```sql\nINSERT INTO customers (id, full_name, email, phone, dob, ssn_last4)\nVALUES\n  (4421, '[NAME]', '[EMAIL]', '[PHONE]', '[DATE]', '4471'),\n  (4422, '[NAME]', '[EMAIL]', '[PHONE]', '[DATE]', '4471'),\n  (4423, '[NAME]"
+        },
+        {
+          "id": 17,
+          "context": "sql_with_pii",
+          "expected_count": 4,
+          "detected_count": 2,
+          "score_pct": 40.0,
+          "feedback": "Grade: 2  \nJustification: The model redacted the email and phone number but failed to redact \"Grafton Street\" and \"Dublin,\" leaving half of the PII unredacted.",
+          "redacted_excerpt": "Quick query to find orders by a specific customer:\n\n```sql\nSELECT o.order_id, o.total, o.created_at\nFROM orders o\nJOIN customers c ON c.id = o.customer_id\nWHERE c.email = '[EMAIL]'\n  AND c.phone = [PHONE]'\n  AND c.address LIKE '%Grafton Street%Dublin%'\nORDER BY o.created_at DESC;\n```"
+        },
+        {
+          "id": 18,
+          "context": "sql_with_pii",
+          "expected_count": 2,
+          "detected_count": 2,
+          "score_pct": 60.0,
+          "feedback": "Grade: 3  \nJustification: The model redacted the email and IP address but used incorrect placeholders, resulting in multiple misses.",
+          "redacted_excerpt": "Found this in the audit log dump \u2014 possible data exfiltration?\n\n```sql\n-- 2024-11-08 03:14:22 UTC, executed by user [EMAIL], source IP [URL]\nSELECT id, full_name, email, phone, ssn, dob\nFROM customers\nWHERE state = 'CA'\n  AND created_at >= '2024-01-01'\nLIMIT 10000;\n-- Returned 8,742 rows. Result set"
+        },
+        {
+          "id": 19,
+          "context": "sql_with_pii",
+          "expected_count": 9,
+          "detected_count": 9,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: All ground-truth items were correctly replaced by placeholders, and no non-PII content was redacted.",
+          "redacted_excerpt": "Test fixture data we use locally:\n\n```python\nTEST_USERS = [\n    {'name': '[NAME]', 'email': '[EMAIL]', 'phone': [PHONE]'},\n    {'name': '[NAME]', 'email': '[EMAIL]', 'phone': [PHONE]'},\n    {'name': '[NAME]', 'email': '[EMAIL]', 'phone': [PHONE]'},\n]\n```\n\nThese are fake but get logged in error trace"
+        },
+        {
+          "id": 20,
+          "context": "sql_with_pii",
+          "expected_count": 7,
+          "detected_count": 10,
+          "score_pct": 60.0,
+          "feedback": "Grade: 3  \nJustification: Most items were redacted, but the IP address was incorrectly replaced with [URL] instead of [IP], and the address redaction was inconsistent.",
+          "redacted_excerpt": "Customer support pulled this from the support tool, sharing for engineering:\n\n```\nTicket #[ACCOUNT_NUMBER]\nReporter: [NAME] <[EMAIL]>\nReporter Phone: [PHONE]\nReporter Address: [ADDRESS] MA [ADDRESS]\nReporter Account: [ACCOUNT_NUMBER]\nReporter DOB: [DATE]\n\nDescription:\nUnable to reset password. Last "
+        }
+      ]
+    },
+    "negative": {
+      "overall": 93.33,
+      "rows": [
+        {
+          "id": 1,
+          "context": "news_public_figure",
+          "expected_count": 0,
+          "detected_count": 0,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: The model correctly did not redact any content, aligning with the expectation for a negative-control example.",
+          "redacted_excerpt": "Apple CEO Tim Cook delivered the keynote at WWDC last month, announcing Apple Intelligence and a slate of OS updates. The company's headquarters at Apple Park in Cupertino has hosted the event since 2017."
+        },
+        {
+          "id": 2,
+          "context": "news_public_figure",
+          "expected_count": 0,
+          "detected_count": 0,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: The model correctly did not redact any content, aligning with the expectation for a negative-control example.",
+          "redacted_excerpt": "President Joe Biden signed the executive order yesterday at a press conference in the Rose Garden. Vice President Kamala Harris and Secretary of State Antony Blinken were in attendance."
+        },
+        {
+          "id": 3,
+          "context": "news_public_figure",
+          "expected_count": 0,
+          "detected_count": 0,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: The model correctly did not redact any content, aligning with the expectation for a negative-control example.",
+          "redacted_excerpt": "OpenAI CEO Sam Altman testified before Congress today, calling for federal regulation of AI. The hearing was chaired by Senator Richard Blumenthal of Connecticut. Mira Murati, OpenAI's CTO, was also present."
+        },
+        {
+          "id": 4,
+          "context": "news_public_figure",
+          "expected_count": 0,
+          "detected_count": 0,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: No content was redacted, which is correct for this negative-control example with no expected redactions.",
+          "redacted_excerpt": "Taylor Swift's Eras Tour grossed over $2 billion globally according to Pollstar. Beyonc\u00e9's Renaissance World Tour and Bruce Springsteen's E Street Band tour rounded out the top three earners of 2023."
+        },
+        {
+          "id": 5,
+          "context": "news_public_figure",
+          "expected_count": 0,
+          "detected_count": 0,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: The model correctly did not redact any content, aligning with the expectation for a negative-control example.",
+          "redacted_excerpt": "The new Chancellor of Germany, Friedrich Merz, met with French President Emmanuel Macron in Paris today to discuss European defense coordination. The meeting was hosted at the \u00c9lys\u00e9e Palace."
+        },
+        {
+          "id": 6,
+          "context": "news_public_figure",
+          "expected_count": 0,
+          "detected_count": 0,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: The model correctly did not redact any content, aligning with the expectation for a negative-control example.",
+          "redacted_excerpt": "Roger Federer announced his retirement from professional tennis at the Laver Cup in 2022. His final match was a doubles game alongside long-time rival Rafael Nadal."
+        },
+        {
+          "id": 7,
+          "context": "fiction_quoted",
+          "expected_count": 0,
+          "detected_count": 0,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: The model correctly did not redact any content, aligning with the expectation for a negative-control example.",
+          "redacted_excerpt": "From the novel: \"Ishmael\" \u2014 that's how it began. Captain Ahab's obsession with the white whale would consume him and the crew of the Pequod. Moby-Dick remains one of American literature's defining works."
+        },
+        {
+          "id": 8,
+          "context": "fiction_quoted",
+          "expected_count": 0,
+          "detected_count": 0,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: The model correctly did not redact any content, aligning with the expectation for a negative-control example.",
+          "redacted_excerpt": "In Pride and Prejudice, Elizabeth Bennet's wit is matched only by Mr. Darcy's pride. The novel, set at Longbourn estate, explores Regency-era courtship through the Bennet family's five daughters."
+        },
+        {
+          "id": 9,
+          "context": "fiction_quoted",
+          "expected_count": 0,
+          "detected_count": 5,
+          "score_pct": 0.0,
+          "feedback": "Grade: 0  \nJustification: The model incorrectly redacted non-PII content, resulting in significant false positives.",
+          "redacted_excerpt": "[NAME] lived at [ADDRESS] with his friend [NAME], according to [NAME]'s stories. [NAME] never had a phone \u2014 the stories are set in late Victorian London."
+        },
+        {
+          "id": 10,
+          "context": "fiction_quoted",
+          "expected_count": 0,
+          "detected_count": 2,
+          "score_pct": 0.0,
+          "feedback": "Grade: 0  \nJustification: The model incorrectly redacted non-PII content, introducing false positives in a negative-control example.",
+          "redacted_excerpt": "The Lord of the Rings follows Frodo Baggins of the Shire on a quest to destroy the One Ring. He is accompanied by Samwise Gamgee, Meriadoc Brandybuck, and [NAME]grin [NAME], with Gandalf the Grey as their guide."
+        },
+        {
+          "id": 11,
+          "context": "fiction_quoted",
+          "expected_count": 0,
+          "detected_count": 0,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: The model correctly did not redact any content, aligning with the expectation for a negative-control example.",
+          "redacted_excerpt": "Hermione Granger, Ron Weasley, and Harry Potter formed the central trio of Rowling's Wizarding World series. Hogwarts School of Witchcraft and Wizardry served as the primary setting across seven books."
+        },
+        {
+          "id": 12,
+          "context": "fiction_quoted",
+          "expected_count": 0,
+          "detected_count": 0,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: No content was redacted, which is correct for this negative-control example with no expected redactions.",
+          "redacted_excerpt": "Anna Karenina opens with one of the most famous lines in literature: 'All happy families are alike; each unhappy family is unhappy in its own way.' Tolstoy's novel follows the title character's tragic affair with Count Vronsky in 19th-century Russia."
+        },
+        {
+          "id": 13,
+          "context": "form_template",
+          "expected_count": 0,
+          "detected_count": 0,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: No content was redacted, which is correct for this negative-control example with no expected redactions.",
+          "redacted_excerpt": "Please complete the following:\n\nFull Name: ___________________\nEmail Address: ___________@___________\nPhone Number: (___) ___-____\nDate of Birth: ___/___/_____\nAddress Line 1: _______________________\nCity: _________ State: ___ ZIP: _____\n\nAll fields required."
+        },
+        {
+          "id": 14,
+          "context": "form_template",
+          "expected_count": 0,
+          "detected_count": 0,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: No content was redacted, which is correct for this negative-control example with no expected redactions.",
+          "redacted_excerpt": "Sample format guidance:\n  Phone numbers must be in format (NNN) NNN-NNNN\n  Emails must be of the form local@domain.tld\n  Dates must be MM/DD/YYYY\n  ZIP codes must be 5 or 9 digits"
+        },
+        {
+          "id": 15,
+          "context": "form_template",
+          "expected_count": 0,
+          "detected_count": 0,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: The model correctly did not redact any content, aligning with the expectation for a negative-control example.",
+          "redacted_excerpt": "INVOICE TEMPLATE\n\nBill To:\n  [Customer Name]\n  [Customer Address Line 1]\n  [Customer Address Line 2]\n  [Customer City], [State] [ZIP]\n  [Customer Phone]\n\nInvoice #: [INV-####]\nDate: [MM/DD/YYYY]\nAmount Due: $[Amount]"
+        },
+        {
+          "id": 16,
+          "context": "form_template",
+          "expected_count": 0,
+          "detected_count": 0,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: No content was redacted, which is correct for this negative-control example.",
+          "redacted_excerpt": "Sample SQL schema:\n\nCREATE TABLE users (\n  id SERIAL PRIMARY KEY,\n  email VARCHAR(255) UNIQUE NOT NULL,\n  full_name VARCHAR(200) NOT NULL,\n  phone VARCHAR(20),\n  date_of_birth DATE,\n  ssn_last4 CHAR(4),\n  created_at TIMESTAMP DEFAULT NOW()\n);"
+        },
+        {
+          "id": 17,
+          "context": "form_template",
+          "expected_count": 0,
+          "detected_count": 0,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: No content was redacted, which is correct for this negative-control example.",
+          "redacted_excerpt": "Use the following placeholder values when testing your code:\n  {{user.firstName}}, {{user.lastName}}, {{user.email}}, {{user.phone}}, {{user.address.street}}, {{user.address.city}}, {{user.dateOfBirth}}\nThese are template variables, not actual user data."
+        },
+        {
+          "id": 18,
+          "context": "form_template",
+          "expected_count": 0,
+          "detected_count": 0,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: No content was redacted, which is correct for this negative-control example.",
+          "redacted_excerpt": "Standard contact form fields:\n  - Name: ___\n  - Email: ___\n  - Subject: ___\n  - Message: ___\n  - reCAPTCHA: ___\n\nValidate all fields client-side and server-side."
+        },
+        {
+          "id": 19,
+          "context": "corp_boilerplate",
+          "expected_count": 0,
+          "detected_count": 0,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: The model correctly did not redact any content, aligning with the expectation for a negative-control example.",
+          "redacted_excerpt": "About Us: Acme Corporation has been a leader in industrial fasteners since 1947. Headquartered in Cleveland, Ohio, we operate manufacturing facilities across North America and serve customers in over 60 countries. Our mission is to deliver engineered solutions that meet the most demanding specificat"
+        },
+        {
+          "id": 20,
+          "context": "corp_boilerplate",
+          "expected_count": 0,
+          "detected_count": 0,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: The model correctly did not redact any content, aligning with the expectation for a negative-control example.",
+          "redacted_excerpt": "Privacy Policy Excerpt: This Privacy Policy describes how Acme Corp ('we', 'us', 'our') collects, uses, and shares your information. We collect personal information you provide to us directly, including names, email addresses, phone numbers, and postal addresses. We use this information to provide a"
+        },
+        {
+          "id": 21,
+          "context": "corp_boilerplate",
+          "expected_count": 0,
+          "detected_count": 0,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: The model correctly did not redact any content, aligning with the expectation for a negative-control example.",
+          "redacted_excerpt": "Terms of Service: By using our services, you agree to these terms. You may not use our services for unlawful purposes. We reserve the right to terminate accounts that violate these terms. Disputes shall be resolved by binding arbitration under the rules of the American Arbitration Association."
+        },
+        {
+          "id": 22,
+          "context": "corp_boilerplate",
+          "expected_count": 0,
+          "detected_count": 0,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: The model correctly did not redact any content, aligning with the expectation for a negative-control example.",
+          "redacted_excerpt": "Investor Relations: Our stock trades on the New York Stock Exchange under the symbol ACME. Quarterly earnings calls are typically held the second Tuesday following quarter close. Investor inquiries can be directed to our Investor Relations team via the form on our website."
+        },
+        {
+          "id": 23,
+          "context": "corp_boilerplate",
+          "expected_count": 0,
+          "detected_count": 0,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: The model correctly did not redact any content, aligning with the expectation for a negative-control example.",
+          "redacted_excerpt": "Mission Statement: Our mission is to make work better for everyone. We do this by building tools that simplify collaboration, reduce friction, and help teams ship great products. Our values are: customer obsession, ownership, continuous learning, and intellectual honesty."
+        },
+        {
+          "id": 24,
+          "context": "corp_boilerplate",
+          "expected_count": 0,
+          "detected_count": 0,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: The model correctly did not redact any content, as there were no items requiring redaction.",
+          "redacted_excerpt": "FAQ: Q: What payment methods do you accept? A: All major credit cards, PayPal, and bank transfer. Q: Is there a free trial? A: Yes, 14 days, no credit card required. Q: Do you offer refunds? A: Yes, within 30 days of purchase, for unused portions of subscriptions."
+        },
+        {
+          "id": 25,
+          "context": "abstract_about_pii",
+          "expected_count": 0,
+          "detected_count": 0,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: The model correctly did not redact any content, aligning with the expectation for a negative-control example.",
+          "redacted_excerpt": "Personal data under GDPR includes any information relating to an identified or identifiable natural person. This encompasses names, identification numbers, location data, online identifiers, and factors specific to physical, physiological, genetic, mental, economic, cultural, or social identity."
+        },
+        {
+          "id": 26,
+          "context": "abstract_about_pii",
+          "expected_count": 0,
+          "detected_count": 0,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: The model correctly did not redact any content, aligning with the expectation for a negative-control example.",
+          "redacted_excerpt": "When designing a privacy-preserving system, consider data minimization: collect only what is necessary for the stated purpose. Implement appropriate safeguards: encryption at rest, access controls, audit logging. Limit retention to the period required to fulfill the purpose."
+        },
+        {
+          "id": 27,
+          "context": "abstract_about_pii",
+          "expected_count": 0,
+          "detected_count": 0,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: The model correctly did not redact any content, aligning with the expectation for a negative-control example.",
+          "redacted_excerpt": "Common categories of sensitive personal information include government-issued IDs (such as social security numbers, passport numbers, and driver's licenses), financial account details, health and medical information, biometric identifiers, and precise geolocation data."
+        },
+        {
+          "id": 28,
+          "context": "abstract_about_pii",
+          "expected_count": 0,
+          "detected_count": 0,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: The model correctly did not redact any content, aligning with the expectation for a negative-control example.",
+          "redacted_excerpt": "Anonymization techniques include suppression (removing identifiers entirely), generalization (replacing precise values with broader categories), and pseudonymization (replacing identifiers with synthetic substitutes). True anonymization is irreversible; pseudonymization is reversible with the mappin"
+        },
+        {
+          "id": 29,
+          "context": "abstract_about_pii",
+          "expected_count": 0,
+          "detected_count": 0,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: The model correctly did not redact any content, aligning with the expectation for a negative-control example.",
+          "redacted_excerpt": "Re-identification risk arises when supposedly anonymized data can be linked back to individuals using auxiliary information. Famous examples include the Netflix Prize dataset and the AOL search query release, where researchers showed that even sparse de-identified records could be re-identified."
+        },
+        {
+          "id": 30,
+          "context": "abstract_about_pii",
+          "expected_count": 0,
+          "detected_count": 0,
+          "score_pct": 100.0,
+          "feedback": "Grade: 5  \nJustification: The model correctly did not redact any content, aligning with the expectation for a negative-control example.",
+          "redacted_excerpt": "Differential privacy provides mathematical guarantees on the privacy loss from analyzing a dataset. By adding calibrated noise to query results, differential privacy bounds the influence of any single individual's data on the output, making it difficult to determine whether a specific person was in "
+        }
+      ]
+    }
+  }
+}

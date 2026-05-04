@@ -1,0 +1,191 @@
+{
+  "_meta": {
+    "name": "PersonalDataPseudonymizer Generalization Bench",
+    "purpose": "Out-of-distribution evaluation. Hand-authored AFTER v7/v8 training was complete, BEFORE either model was scored on this set, so neither model has been tuned to it. Tests robustness across format-shift, language-shift, density-shift, self/other distinction, and false-positive control on PII-adjacent prose.",
+    "author": "Claude (in conversation), 2026-04-30",
+    "scoring": "GPT-4o judge, 0-100% per question, average = overall",
+    "schema_version": "v7-or-v8-comparable (institutional_id ↔ account_identifier+case_or_record_id are equivalent for grading purposes)"
+  },
+  "questions": [
+    {
+      "id": 1,
+      "context": "casual_chat_dense",
+      "text": "yo it's daniela!! 786-555-9211 if u need to reach me — moved to 47 Sunset Blvd #4B Miami last month. dani.r@protonmail.com. dob 02/14/1995 fwiw lol",
+      "expected_pii": ["daniela", "786-555-9211", "47 Sunset Blvd #4B Miami", "dani.r@protonmail.com", "02/14/1995"]
+    },
+    {
+      "id": 2,
+      "context": "form_paste",
+      "text": "Application Form\nLast Name: Okonkwo\nFirst Name: Chinedu\nDOB: 1988-03-22\nPassport: GH7821456\nNHS Number: 943 476 5919\nAddress: 14 Acacia Avenue, Birmingham B15 2TT, UK\nMobile: +44 7700 900123\nEmail: c.okonkwo@oxfordmed.ac.uk\nNext of kin: Adaeze Okonkwo (sister)",
+      "expected_pii": ["Okonkwo", "Chinedu", "1988-03-22", "GH7821456", "943 476 5919", "14 Acacia Avenue, Birmingham B15 2TT", "+44 7700 900123", "c.okonkwo@oxfordmed.ac.uk", "Adaeze Okonkwo"]
+    },
+    {
+      "id": 3,
+      "context": "email_signature",
+      "text": "Best,\n\nDr. Aiko Tanaka, MD\nDirector of Research, Innovative Diagnostics Inc.\n田中愛子\nDirect: 415.555.0182 | Mobile: 415.555.7733\naiko.tanaka@idx-research.com\nBuilding 4, Suite 309, 100 Innovation Way, Palo Alto CA 94304",
+      "expected_pii": ["Aiko Tanaka", "田中愛子", "415.555.0182", "415.555.7733", "aiko.tanaka@idx-research.com", "Building 4, Suite 309, 100 Innovation Way, Palo Alto CA 94304"]
+    },
+    {
+      "id": 4,
+      "context": "self_introduction_multilingual_es",
+      "text": "Hola, me llamo Jorge Luis Fernández. Vivo en Calle Mayor 23, 4º B, 28013 Madrid. Mi DNI es 49283617-K y mi NIE es X-1234567-L. Trabajo en BBVA, mi número de cuenta es ES91 2100 0418 4502 0005 1332.",
+      "expected_pii": ["Jorge Luis Fernández", "Calle Mayor 23, 4º B, 28013 Madrid", "49283617-K", "X-1234567-L", "ES91 2100 0418 4502 0005 1332"]
+    },
+    {
+      "id": 5,
+      "context": "self_introduction_multilingual_de",
+      "text": "Sehr geehrte Damen und Herren, mein Name ist Hannelore Schmidt-Wagner. Ich wohne in der Bismarckstraße 47, 80339 München. Meine Steuer-ID lautet 65 928 477 391 und meine Versichertennummer bei der TK ist V123456789. Sie erreichen mich unter +49 89 1234567 oder hannelore.schmidt-wagner@web.de.",
+      "expected_pii": ["Hannelore Schmidt-Wagner", "Bismarckstraße 47, 80339 München", "65 928 477 391", "V123456789", "+49 89 1234567", "hannelore.schmidt-wagner@web.de"]
+    },
+    {
+      "id": 6,
+      "context": "self_introduction_multilingual_ja",
+      "text": "はじめまして、佐藤健太です。東京都世田谷区池尻4-7-12-301に住んでいます。携帯番号は090-1234-5678、メールはkenta.sato@example.jpです。マイナンバーは1234-5678-9012、誕生日は1990年7月14日です。",
+      "expected_pii": ["佐藤健太", "東京都世田谷区池尻4-7-12-301", "090-1234-5678", "kenta.sato@example.jp", "1234-5678-9012", "1990年7月14日"]
+    },
+    {
+      "id": 7,
+      "context": "self_introduction_multilingual_fr",
+      "text": "Bonjour, je m'appelle Sophie Marchand. J'habite au 12 Rue du Commerce, 75015 Paris. Mon numéro de sécurité sociale est 2 85 04 75 116 178 92 et mon IBAN est FR76 3000 6000 0112 3456 7890 189. Téléphone : +33 6 12 34 56 78. Mail : sophie.marchand@laposte.fr.",
+      "expected_pii": ["Sophie Marchand", "12 Rue du Commerce, 75015 Paris", "2 85 04 75 116 178 92", "FR76 3000 6000 0112 3456 7890 189", "+33 6 12 34 56 78", "sophie.marchand@laposte.fr"]
+    },
+    {
+      "id": 8,
+      "context": "self_introduction_multilingual_pt",
+      "text": "Olá, sou Rafael Costa Lima. Moro na Rua das Flores 482, apto 1503, Vila Madalena, São Paulo, SP, 05421-040. Meu CPF é 123.456.789-00 e meu RG é 12.345.678-9 SSP-SP. Telefone: (11) 98765-4321. Email: rafael.lima@gmail.com.",
+      "expected_pii": ["Rafael Costa Lima", "Rua das Flores 482, apto 1503, Vila Madalena, São Paulo, SP, 05421-040", "123.456.789-00", "12.345.678-9 SSP-SP", "(11) 98765-4321", "rafael.lima@gmail.com"]
+    },
+    {
+      "id": 9,
+      "context": "third_person_about_other",
+      "text": "I had lunch with my old colleague Priya Nair yesterday. She just took a senior role at Roche and bought a place at 88 Oakwood Drive in Basel. Her new direct line at the office is +41 61 555 3344 if you ever need to reach her. Apparently her son Arjun just turned 8.",
+      "expected_pii": ["Priya Nair", "88 Oakwood Drive in Basel", "+41 61 555 3344", "Arjun"]
+    },
+    {
+      "id": 10,
+      "context": "code_paste_with_secrets",
+      "text": "Here's the snippet that's failing:\n\n```python\nopenai_key = \"sk-proj-AB12cdEF34GhIJklMNopQR56sTuVWXYZ7890aBCDEfgHIJklMno\"\nstripe_key = \"sk_demo_51N8Hd2FaTpL2mZRq3yUoL9vK\"\ndatabase_url = \"postgres://admin:p@ssw0rd!2024@db.internal.acme.io:5432/prod\"\n```\n\nI keep getting `auth_error: 401`. The user record has email `dev-admin@acme.io` and the API user-agent is recording IP 192.168.1.47.",
+      "expected_pii": ["sk-proj-AB12cdEF34GhIJklMNopQR56sTuVWXYZ7890aBCDEfgHIJklMno", "sk_demo_51N8Hd2FaTpL2mZRq3yUoL9vK", "postgres://admin:p@ssw0rd!2024@db.internal.acme.io:5432/prod", "dev-admin@acme.io", "192.168.1.47"]
+    },
+    {
+      "id": 11,
+      "context": "negative_control_meta",
+      "text": "Privacy regulations like GDPR and CCPA require that personal data such as names, addresses, phone numbers, and government-issued IDs (e.g. passport numbers, social security numbers) be protected. Data minimization means collecting only what is necessary.",
+      "expected_pii": []
+    },
+    {
+      "id": 12,
+      "context": "negative_control_public_figure",
+      "text": "The CEO of Apple, Tim Cook, gave a keynote at WWDC last month. Apple Park's main address is 1 Apple Park Way, Cupertino, CA 95014 — but obviously that's a corporate address, not anyone's home.",
+      "expected_pii": ["Tim Cook"]
+    },
+    {
+      "id": 13,
+      "context": "negative_control_fictional",
+      "text": "In the novel I'm reading, the protagonist is Sherlock Holmes and he lives at 221B Baker Street, London. His phone — well, he doesn't have one, it's set in 1895.",
+      "expected_pii": []
+    },
+    {
+      "id": 14,
+      "context": "long_passage_doc_paste",
+      "text": "MEMORANDUM\n\nTo: All Staff\nFrom: HR Department\nDate: October 15, 2024\nSubject: Annual benefits enrollment reminder\n\nDear team,\n\nAs we approach year-end, please remember to log into the benefits portal at https://benefits.acme-corp.com/login and complete your selections by November 30, 2024. If you've moved during the year, please update your address on file. For example, if you were previously at 1100 Elm Street, Apt 4D, Cambridge MA 02139 and you've now moved, you'll need to file a change-of-address form.\n\nFor questions, contact HR Director Mei-Ling Chen at mei.chen@acme-corp.com or +1 (617) 555-0144. Mei-Ling is in the office Tuesdays and Thursdays. If you'd like to speak with our employee assistance counselor (Dr. Robert Vasquez, license #LCSW-2018-44291), call the EAP line at 1-800-555-7777.\n\nFinally, your employee ID — printed on your physical badge — is what you'll need to authenticate. For Sarah Mitchell that's EMP-007293; for Carlos Mendoza, EMP-007358; etc.\n\nSincerely,\nHR Operations",
+      "expected_pii": ["Mei-Ling Chen", "mei.chen@acme-corp.com", "+1 (617) 555-0144", "Mei-Ling", "Robert Vasquez", "LCSW-2018-44291", "Sarah Mitchell", "EMP-007293", "Carlos Mendoza", "EMP-007358"]
+    },
+    {
+      "id": 15,
+      "context": "self_other_mix",
+      "text": "I'm writing on behalf of my client, Anwar Hossain, regarding the medical bill from his recent visit. His MRN is MRN-7723419 and his date of birth is 1962-08-30. My contact info is below — I'm Attorney Mira Patel at Patel Legal Group, mira.patel@patel-legal.com, (212) 555-9001.",
+      "expected_pii": ["Anwar Hossain", "MRN-7723419", "1962-08-30", "Mira Patel", "mira.patel@patel-legal.com", "(212) 555-9001"]
+    },
+    {
+      "id": 16,
+      "context": "casual_chat_with_handles",
+      "text": "lol yeah i saw that — DM @sarah_codes_io on twitter, she'll know. or her main is sarah.kowalski@gmail.com. also ping pierre__b on discord (#4729), he was also there",
+      "expected_pii": ["@sarah_codes_io", "sarah.kowalski@gmail.com", "pierre__b", "#4729"]
+    },
+    {
+      "id": 17,
+      "context": "biometric_dense",
+      "text": "Subject enrollment complete. Patient: Aleksandra Kowalczyk. Fingerprint scan: FP-2024-AK-9182, voice template VP-AK-4421, retinal pattern hash IRIS-AK-77B3. Backup biometric (face): FACE-AK-MX2024. All four biometrics tied to subject ID SUB-2024-7821.",
+      "expected_pii": ["Aleksandra Kowalczyk", "FP-2024-AK-9182", "VP-AK-4421", "IRIS-AK-77B3", "FACE-AK-MX2024", "SUB-2024-7821"]
+    },
+    {
+      "id": 18,
+      "context": "case_records_dense",
+      "text": "Case file summary: Defendant John Smith, criminal docket CR-2024-08821, Eastern District. Civil suit cross-reference: 2024-CV-78412. Police report PR-2024-99823 filed by Officer M. Garza (badge #4471). Inmate # if remanded: DOC-7849213.",
+      "expected_pii": ["John Smith", "CR-2024-08821", "2024-CV-78412", "PR-2024-99823", "M. Garza", "#4471", "DOC-7849213"]
+    },
+    {
+      "id": 19,
+      "context": "negative_control_corp_url",
+      "text": "Check out openai.com for the latest API docs. The community forum is at community.openai.com — lots of helpful threads. Their main office is in San Francisco.",
+      "expected_pii": []
+    },
+    {
+      "id": 20,
+      "context": "geolocation_explicit",
+      "text": "Tracker last pinged at 51.5074, -0.1278 (London) at 14:32 UTC. Subsequent ping at 51.5155, -0.1419 (Marylebone) ten minutes later. Three-word geocode: ///daring.lion.race.",
+      "expected_pii": ["51.5074, -0.1278", "51.5155, -0.1419", "///daring.lion.race"]
+    },
+    {
+      "id": 21,
+      "context": "vehicle_id_explicit",
+      "text": "Reported vehicle: 2019 Honda Civic, VIN 19XFC2F50KE001234, plate 7HXA928 (CA). Owner of record: Bartholomew Vandersnoot of 4321 Pine Street, Oakland CA 94609.",
+      "expected_pii": ["19XFC2F50KE001234", "7HXA928", "Bartholomew Vandersnoot", "4321 Pine Street, Oakland CA 94609"]
+    },
+    {
+      "id": 22,
+      "context": "device_id_explicit",
+      "text": "Lost phone: IMEI 358240051111110, MAC address aa:bb:cc:11:22:33, advertising ID a1b2c3d4-e5f6-7890-abcd-ef1234567890. Last login from 192.168.0.42.",
+      "expected_pii": ["358240051111110", "aa:bb:cc:11:22:33", "a1b2c3d4-e5f6-7890-abcd-ef1234567890", "192.168.0.42"]
+    },
+    {
+      "id": 23,
+      "context": "multilingual_zh",
+      "text": "你好,我叫王伟,住在北京市海淀区中关村大街27号3单元601室,邮编100080。手机号码13912345678,身份证号110101199001011234,邮箱wang.wei@example.cn。",
+      "expected_pii": ["王伟", "北京市海淀区中关村大街27号3单元601室", "100080", "13912345678", "110101199001011234", "wang.wei@example.cn"]
+    },
+    {
+      "id": 24,
+      "context": "multilingual_ar",
+      "text": "اسمي محمد عبد الرحمن. أعيش في شارع الملك فهد، الرياض ١١٤٢١، المملكة العربية السعودية. رقم هويتي الوطنية ١٠٢٣٤٥٦٧٨٩. هاتفي ٠٥٥١٢٣٤٥٦٧، بريدي muhammad.ar@example.sa.",
+      "expected_pii": ["محمد عبد الرحمن", "شارع الملك فهد، الرياض ١١٤٢١", "١٠٢٣٤٥٦٧٨٩", "٠٥٥١٢٣٤٥٦٧", "muhammad.ar@example.sa"]
+    },
+    {
+      "id": 25,
+      "context": "negative_control_template_placeholder",
+      "text": "Please fill out the form: Name: ___________ Phone: ___-___-____ Email: ___________@___________ Address: ___________________________ DOB: __/__/____",
+      "expected_pii": []
+    },
+    {
+      "id": 26,
+      "context": "long_unstructured_paste",
+      "text": "i went to the doctor today and they said i need to follow up about the lab results so they want me to call back at like 9am tomorrow morning to schedule. dr meera bhattacharya is the one i'd ask for, she was super nice. anyway her direct line is 612-555-7821 and they emailed me at noah.lindstrom@yahoo.com but i can also book online if i log in with my MRN which is M-7849-2210. i told them my address is up to date, still 4720 Hennepin Ave S apt 309, Minneapolis MN 55409. ugh anxiety mode tho",
+      "expected_pii": ["meera bhattacharya", "612-555-7821", "noah.lindstrom@yahoo.com", "M-7849-2210", "4720 Hennepin Ave S apt 309, Minneapolis MN 55409"]
+    },
+    {
+      "id": 27,
+      "context": "multilingual_ru",
+      "text": "Здравствуйте, меня зовут Дмитрий Соколов. Я живу по адресу: ул. Тверская, д. 15, кв. 42, Москва, 125009. Мой ИНН 771234567890, СНИЛС 123-456-789 00. Телефон: +7 (916) 555-7733, email: dmitry.sokolov@yandex.ru.",
+      "expected_pii": ["Дмитрий Соколов", "ул. Тверская, д. 15, кв. 42, Москва, 125009", "771234567890", "123-456-789 00", "+7 (916) 555-7733", "dmitry.sokolov@yandex.ru"]
+    },
+    {
+      "id": 28,
+      "context": "multilingual_ko",
+      "text": "안녕하세요, 저는 김민수입니다. 서울특별시 강남구 테헤란로 123, 102동 1503호에 살고 있습니다. 주민등록번호는 900315-1234567입니다. 연락처는 010-1234-5678이고 이메일은 minsu.kim@example.kr입니다.",
+      "expected_pii": ["김민수", "서울특별시 강남구 테헤란로 123, 102동 1503호", "900315-1234567", "010-1234-5678", "minsu.kim@example.kr"]
+    },
+    {
+      "id": 29,
+      "context": "edge_case_typo_unicode",
+      "text": "name: ｱﾚｯｸｽ ｳｫｰﾙ (half-width katakana version) // alex.wåll+test@example.cö (with diacritics) // phone: +1‒415‒555‒0123 (figure dash, not hyphen)",
+      "expected_pii": ["ｱﾚｯｸｽ ｳｫｰﾙ", "alex.wåll+test@example.cö", "+1‒415‒555‒0123"]
+    },
+    {
+      "id": 30,
+      "context": "negative_control_business_only",
+      "text": "Q3 revenue: $4.2M. Headcount: 27 (up from 19). Office: WeWork at 555 California Street, San Francisco. Investor of record: Sequoia Capital. We're closing the Series A by end of Q4.",
+      "expected_pii": []
+    }
+  ]
+}
