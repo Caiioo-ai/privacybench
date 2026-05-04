@@ -70,6 +70,11 @@ Notes:
 - **qwen3.5:0.8b** is generative redaction at small scale; the bench is harder
   than its parameter budget supports. Included for the lower bound it
   establishes for tiny generative models on this task.
+- **`caiioo-research/personal-data-detector-v14`** is a proprietary model
+  published by Six Cailloux, LLC. and is **not available for download**. It
+  appears in this table as a reference point. See the repo-root `MODELS.md`
+  for the full ownership / availability disclosure across all referenced
+  models.
 - The **canonical 25-question PrivacyBench** lives at
   `../pii_redaction_task/`. Same-model scores there can be compared against
   the held-out scores here to see how each model handles broader distribution
