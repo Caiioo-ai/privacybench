@@ -794,6 +794,12 @@ def main() -> None:
     ap = argparse.ArgumentParser(description="Rollup and plot PrivacyBench v2 results.")
     ap.add_argument("--results-dir", default=str(TASK_ROOT / "results"))
     ap.add_argument("--items-file", default=str(TASK_ROOT / "evaluation_questions" / "items.json"))
+    ap.add_argument(
+        "--stage6-dropped-from",
+        default=None,
+        help="Earlier rollup_summary.json whose recorded stage6_saturated_items_all/_dropped lists are reused "
+             "instead of recomputing Stage 6 over the result files (default: recompute).",
+    )
     args = ap.parse_args()
 
     res_dir = Path(args.results_dir)
@@ -828,6 +834,18 @@ def main() -> None:
         sat_in_art = [iid for iid in iids if iid in set(all_saturated_ids)]
         max_drop = max(0, len(iids) - 4)
         dropped_grounded_ids.extend(sat_in_art[:max_drop])
+
+    if args.stage6_dropped_from:
+        # Freeze the scored item set: reuse the Stage 6 lists recorded in an earlier rollup instead of the
+        # population-relative recomputation above, so adding models never moves existing models' scores.
+        frozen = json.loads(Path(args.stage6_dropped_from).read_text(encoding="utf-8"))
+        print(
+            f"[rollup] Stage 6 FROZEN from {args.stage6_dropped_from}: recomputed prune would have been "
+            f"{len(all_saturated_ids)} saturated / {len(dropped_grounded_ids)} dropped; using recorded "
+            f"{len(frozen['stage6_saturated_items_all'])} / {len(frozen['stage6_saturated_items_dropped'])}."
+        )
+        all_saturated_ids = list(frozen["stage6_saturated_items_all"])
+        dropped_grounded_ids = list(frozen["stage6_saturated_items_dropped"])
 
     dropped_set = set(dropped_grounded_ids)
     all_sat_set = set(all_saturated_ids)
