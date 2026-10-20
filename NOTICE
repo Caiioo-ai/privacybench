@@ -56,3 +56,15 @@ This software makes use of the following third-party Python libraries and depend
 By using this software, you agree to abide by the terms of the licenses of these third-party packages. This addendum is hereby incorporated into and forms part of the software’s overall licensing terms.
 
 -----------------------------------------------
+Addendum: Methodology and Prompt Attributions
+-----------------------------------------------
+
+The `hallucination_2026/` benchmark adapts the answerer system prompt, four-class grading rubric (`CORRECT`, `INCORRECT`, `PARTIAL_ANSWER`, `NOT_ATTEMPTED`), and Omniscience Index formulation from:
+
+- Artificial Analysis Team (2025), "AA-Omniscience: Evaluating Cross-Domain Knowledge Reliability in Large Language Models", arXiv:2511.13029 (CC BY 4.0)
+- `ArtificialAnalysis/AA-Omniscience-Public` dataset card (https://huggingface.co/datasets/ArtificialAnalysis/AA-Omniscience-Public), licensed under the Apache License, Version 2.0.
+
+No questions, answers, or API outputs from AA-Omniscience are redistributed in this repository.
+
+-----------------------------------------------
+
