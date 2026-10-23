@@ -1,0 +1,220 @@
+{
+  "classification_changes": [
+    {
+      "mode": "closed_book",
+      "astra": "NOT_ATTEMPTED",
+      "sol_6_1": "CORRECT",
+      "count": 1
+    },
+    {
+      "mode": "grounded_nearmiss",
+      "astra": "NOT_ATTEMPTED",
+      "sol_6_1": "INCORRECT",
+      "count": 1
+    }
+  ],
+  "comparison": "Astra minus Sol 6.1",
+  "condition": "codex-app-server-isolated-v1",
+  "effort": "low",
+  "n_articles": 10,
+  "matched_qa": 139,
+  "matched_summaries": 10,
+  "bootstrap_samples": 10000,
+  "seed": 20261023,
+  "resampling": "Same 10 article draws for both models, with replacement; all rows in each selected article retained; frozen prune applied before sampling",
+  "metric_implementation": "Exact imported compute_metrics_from_subsets; canonical two-decimal metric rounding and percentile index convention",
+  "scoring_source": {
+    "file": "scoring/rollup_and_plot.py",
+    "sha256": "1d3a90fe3310d38d246c384a9fd837de59d927472689f684c30c8fe335f8a49b"
+  },
+  "inputs": {
+    "gpt-6-astra": {
+      "result_file": "gpt-6-astra-low-graded.json",
+      "sha256": "3af93f8cc26ebbea6f50a8cdbcdb732e0dc2cadb356d5df261eede5643c33de5"
+    },
+    "gpt-6.1-sol": {
+      "result_file": "gpt-6.1-sol-low-graded.json",
+      "sha256": "3896ec58276bf995e23e334b2814347d34bc5ff5fdb290089b868ef702710846"
+    }
+  },
+  "frozen_stage6_sha256": "88313726b3eae86babfdeb7c2cbbf6f77c75fe7b2c4d227ffc8413e48ffcafc5",
+  "frozen_dropped_count": 26,
+  "metrics": {
+    "grounded_accuracy_pct": {
+      "astra": 97.67,
+      "sol_6_1": 97.67,
+      "astra_minus_sol": 0.0,
+      "paired_ci95": [
+        0.0,
+        0.0
+      ]
+    },
+    "omniscience_index": {
+      "astra": 98.84,
+      "sol_6_1": 98.84,
+      "astra_minus_sol": 0.0,
+      "paired_ci95": [
+        0.0,
+        0.0
+      ]
+    },
+    "nearmiss_abstention_pct": {
+      "astra": 100.0,
+      "sol_6_1": 96.3,
+      "astra_minus_sol": 3.7,
+      "paired_ci95": [
+        0.0,
+        11.54
+      ]
+    },
+    "closed_book_abstention_pct": {
+      "astra": 88.41,
+      "sol_6_1": 86.96,
+      "astra_minus_sol": 1.45,
+      "paired_ci95": [
+        0.0,
+        4.41
+      ]
+    },
+    "closed_book_correct_without_source_pct": {
+      "astra": 10.14,
+      "sol_6_1": 11.59,
+      "astra_minus_sol": -1.45,
+      "paired_ci95": [
+        -4.41,
+        0.0
+      ]
+    },
+    "aa_hallucination_rate_pct": {
+      "astra": 1.11,
+      "sol_6_1": 2.25,
+      "astra_minus_sol": -1.14,
+      "paired_ci95": [
+        -3.43,
+        0.0
+      ]
+    },
+    "grounded_hallucination_rate_pct": {
+      "astra": 0.0,
+      "sol_6_1": 0.0,
+      "astra_minus_sol": 0.0,
+      "paired_ci95": [
+        0.0,
+        0.0
+      ]
+    },
+    "false_answer_rate_pct": {
+      "astra": 1.04,
+      "sol_6_1": 2.08,
+      "astra_minus_sol": -1.04,
+      "paired_ci95": [
+        -3.15,
+        0.0
+      ]
+    },
+    "hedged_abstention_pct": {
+      "astra": 0.0,
+      "sol_6_1": 0.0,
+      "astra_minus_sol": 0.0,
+      "paired_ci95": [
+        0.0,
+        0.0
+      ]
+    },
+    "summary_unsupported_pct": {
+      "astra": 0.85,
+      "sol_6_1": 1.59,
+      "astra_minus_sol": -0.74,
+      "paired_ci95": [
+        -2.37,
+        0.13
+      ]
+    },
+    "summary_contradicted_pct": {
+      "astra": 0.0,
+      "sol_6_1": 0.0,
+      "astra_minus_sol": 0.0,
+      "paired_ci95": [
+        0.0,
+        0.0
+      ]
+    },
+    "summary_hallucinated_pct": {
+      "astra": 0.85,
+      "sol_6_1": 1.59,
+      "astra_minus_sol": -0.74,
+      "paired_ci95": [
+        -2.37,
+        0.13
+      ]
+    },
+    "summary_key_fact_coverage_pct": {
+      "astra": 67.24,
+      "sol_6_1": 65.52,
+      "astra_minus_sol": 1.72,
+      "paired_ci95": [
+        0.0,
+        5.26
+      ]
+    },
+    "proposed_pb_nhs": {
+      "astra": 97.63,
+      "sol_6_1": 96.33,
+      "astra_minus_sol": 1.3,
+      "paired_ci95": [
+        -0.02,
+        3.26
+      ]
+    }
+  },
+  "counts": {
+    "gpt-6-astra": {
+      "qa": {
+        "grounded_answerable": {
+          "CORRECT": 42,
+          "PARTIAL_ANSWER": 1
+        },
+        "grounded_nearmiss": {
+          "NOT_ATTEMPTED": 27
+        },
+        "closed_book": {
+          "NOT_ATTEMPTED": 61,
+          "CORRECT": 7,
+          "INCORRECT": 1
+        }
+      },
+      "summary": {
+        "n_claims": 118,
+        "n_unsupported": 1,
+        "n_contradicted": 0,
+        "n_key_facts": 58,
+        "n_key_facts_covered": 39
+      }
+    },
+    "gpt-6.1-sol": {
+      "qa": {
+        "grounded_answerable": {
+          "CORRECT": 42,
+          "PARTIAL_ANSWER": 1
+        },
+        "grounded_nearmiss": {
+          "NOT_ATTEMPTED": 26,
+          "INCORRECT": 1
+        },
+        "closed_book": {
+          "NOT_ATTEMPTED": 60,
+          "CORRECT": 8,
+          "INCORRECT": 1
+        }
+      },
+      "summary": {
+        "n_claims": 126,
+        "n_unsupported": 2,
+        "n_contradicted": 0,
+        "n_key_facts": 58,
+        "n_key_facts_covered": 38
+      }
+    }
+  },
+  "sol_6_1_high": "Not evaluated or changed by this analysis"
+}

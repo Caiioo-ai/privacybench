@@ -14,6 +14,10 @@ PrivacyBench v2 (`hallucination_2026/`) succeeds `bias_study/` (v1) by combining
 
 ---
 
+## Codex low-effort experimental archive (23 October 2026)
+
+[Seven Codex model results, evidence and offline reproduction](codex_results/published/2026-10-23-low/README.md) are archived separately. They used explicit low effort throughout and did not preserve the original model-specific effort settings. They do not replace the canonical results or change Caiioo routing. Astra's within-run PB-NHS lead over Sol 6.1 is 1.30 points, paired 95% interval [−0.02, +3.26].
+
 ## Why v2 Replaces `bias_study` (v1)
 
 In v1 (`../bias_study/`), models summarized a small set of famous articles in 5 sentences and a multi-lab judge panel rated each summary 1–10 on Factuality and Completeness (plus one unanswerable question per article in a port). Four limitations surfaced:
