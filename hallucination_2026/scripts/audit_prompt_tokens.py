@@ -1,0 +1,112 @@
+"""Per-call prompt-token audit of a PrivacyBench result: finds calls a gateway channel padded with its own prompt.
+
+A model reads only the benchmark's prompt, so its billed prompt tokens are fixed by the item. Two checks:
+- against a reference run of the same model (same tokenizer, e.g. its earlier OpenRouter run): every item's count
+  moves by one constant (a gateway's fixed framing) or not at all; a call off that constant was padded;
+- self-consistency, where no reference exists: an article's grounded prompts differ only by their questions,
+  closed-book prompts only by theirs, and each summary sits a constant below its article's grounded prompts.
+  Clean runs spread up to 77.5 / 74 / 22 tokens (all 37 results at 9f5ef22), hence the thresholds.
+
+Measured 2026-10-28 on CometAPI: a Codex-backed channel adds ~4,216 tokens (it also echoes them and is refused at
+call time) and a gemini-4-argon channel adds ~132 without saying so. `--requeue` turns flagged rows into error rows,
+which `run_eval.py` re-runs on its next pass over the same output.
+"""
+from __future__ import annotations
+
+import argparse
+import json
+import statistics
+from collections import defaultdict
+from pathlib import Path
+from typing import Any, Dict, List
+
+REFERENCE_THRESHOLD = 5
+SELF_THRESHOLDS = {'grounded': 100, 'closed_book': 100, 'summary': 60}
+
+
+def _rows(data: Dict[str, Any]) -> List[Dict[str, Any]]:
+    return data.get('qa_responses', []) + data.get('summary_responses', [])
+
+
+def _ok(row: Dict[str, Any]) -> bool:
+    return not str(row.get('response', '')).startswith('[ERROR')
+
+
+def _key(row: Dict[str, Any]) -> tuple:
+    return (row['eval_mode'], row['item_id'])
+
+
+def _tokens(row: Dict[str, Any]) -> int:
+    return int(row['telemetry']['prompt_tokens'])
+
+
+def against_reference(new: Dict[str, Any], reference: Dict[str, Any], threshold: int = REFERENCE_THRESHOLD) -> List[dict]:
+    ref = {_key(r): _tokens(r) for r in _rows(reference) if _ok(r)}
+    deltas = {_key(r): _tokens(r) - ref[_key(r)] for r in _rows(new) if _ok(r) and _key(r) in ref}
+    if not deltas:
+        return []
+    offset = statistics.median(deltas.values())
+    return [{'key': k, 'excess': d - offset} for k, d in sorted(deltas.items()) if abs(d - offset) > threshold]
+
+
+def self_consistency(data: Dict[str, Any], thresholds: Dict[str, int] = SELF_THRESHOLDS) -> List[dict]:
+    rows = [r for r in _rows(data) if _ok(r)]
+    grounded = defaultdict(list)
+    for r in rows:
+        if r['eval_mode'].startswith('grounded'):
+            grounded[r['article_id']].append(_tokens(r))
+    grounded_median = {a: statistics.median(v) for a, v in grounded.items()}
+    flagged = []
+    for r in rows:
+        if r['eval_mode'].startswith('grounded'):
+            excess = _tokens(r) - grounded_median[r['article_id']]
+            if abs(excess) > thresholds['grounded']:
+                flagged.append({'key': _key(r), 'excess': excess})
+    closed = [r for r in rows if r['eval_mode'] == 'closed_book']
+    if closed:
+        middle = statistics.median(_tokens(r) for r in closed)
+        flagged += [{'key': _key(r), 'excess': _tokens(r) - middle} for r in closed
+                    if abs(_tokens(r) - middle) > thresholds['closed_book']]
+    summaries = [r for r in rows if r['eval_mode'] == 'summary' and r['article_id'] in grounded_median]
+    if summaries:
+        offsets = {_key(r): _tokens(r) - grounded_median[r['article_id']] for r in summaries}
+        middle = statistics.median(offsets.values())
+        flagged += [{'key': k, 'excess': o - middle} for k, o in offsets.items() if abs(o - middle) > thresholds['summary']]
+    return sorted(flagged, key=lambda f: f['key'])
+
+
+def requeue(data: Dict[str, Any], flagged: List[dict]) -> int:
+    """Turn each flagged row into an error row (no grade, no cost), so the next run_eval pass sends it again."""
+    keys = {f['key']: f['excess'] for f in flagged}
+    changed = 0
+    for row in _rows(data):
+        if _key(row) in keys:
+            telemetry = row.get('telemetry', {})
+            row['response'] = f"[ERROR: PromptAudit: prompt {telemetry.get('prompt_tokens')} tokens, {keys[_key(row)]:+} off this model's own]"
+            row['telemetry'] = {**telemetry, 'cost_usd': 0.0, 'provider': 'error', 'error': 'prompt-token audit'}
+            row.pop('grading', None)
+            changed += 1
+    return changed
+
+
+def main() -> None:
+    ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    ap.add_argument('result', help='Result JSON to audit')
+    ap.add_argument('--reference', default=None, help="An earlier run of the same model (exact per-item check)")
+    ap.add_argument('--requeue', action='store_true', help='Rewrite flagged rows as error rows for the next pass')
+    args = ap.parse_args()
+    path = Path(args.result)
+    data = json.loads(path.read_text(encoding='utf-8'))
+    flagged = (against_reference(data, json.loads(Path(args.reference).read_text(encoding='utf-8')))
+               if args.reference else self_consistency(data))
+    print(json.dumps({'model_id': data['model_meta']['model_id'], 'mode': 'reference' if args.reference else 'self',
+                      'flagged': [{'eval_mode': f['key'][0], 'item_id': f['key'][1], 'excess': f['excess']} for f in flagged]}))
+    if args.requeue and flagged:
+        requeue(data, flagged)
+        if 'grading_summary' in data:
+            del data['grading_summary']
+        path.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding='utf-8')
+
+
+if __name__ == '__main__':
+    main()
