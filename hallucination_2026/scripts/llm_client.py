@@ -350,20 +350,32 @@ def _call_cometapi(model_id, messages, temperature, max_tokens, reasoning_effort
     if len(messages) != 1 or messages[0].get("role") != "user":
         raise RuntimeError("the CometAPI client sends one user prompt")
     last_error: Optional[Exception] = None
-    for attempt in range(1, max_retries + 1):
+    attempt = 0
+    while attempt < max_retries:
+        gate = cometapi_client.QUOTA_GATE
+        gate.before_call()
         try:
-            return cometapi_client.call(model_id, route, route["pricing"], messages[0]["content"],
-                                        temperature=temperature, max_tokens=max_tokens,
-                                        reasoning_effort=reasoning_effort, cache_prefix=cache_prefix,
-                                        cache_key=cache_key, timeout=timeout)
+            response = cometapi_client.call(model_id, route, route["pricing"], messages[0]["content"],
+                                            temperature=temperature, max_tokens=max_tokens,
+                                            reasoning_effort=reasoning_effort, cache_prefix=cache_prefix,
+                                            cache_key=cache_key, timeout=timeout)
+            gate.on_success()
+            return response
         except cometapi_client.CometApiError as e:
+            if cometapi_client.is_quota_refusal(e):
+                gate.on_quota()  # waits out the reload; not an attempt (raises QuotaExhausted past the cap)
+                continue
+            gate.release()
+            attempt += 1
             last_error = e
             # A refused request fails the same way again; a call another channel served is retried, since CometAPI
-            # spreads calls over channels and the next one usually lands on the requested model.
-            # A content filter is a channel's (gpt-6.1-sol's Azure channel refused a judge prompt as invalid_prompt).
+            # spreads calls over channels and the next one usually lands on the requested model. A content filter
+            # is a channel's (gpt-6.1-sol's Azure channel refused a judge prompt as invalid_prompt).
             if re.match(r"HTTP 4(00|01|02|03|04)\b", str(e)) and "invalid_prompt" not in str(e):
                 break
         except Exception as e:
+            gate.release()
+            attempt += 1
             last_error = e
         time.sleep(1.5 * attempt)
     raise RuntimeError(f"LLM call failed after {max_retries} attempts for {model_id}: {last_error}")

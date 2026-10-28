@@ -229,3 +229,47 @@ class InjectedInstructions(unittest.TestCase):
                 'output': [{'type': 'message', 'content': [{'type': 'output_text', 'text': 'ok'}]}],
                 'usage': {'input_tokens': 13, 'output_tokens': 5}}
         self.assertEqual(cc.parse_response('openai-responses', data)['content'], 'ok')
+
+
+class QuotaGate(unittest.TestCase):
+    """Owner, 2026-10-28: CometAPI "self reloads, 15 bucks at a time, but it take a little time". A quota 403 pauses
+    every caller for minutes, then one probe goes first; it never spends a call's attempts; a stall past the cap stops."""
+    QUOTA = 'HTTP 403 for x/m via CometAPI m: {"error":{"message":"pre-consume quota failed, remaining quota: $0.0009"}}'
+
+    def gate(self, **kw):
+        clock = {'t': 0.0}
+        gate = cc.QuotaGate(first_wait=180, max_wait=720, give_up_after=3600,
+                            now=lambda: clock['t'], sleep=lambda s: clock.__setitem__('t', clock['t'] + s), **kw)
+        return gate, clock
+
+    def test_a_quota_refusal_waits_minutes_and_retries_without_spending_an_attempt(self):
+        from unittest.mock import patch
+        import llm_client
+        llm_client.use_cometapi({'x/m': {'model': 'm', 'wire': 'openai-chat', 'pricing': {}}})
+        self.addCleanup(lambda: llm_client._GATEWAY.update(name='openrouter', routes={}))
+        gate, clock = self.gate()
+        with patch.object(cc, 'QUOTA_GATE', gate), \
+             patch.object(cc, 'call', side_effect=[cc.CometApiError(self.QUOTA), cc.CometApiError(self.QUOTA), {'content': 'ok'}]):
+            self.assertEqual(llm_client.call_llm('x/m', [{'role': 'user', 'content': 'q'}], max_retries=1)['content'], 'ok')
+        self.assertEqual(clock['t'], 180 + 360)
+
+    def test_a_stall_past_the_cap_stops_and_later_calls_fail_fast(self):
+        gate, clock = self.gate()
+        with self.assertRaises(cc.QuotaExhausted):
+            for _ in range(10):
+                gate.before_call()
+                gate.on_quota()
+        with self.assertRaises(cc.QuotaExhausted):
+            gate.before_call()
+
+    def test_success_resets_the_backoff(self):
+        gate, clock = self.gate()
+        gate.before_call(); gate.on_quota()
+        gate.before_call(); gate.on_success()
+        start = clock['t']
+        gate.before_call(); gate.on_quota(); gate.before_call()
+        self.assertEqual(clock['t'] - start, 180)
+
+    def test_quota_text_is_recognised(self):
+        self.assertTrue(cc.is_quota_refusal(cc.CometApiError(self.QUOTA)))
+        self.assertFalse(cc.is_quota_refusal(cc.CometApiError('HTTP 403 for x/m via CometAPI m: forbidden')))

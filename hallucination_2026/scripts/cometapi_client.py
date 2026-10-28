@@ -25,6 +25,7 @@ import http.client
 import json
 import os
 import re
+import threading
 import time
 import urllib.error
 import urllib.request
@@ -49,6 +50,73 @@ PRICE_VARIABLES = ('p', 'c', 'cr', 'cc', 'cc1h')
 
 class CometApiError(RuntimeError):
     pass
+
+
+class QuotaExhausted(CometApiError):
+    """CometAPI's credit stayed empty past any plausible reload: stop rather than guess."""
+
+
+def is_quota_refusal(error: Exception) -> bool:
+    text = str(error)
+    return 'pre-consume quota' in text or ('HTTP 403' in text and 'quota' in text.lower())
+
+
+class QuotaGate:
+    """One gate for every caller in the process. CometAPI reloads its credit $15 at a time, with a lag (owner,
+    2026-10-28), and the app shares the key: on a quota refusal every caller pauses for minutes (doubling to a
+    ceiling), then ONE caller probes while the rest wait; success reopens the gate. A stall longer than
+    `give_up_after` seconds raises QuotaExhausted for that caller and every later one."""
+
+    def __init__(self, first_wait: float = 180, max_wait: float = 720, give_up_after: float = 3600,
+                 now=time.time, sleep=time.sleep):
+        self.first_wait, self.max_wait, self.give_up_after = first_wait, max_wait, give_up_after
+        self.now, self.sleep = now, sleep
+        self.lock = threading.Lock()
+        self.paused_until: Optional[float] = None
+        self.next_wait = first_wait
+        self.stalled_since: Optional[float] = None
+        self.probing = False
+        self.exhausted = False
+
+    def before_call(self) -> None:
+        while True:
+            with self.lock:
+                if self.exhausted:
+                    raise QuotaExhausted('CometAPI credit did not reload within the wait cap')
+                if self.paused_until is None:
+                    return
+                remaining = self.paused_until - self.now()
+                if remaining <= 0 and not self.probing:
+                    self.probing = True
+                    return
+            self.sleep(remaining if remaining > 0 else 5)
+
+    def on_quota(self) -> None:
+        with self.lock:
+            now = self.now()
+            if self.paused_until is not None and now < self.paused_until:
+                return  # another caller's refusal already paused everyone
+            if self.stalled_since is None:
+                self.stalled_since = now
+            if now - self.stalled_since >= self.give_up_after:
+                self.exhausted = True
+                raise QuotaExhausted(f'CometAPI credit still empty after {int(now - self.stalled_since)} s')
+            self.paused_until = now + self.next_wait
+            self.next_wait = min(self.next_wait * 2, self.max_wait)
+            self.probing = False
+
+    def on_success(self) -> None:
+        with self.lock:
+            self.paused_until, self.stalled_since, self.probing = None, None, False
+            self.next_wait = self.first_wait
+
+    def release(self) -> None:
+        """A call that failed for another reason says nothing about the credit; let the next caller probe."""
+        with self.lock:
+            self.probing = False
+
+
+QUOTA_GATE = QuotaGate()
 
 
 def _get(url: str, key: str, attempts: int = 3) -> Tuple[Any, bytes]:
