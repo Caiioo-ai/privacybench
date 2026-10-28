@@ -527,7 +527,7 @@
     },
     {
       "model_id": "xiaomi/mimo-v2.6-flash",
-      "display_name": "MiMo-V2.6-Flash (high)",
+      "display_name": "MiMo-V2.6-Flash",
       "lab": "xiaomi",
       "size_class": "open_weight_large",
       "vendor_published_cutoff": null,
@@ -538,7 +538,12 @@
         "temperature": 0.0,
         "qa_max_tokens": 4096,
         "summary_max_tokens": 4096,
-        "reasoning_effort": "high"
+        "reasoning_effort": null
+      },
+      "cometapi": {
+        "model": "mimo-v2.6-flash",
+        "wire": "openai-chat",
+        "served_ids": []
       }
     },
     {

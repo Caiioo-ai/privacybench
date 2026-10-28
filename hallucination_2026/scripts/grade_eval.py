@@ -53,6 +53,9 @@ JUDGE_EFFORT_REQUESTED = "low"
 JUDGE_EFFORT: Dict[str, Optional[str]] = {jm: JUDGE_EFFORT_REQUESTED for jm in JUDGE_PANEL}
 # Seconds per judge call; a gateway's queue can hold a call past the OpenRouter-era limits.
 JUDGE_TIMEOUT = {"qa": 60, "summary": 90}
+# Attempts per judge call. CometAPI refuses (and so retries) a call another channel served; four attempts lost two
+# regrades on 2026-10-28, and a crash discards the file's paid grading because results are written at the end.
+JUDGE_RETRIES = 4
 
 
 def use_gateway(gateway: str, models_file: Path) -> None:
@@ -60,6 +63,8 @@ def use_gateway(gateway: str, models_file: Path) -> None:
         return
     use_cometapi(cometapi_routes(models_file, JUDGE_PANEL, cometapi_client.fetch_catalog()))
     JUDGE_TIMEOUT.update(qa=300, summary=300)
+    global JUDGE_RETRIES
+    JUDGE_RETRIES = 10
     catalog = fetch_capability_catalog()
     for jm in JUDGE_PANEL:
         JUDGE_EFFORT[jm] = resolve_level_effort(jm, catalog, JUDGE_EFFORT_REQUESTED)["selected_effort"]
@@ -371,6 +376,7 @@ def judge_qa_with_panel(qa_item: Dict[str, Any]) -> Tuple[Dict[str, Any], List[D
             max_tokens=1024,
             reasoning_effort=JUDGE_EFFORT[jm],
             timeout=JUDGE_TIMEOUT["qa"],
+            max_retries=JUDGE_RETRIES,
         )
         telem_entry = {"step": "judge_qa", "judge_model": jm, "item_id": qa_item["item_id"], **resp_local}
         try:
@@ -462,6 +468,7 @@ def grade_single_summary(
         max_tokens=1024,
         reasoning_effort=JUDGE_EFFORT["google/gemini-4-argon"],
         timeout=JUDGE_TIMEOUT["summary"],
+        max_retries=JUDGE_RETRIES,
     )
     telemetry.append({"step": "summary_decompose", "article_id": article["id"], **decomp_resp})
     parsed_decomp = _parse_json_Loose(decomp_resp["content"])
@@ -490,6 +497,7 @@ def grade_single_summary(
             max_tokens=1500,
             reasoning_effort=JUDGE_EFFORT[jm],
             timeout=JUDGE_TIMEOUT["summary"],
+            max_retries=JUDGE_RETRIES,
         )
         t_entry = {"step": "summary_verify", "judge_model": jm, "article_id": article["id"], **v_resp_local}
         try:
