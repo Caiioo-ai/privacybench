@@ -45,11 +45,7 @@
         "summary_max_tokens": 4096,
         "reasoning_effort": "high"
       },
-      "cometapi": {
-        "model": "gemini-4-argon",
-        "wire": "gemini",
-        "served_ids": []
-      }
+      "cometapi_excluded": "Hidden prompt on CometAPI, measured 2026-10-28: its gemini-4-argon channel read ~100 extra prompt tokens (1,060 vs Google's 964 on one prompt) on ~86% of judge calls, and other channels served 3.1-flash-lite-preview or named no model. Judges through OpenRouter."
     },
     {
       "model_id": "x-ai/grok-4.7",
@@ -228,11 +224,7 @@
         "summary_max_tokens": 1500,
         "reasoning_effort": "high"
       },
-      "cometapi": {
-        "model": "gpt-6.1-sol",
-        "wire": "openai-responses",
-        "served_ids": []
-      }
+      "cometapi_excluded": "Hidden prompts on CometAPI, measured 2026-10-28: Codex-instructed channels (~4.4k tokens), a 22,416-token cached agent prompt on ~6% of calls, and renamed igpt-6_1-sol. Runs and judges through OpenRouter."
     },
     {
       "model_id": "google/gemini-2.5-pro",

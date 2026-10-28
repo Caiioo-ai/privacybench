@@ -40,7 +40,11 @@ from typing import Any, Dict, List, Optional, Tuple
 
 from api_effort_policy import fetch_capability_catalog, resolve_level_effort
 import cometapi_client
-from llm_client import TASK_ROOT, call_llm, cometapi_routes, gateway_name, get_article_text, served_record, use_cometapi
+import llm_client
+from llm_client import TASK_ROOT, call_llm, cometapi_routes, get_article_text, served_record
+# The client's own CometAPI path, called per judge: a mixed panel cannot flip llm_client's process-wide gateway, and a
+# public per-call gateway there would change the inference contract (llm_client.py is hashed into every result).
+call_cometapi = llm_client._call_cometapi
 
 JUDGE_PANEL = [
     "google/gemini-4-argon",
@@ -56,18 +60,52 @@ JUDGE_TIMEOUT = {"qa": 60, "summary": 90}
 # Attempts per judge call. CometAPI refuses (and so retries) a call another channel served; four attempts lost two
 # regrades on 2026-10-28, and a crash discards the file's paid grading because results are written at the end.
 JUDGE_RETRIES = 4
+# Each judge's gateway, and why a judge is not on the one asked for. 2026-10-28, on CometAPI: gemini-4-argon read a
+# ~100-token hidden prompt on ~86 % of judge calls and gpt-6.1-sol a 22,416-token agent prompt on ~6 % (cross-judge
+# prompt-token audit); the owner moved both to OpenRouter and kept mimo-v2.6-pro (clean) on CometAPI.
+JUDGE_GATEWAY: Dict[str, str] = {jm: "openrouter" for jm in JUDGE_PANEL}
+JUDGE_ROUTE_NOTES: Dict[str, str] = {}
 
 
 def use_gateway(gateway: str, models_file: Path) -> None:
+    """Put each judge on `gateway` where the registry routes it there. A judge whose CometAPI route was withdrawn
+    (`cometapi_excluded` says why) judges through OpenRouter; a judge with neither fails loud."""
     if gateway != cometapi_client.GATEWAY:
         return
-    use_cometapi(cometapi_routes(models_file, JUDGE_PANEL, cometapi_client.fetch_catalog()))
+    registry = {m["model_id"]: m for m in json.loads(Path(models_file).read_text(encoding="utf-8"))["models"]}
+    routed = []
+    for jm in JUDGE_PANEL:
+        entry = registry.get(jm) or {}
+        if entry.get("cometapi"):
+            routed.append(jm)
+        elif entry.get("cometapi_excluded"):
+            JUDGE_ROUTE_NOTES[jm] = entry["cometapi_excluded"]
+        else:
+            raise RuntimeError(f"{jm}: no CometAPI route, and no recorded reason (cometapi_excluded) to judge elsewhere")
+    llm_client._GATEWAY["routes"] = cometapi_routes(models_file, routed, cometapi_client.fetch_catalog())
+    JUDGE_GATEWAY.update({jm: cometapi_client.GATEWAY for jm in routed})
     JUDGE_TIMEOUT.update(qa=300, summary=300)
     global JUDGE_RETRIES
     JUDGE_RETRIES = 10
     catalog = fetch_capability_catalog()
-    for jm in JUDGE_PANEL:
+    for jm in routed:
         JUDGE_EFFORT[jm] = resolve_level_effort(jm, catalog, JUDGE_EFFORT_REQUESTED)["selected_effort"]
+
+
+def _judge_call(**kw: Any) -> Dict[str, Any]:
+    """One judge call through that judge's gateway. A CometAPI reply that read more prompt tokens than the prompt has
+    characters carried a channel's own prompt (a 22,416-token agent prompt on gpt-6.1-sol, 2026-10-28): it is re-sent,
+    and a judge that never gets a clean reply raises, never votes."""
+    jm = kw["model_id"]
+    if JUDGE_GATEWAY[jm] != cometapi_client.GATEWAY:
+        return call_llm(**kw)
+    prompt = kw["messages"][0]["content"]
+    for _ in range(kw["max_retries"]):
+        resp = call_cometapi(jm, kw["messages"], kw["temperature"], kw["max_tokens"], kw["reasoning_effort"], None,
+                             kw["timeout"], kw["max_retries"], None, None)
+        if int(resp.get("prompt_tokens") or 0) <= len(prompt):
+            return resp
+    raise RuntimeError(f"{jm}: every CometAPI reply read more prompt tokens than its {len(prompt)}-character prompt")
 
 # Adapted from AA-Omniscience's OMNISCIENCE_GRADER_TEMPLATE (Apache-2.0),
 # with few-shot examples written from our own PrivacyBench v2 legal/privacy/technical domain items.
@@ -369,7 +407,7 @@ def judge_qa_with_panel(qa_item: Dict[str, Any]) -> Tuple[Dict[str, Any], List[D
 
     def _call_one_qa_judge(jm: str) -> Tuple[str, str, bool, Dict[str, Any]]:
         # A failed call (403, or a transport error after call_llm's retries) raises: it is never a vote.
-        resp_local = call_llm(
+        resp_local = _judge_call(
             model_id=jm,
             messages=[{"role": "user", "content": prompt}],
             temperature=0.0,
@@ -461,7 +499,7 @@ def grade_single_summary(
         }, telemetry
 
     # Step 1: Decompose into atomic claims
-    decomp_resp = call_llm(
+    decomp_resp = _judge_call(
         model_id="google/gemini-4-argon",
         messages=[{"role": "user", "content": SUMMARY_DECOMPOSE_PROMPT.format(summary_text=summary_text)}],
         temperature=0.0,
@@ -490,7 +528,7 @@ def grade_single_summary(
 
     def _call_one_sum_judge(jm: str) -> Tuple[str, List[str], List[str], Dict[str, Any]]:
         # A failed call (403, or a transport error after call_llm's retries) raises: it is never a set of labels.
-        v_resp_local = call_llm(
+        v_resp_local = _judge_call(
             model_id=jm,
             messages=[{"role": "user", "content": verify_prompt}],
             temperature=0.0,
@@ -646,10 +684,14 @@ def grade_result_file(
     prev_cost = 0.0 if force_regrade else data.get("grading_summary", {}).get("grading_cost_usd", 0.0)
     prev_calls = 0 if force_regrade else data.get("grading_summary", {}).get("grading_calls", 0)
     grading_cost = round(prev_cost + sum(t.get("cost_usd", 0.0) for t in grading_telemetry), 6)
+    previous = data.get("grading_summary") or {}
     data["grading_summary"] = {
         "graded_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "judge_panel": JUDGE_PANEL,
-        "judge_gateway": gateway_name(),
+        "judge_gateways": dict(JUDGE_GATEWAY),
+        **({"judge_route_notes": dict(JUDGE_ROUTE_NOTES)} if JUDGE_ROUTE_NOTES else {}),
+        **({"replaces": {k: previous[k] for k in ("graded_at", "judge_panel", "judge_gateway", "judge_gateways")
+                         if k in previous}} if force_regrade and previous else {}),
         "judge_efforts": dict(JUDGE_EFFORT),
         "qa_grading_paths": dict(path_counts),
         "qa_panel_items": len(panel_items),
