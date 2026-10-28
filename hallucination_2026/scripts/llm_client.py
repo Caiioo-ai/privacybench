@@ -358,7 +358,9 @@ def _call_cometapi(model_id, messages, temperature, max_tokens, reasoning_effort
                                         cache_key=cache_key, timeout=timeout)
         except cometapi_client.CometApiError as e:
             last_error = e
-            if re.match(r"HTTP 4(00|01|02|03|04)\b", str(e)) or "served the call" in str(e):
+            # A refused request fails the same way again; a call another channel served is retried, since CometAPI
+            # spreads calls over channels and the next one usually lands on the requested model.
+            if re.match(r"HTTP 4(00|01|02|03|04)\b", str(e)):
                 break
         except Exception as e:
             last_error = e

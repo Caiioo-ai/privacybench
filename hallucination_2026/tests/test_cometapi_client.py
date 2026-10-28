@@ -141,3 +141,29 @@ class Routes(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class Retries(unittest.TestCase):
+    """A call another channel served is retried (CometAPI spreads calls over channels, one injects its own prompt);
+    a refused request is not."""
+    def setUp(self):
+        import llm_client
+        self.llm = llm_client
+        llm_client.use_cometapi({'x/m': {'model': 'm', 'wire': 'openai-chat', 'pricing': {}}})
+        self.addCleanup(lambda: llm_client._GATEWAY.update(name='openrouter', routes={}))
+        from unittest.mock import patch
+        self.sleep = patch.object(llm_client.time, 'sleep'); self.sleep.start(); self.addCleanup(self.sleep.stop)
+
+    def test_a_wrong_channel_is_retried(self):
+        from unittest.mock import patch
+        outcomes = [cc.CometApiError("x/m: CometAPI says None served the call, not 'm'"), {'content': 'ok'}]
+        with patch.object(cc, 'call', side_effect=outcomes) as call:
+            self.assertEqual(self.llm.call_llm('x/m', [{'role': 'user', 'content': 'q'}], max_retries=3)['content'], 'ok')
+        self.assertEqual(call.call_count, 2)
+
+    def test_a_refused_request_is_not_retried(self):
+        from unittest.mock import patch
+        with patch.object(cc, 'call', side_effect=cc.CometApiError('HTTP 400 for x/m via CometAPI m: bad')) as call:
+            with self.assertRaises(RuntimeError):
+                self.llm.call_llm('x/m', [{'role': 'user', 'content': 'q'}], max_retries=3)
+        self.assertEqual(call.call_count, 1)

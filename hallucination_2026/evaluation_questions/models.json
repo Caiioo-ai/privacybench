@@ -169,7 +169,10 @@
       "cometapi": {
         "model": "kimi-k3",
         "wire": "openai-chat",
-        "served_ids": []
+        "served_ids": [
+          "accounts/fireworks/models/kimi-k3",
+          "moonshotai/kimi-k3"
+        ]
       }
     },
     {
