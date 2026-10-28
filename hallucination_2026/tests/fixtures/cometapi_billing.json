@@ -1,0 +1,176 @@
+{
+ "measured": "2026-10-28 via /v1/dashboard/billing/usage deltas (cents), one call each, 8 s settle",
+ "cases": [
+  {
+   "model": "grok-4.7",
+   "wire": "openai-chat",
+   "pricing": {
+    "currency": "USD / M Tokens",
+    "input": null,
+    "output": null,
+    "per_request": null,
+    "per_second": null,
+    "billing_mode": "tiered_expr",
+    "billing_expr": "len < 200000 ? tier(\"short_context\", p * 2 + c * 6 + cr * 0.5) : tier(\"long_context\", p * 4 + c * 12 + cr * 1)",
+    "ratio": 0.8,
+    "web_search": 10
+   },
+   "billed_usd": 0.007372,
+   "response": {
+    "model": "grok-4.7",
+    "choices": [
+     {
+      "message": {
+       "content": "x"
+      },
+      "finish_reason": "stop"
+     }
+    ],
+    "usage": {
+     "prompt_tokens": 1259,
+     "completion_tokens": 1404,
+     "total_tokens": 2663,
+     "prompt_tokens_details": {
+      "cached_tokens": 1152,
+      "text_tokens": 1259,
+      "audio_tokens": 0,
+      "image_tokens": 0
+     },
+     "completion_tokens_details": {
+      "text_tokens": 1274,
+      "audio_tokens": 0,
+      "image_tokens": 0,
+      "reasoning_tokens": 130
+     }
+    }
+   }
+  },
+  {
+   "model": "gpt-6.1-sol",
+   "wire": "openai-responses",
+   "pricing": {
+    "currency": "USD / M Tokens",
+    "input": null,
+    "output": null,
+    "per_request": null,
+    "per_second": null,
+    "billing_mode": "tiered_expr",
+    "billing_expr": "len <= 272000 ? tier(\"short_context\", p * 2 + c * 10 + cr * 0.1 + cc * 2.5) : tier(\"long_context\", p * 4 + c * 15 + cr * 0.2 + cc * 5)",
+    "ratio": 0.8,
+    "web_search": 10
+   },
+   "billed_usd": 0.009524,
+   "response": {
+    "model": "gpt-6.1-sol",
+    "status": "completed",
+    "output": [
+     {
+      "type": "message",
+      "content": [
+       {
+        "type": "output_text",
+        "text": "x"
+       }
+      ]
+     }
+    ],
+    "usage": {
+     "input_tokens": 22,
+     "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 0
+     },
+     "output_tokens": 1186,
+     "output_tokens_details": {
+      "reasoning_tokens": 16
+     },
+     "total_tokens": 1208
+    }
+   }
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "wire": "anthropic-messages",
+   "pricing": {
+    "currency": "USD / M Tokens",
+    "input": 2,
+    "output": 10,
+    "per_request": null,
+    "per_second": null,
+    "ratio": 0.8,
+    "cached_input": 0.1,
+    "cache_write": 2.5,
+    "web_search": 10
+   },
+   "billed_usd": 0.024046,
+   "response": {
+    "model": "claude-sonnet-5-5",
+    "stop_reason": "max_tokens",
+    "content": [
+     {
+      "type": "text",
+      "text": "x"
+     }
+    ],
+    "usage": {
+     "input_tokens": 29,
+     "cache_creation_input_tokens": 0,
+     "cache_read_input_tokens": 0,
+     "output_tokens": 3000
+    }
+   }
+  }
+ ],
+ "anthropic_cached_probe": {
+  "model": "claude-haiku-5-5",
+  "stop_reason": "end_turn",
+  "content": [
+   {
+    "type": "thinking",
+    "thinking": "..."
+   },
+   {
+    "type": "text",
+    "text": "answer"
+   }
+  ],
+  "usage": {
+   "input_tokens": 70,
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 5221,
+   "output_tokens": 453,
+   "output_tokens_details": {
+    "thinking_tokens": 402
+   }
+  }
+ },
+ "responses_cached_probe": {
+  "model": "gpt-6.1-sol",
+  "status": "completed",
+  "output": [
+   {
+    "type": "reasoning"
+   },
+   {
+    "type": "message",
+    "content": [
+     {
+      "type": "output_text",
+      "text": "answer"
+     }
+    ]
+   }
+  ],
+  "usage": {
+   "input_tokens": 3052,
+   "input_tokens_details": {
+    "cache_write_tokens": 0,
+    "cached_tokens": 3049
+   },
+   "output_tokens": 27,
+   "output_tokens_details": {
+    "reasoning_tokens": 0
+   }
+  }
+ }
+}

@@ -38,13 +38,31 @@ from collections import Counter
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
-from llm_client import TASK_ROOT, call_llm, get_article_text, served_record
+from api_effort_policy import fetch_capability_catalog, resolve_level_effort
+import cometapi_client
+from llm_client import TASK_ROOT, call_llm, cometapi_routes, gateway_name, get_article_text, served_record, use_cometapi
 
 JUDGE_PANEL = [
     "google/gemini-4-argon",
     "openai/gpt-6.1-sol",
     "xiaomi/mimo-v2.6-pro",
 ]
+# Judges ask for "low". On OpenRouter that word is sent as-is (the gateway maps or drops it); on CometAPI each judge
+# gets "low" snapped to its own declared levels, or no effort where it declares none (`use_gateway`).
+JUDGE_EFFORT_REQUESTED = "low"
+JUDGE_EFFORT: Dict[str, Optional[str]] = {jm: JUDGE_EFFORT_REQUESTED for jm in JUDGE_PANEL}
+# Seconds per judge call; a gateway's queue can hold a call past the OpenRouter-era limits.
+JUDGE_TIMEOUT = {"qa": 60, "summary": 90}
+
+
+def use_gateway(gateway: str, models_file: Path) -> None:
+    if gateway != cometapi_client.GATEWAY:
+        return
+    use_cometapi(cometapi_routes(models_file, JUDGE_PANEL, cometapi_client.fetch_catalog()))
+    JUDGE_TIMEOUT.update(qa=300, summary=300)
+    catalog = fetch_capability_catalog()
+    for jm in JUDGE_PANEL:
+        JUDGE_EFFORT[jm] = resolve_level_effort(jm, catalog, JUDGE_EFFORT_REQUESTED)["selected_effort"]
 
 # Adapted from AA-Omniscience's OMNISCIENCE_GRADER_TEMPLATE (Apache-2.0),
 # with few-shot examples written from our own PrivacyBench v2 legal/privacy/technical domain items.
@@ -351,8 +369,8 @@ def judge_qa_with_panel(qa_item: Dict[str, Any]) -> Tuple[Dict[str, Any], List[D
             messages=[{"role": "user", "content": prompt}],
             temperature=0.0,
             max_tokens=1024,
-            reasoning_effort="low",
-            timeout=60,
+            reasoning_effort=JUDGE_EFFORT[jm],
+            timeout=JUDGE_TIMEOUT["qa"],
         )
         telem_entry = {"step": "judge_qa", "judge_model": jm, "item_id": qa_item["item_id"], **resp_local}
         try:
@@ -442,8 +460,8 @@ def grade_single_summary(
         messages=[{"role": "user", "content": SUMMARY_DECOMPOSE_PROMPT.format(summary_text=summary_text)}],
         temperature=0.0,
         max_tokens=1024,
-        reasoning_effort="low",
-        timeout=60,
+        reasoning_effort=JUDGE_EFFORT["google/gemini-4-argon"],
+        timeout=JUDGE_TIMEOUT["summary"],
     )
     telemetry.append({"step": "summary_decompose", "article_id": article["id"], **decomp_resp})
     parsed_decomp = _parse_json_Loose(decomp_resp["content"])
@@ -470,8 +488,8 @@ def grade_single_summary(
             messages=[{"role": "user", "content": verify_prompt}],
             temperature=0.0,
             max_tokens=1500,
-            reasoning_effort="low",
-            timeout=90,
+            reasoning_effort=JUDGE_EFFORT[jm],
+            timeout=JUDGE_TIMEOUT["summary"],
         )
         t_entry = {"step": "summary_verify", "judge_model": jm, "article_id": article["id"], **v_resp_local}
         try:
@@ -623,6 +641,8 @@ def grade_result_file(
     data["grading_summary"] = {
         "graded_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "judge_panel": JUDGE_PANEL,
+        "judge_gateway": gateway_name(),
+        "judge_efforts": dict(JUDGE_EFFORT),
         "qa_grading_paths": dict(path_counts),
         "qa_panel_items": len(panel_items),
         "qa_panel_disagreements": panel_disagreements,
@@ -647,7 +667,10 @@ def main() -> None:
     ap.add_argument("--articles-file", default=str(TASK_ROOT / "evaluation_questions" / "articles.json"))
     ap.add_argument("--workers", type=int, default=8)
     ap.add_argument("--force", action="store_true")
+    ap.add_argument("--gateway", choices=("openrouter", cometapi_client.GATEWAY), default="openrouter")
+    ap.add_argument("--models-file", default=str(TASK_ROOT / "evaluation_questions" / "models.json"))
     args = ap.parse_args()
+    use_gateway(args.gateway, Path(args.models_file))
 
     articles_data = json.loads(Path(args.articles_file).read_text(encoding="utf-8"))["articles"]
     articles_by_id = {a["id"]: a for a in articles_data}

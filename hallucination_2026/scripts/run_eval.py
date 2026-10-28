@@ -17,15 +17,21 @@ import copy
 import hashlib
 import math
 import json
+import threading
 import time
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from api_effort_policy import fetch_capability_catalog, resolve_effort, fingerprint
+from api_effort_policy import fetch_capability_catalog, resolve_effort, resolve_level_effort, fingerprint
+import cometapi_client
 
 from llm_client import (
     TASK_ROOT,
     call_llm,
+    cometapi_routes,
+    gateway_name,
+    loaded_route,
+    use_cometapi,
     get_article_text,
     is_article_eligible_for_model,
 )
@@ -67,12 +73,19 @@ def run_model_evaluation(
     *,
     capability_catalog: Optional[Dict[str, Any]] = None,
     dry_run: bool = False,
+    effort_level: Optional[str] = None,
+    max_model_cost_usd: Optional[float] = None,
 ) -> Path | Dict[str, Any]:
     requested_model_meta = copy.deepcopy(model_meta)
     model_meta = copy.deepcopy(model_meta)
     model_id = model_meta["model_id"]
-    effort_policy = resolve_effort(model_id, capability_catalog if capability_catalog is not None
-                                  else fetch_capability_catalog())
+    catalog = capability_catalog if capability_catalog is not None else fetch_capability_catalog()
+    # One level for every model (the router's snap), or the legacy highest declared native effort.
+    effort_policy = (resolve_level_effort(model_id, catalog, effort_level) if effort_level
+                     else resolve_effort(model_id, catalog))
+    gateway = gateway_name()
+    route = loaded_route(model_id)
+    explicit_cache = route is not None
     params = model_meta.setdefault("default_params", {})
     params["reasoning_effort"] = effort_policy["selected_effort"]
     temperature = float(params.get("temperature", 0.0))
@@ -178,16 +191,25 @@ def run_model_evaluation(
     if not tasks:
         raise ValueError(f"No eligible evaluation tasks for {model_id}")
     for task in tasks:
+        if explicit_cache and task["eval_mode"].startswith("grounded"):
+            # Everything before the question is one article's shared text: the cacheable prefix, unchanged prompt.
+            task["cache_prefix_chars"] = task["prompt"].rindex("Question: ")
+            task["cache_key"] = f"privacybench-{task['article_id']}"
         task["request"] = {"model": model_id, "messages": [{"role": "user", "content": task["prompt"]}],
                            "reasoning_effort": reasoning_effort, "temperature": temperature,
                            "max_tokens": task["max_tokens"]}
+        if explicit_cache:
+            task["request"].update(gateway=gateway, cache_prefix_chars=task.get("cache_prefix_chars"),
+                                   cache_key=task.get("cache_key"))
         task["request_sha256"] = fingerprint(task["request"])
         task["prompt_sha256"] = hashlib.sha256(task["prompt"].encode()).hexdigest()
     source_sha256 = {name: hashlib.sha256((Path(__file__).parent / name).read_bytes()).hexdigest()
-                     for name in ("run_eval.py", "api_effort_policy.py", "llm_client.py")}
+                     for name in ("run_eval.py", "api_effort_policy.py", "llm_client.py", "cometapi_client.py")}
     # Retrieval time / whole-catalogue churn are receipts, not native capability changes.
     policy_identity = {k: v for k, v in effort_policy.items() if k != "catalog_retrieval"}
-    contract = {"version": "api-exact-request-v1", "condition": "openrouter-api-highest-native-v1",
+    condition = f"{gateway}-api-" + (f"level-{effort_level}-v1" if effort_level else "highest-native-v1")
+    contract = {"version": "api-exact-request-v1", "condition": condition,
+                **({"gateway_route": route} if route is not None else {}),
                 "requested_model_meta": requested_model_meta, "effective_model_meta": model_meta,
                 "effort_policy": policy_identity, "source_sha256": source_sha256,
                 "corpus_sha256": {"articles": fingerprint(articles), "items": fingerprint(items)},
@@ -235,7 +257,8 @@ def run_model_evaluation(
                 if (response.strip() and not response.startswith("[ERROR:") and
                         telemetry.get("finish_reason") != "length" and not telemetry.get("error")):
                     existing_cache[key] = row
-    plan = {"model_id": model_id, "requested_params": requested_model_meta.get("default_params", {}),
+    plan = {"model_id": model_id, "condition": condition, "gateway_route": route,
+            "requested_params": requested_model_meta.get("default_params", {}),
             "resolved_params": params, "effort_policy": effort_policy,
             "inference_fingerprint": contract["fingerprint"], "planned_calls": len(tasks),
             "reusable_calls": len(existing_cache), "provider_calls": 0,
@@ -246,21 +269,33 @@ def run_model_evaluation(
     if len(existing_cache) == len(tasks):
         return out_path
 
+    spent = {"usd": 0.0}
+    spend_lock = threading.Lock()
+
     def _exec_one(t: Dict[str, Any]) -> Dict[str, Any]:
         cache_key = f"{t['eval_mode']}::{t['item_id']}"
         if cache_key in existing_cache:
             return existing_cache[cache_key]
         try:
+            with spend_lock:
+                if max_model_cost_usd is not None and spent["usd"] >= max_model_cost_usd:
+                    raise RuntimeError(f"SpendCap: ${spent['usd']:.4f} of the ${max_model_cost_usd:.2f} cap spent")
+            prefix_chars = t.get("cache_prefix_chars")
             resp = call_llm(
                 model_id=model_id,
                 messages=[{"role": "user", "content": t["prompt"]}],
                 temperature=temperature,
                 max_tokens=t["max_tokens"],
                 reasoning_effort=reasoning_effort,
-                timeout=90,
+                # High-effort calls through a gateway queue far past the OpenRouter-era 90 s.
+                timeout=300 if explicit_cache else 90,
                 # The shared client otherwise silently doubles the output cap on retry.
                 max_retries=1,
+                cache_prefix=t["prompt"][:prefix_chars] if prefix_chars else None,
+                cache_key=t.get("cache_key"),
             )
+            with spend_lock:
+                spent["usd"] += float(resp.get("cost_usd") or 0.0)
             if (resp.get("model_requested") != model_id or resp.get("reasoning_effort") != reasoning_effort
                     or resp.get("temperature") != temperature):
                 raise ValueError("Provider request telemetry differs from resolved settings")
@@ -287,15 +322,20 @@ def run_model_evaluation(
 
     results_list: List[Dict[str, Any]] = [None] * len(tasks)  # type: ignore
     t_start = time.time()
+    # Warm, then fan out: each article's first cached call finishes before its siblings are sent, so they can read
+    # the prefix it wrote instead of all writing it at once. Ordering only; every request is unchanged.
+    warm = sorted({t["cache_key"]: i for i, t in reversed(list(enumerate(tasks))) if t.get("cache_key")}.values())
+    phases = [warm, [i for i in range(len(tasks)) if i not in set(warm)]]
+    done_count = 0
     with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as ex:
-        fut_to_idx = {ex.submit(_exec_one, t): i for i, t in enumerate(tasks)}
-        done_count = 0
-        for fut in concurrent.futures.as_completed(fut_to_idx):
-            idx = fut_to_idx[fut]
-            results_list[idx] = fut.result()
-            done_count += 1
-            if done_count % 25 == 0 or done_count == len(tasks):
-                print(f"  [{model_id}] completed {done_count}/{len(tasks)} calls ({time.time() - t_start:.1f}s)")
+        for phase in phases:
+            fut_to_idx = {ex.submit(_exec_one, tasks[i]): i for i in phase}
+            for fut in concurrent.futures.as_completed(fut_to_idx):
+                idx = fut_to_idx[fut]
+                results_list[idx] = fut.result()
+                done_count += 1
+                if done_count % 25 == 0 or done_count == len(tasks):
+                    print(f"  [{model_id}] completed {done_count}/{len(tasks)} calls ({time.time() - t_start:.1f}s)")
 
     # Any new inference invalidates prior panel outcomes, including cached row grades.
     results_list = [{k: v for k, v in r.items() if k != "grading"} for r in results_list]
@@ -347,6 +387,14 @@ def main() -> None:
     ap.add_argument("--workers", type=int, default=8)
     ap.add_argument("--dry-run", "--preflight", action="store_true",
                     help="Fetch current public capabilities and validate exact cache/settings without inference")
+    ap.add_argument("--models", default=None, help="Comma-separated model_ids from models.json to evaluate")
+    ap.add_argument("--gateway", choices=("openrouter", cometapi_client.GATEWAY), default="openrouter",
+                    help="cometapi: each model on its registry route, with prompt caching")
+    ap.add_argument("--effort-level", default=None,
+                    help="Run every model at this level, snapped to its declared levels as the Caiioo router snaps it "
+                         "(default: the highest declared native effort)")
+    ap.add_argument("--max-model-cost-usd", type=float, default=None,
+                    help="Stop sending a model's calls once its run has cost this much (later calls record an error)")
     args = ap.parse_args()
 
     models_data = json.loads(Path(args.models_file).read_text(encoding="utf-8"))["models"]
@@ -355,6 +403,13 @@ def main() -> None:
     results_dir = Path(args.results_dir)
     if args.all_pilot_models:
         target_models = models_data
+    elif args.models:
+        wanted = [m.strip() for m in args.models.split(",") if m.strip()]
+        by_id = {m["model_id"]: m for m in models_data}
+        missing = [m for m in wanted if m not in by_id]
+        if missing:
+            raise ValueError(f"Models {missing} not found in {args.models_file}")
+        target_models = [by_id[m] for m in wanted]
     elif args.model:
         target_models = [m for m in models_data if m["model_id"] == args.model]
         if not target_models:
@@ -363,16 +418,19 @@ def main() -> None:
         raise ValueError("Specify --model <id> or --all-pilot-models")
 
     catalog = fetch_capability_catalog()
+    if args.gateway == cometapi_client.GATEWAY:
+        use_cometapi(cometapi_routes(Path(args.models_file), [m["model_id"] for m in target_models],
+                                     cometapi_client.fetch_catalog()))
+    run_options = dict(max_workers=args.workers, capability_catalog=catalog, effort_level=args.effort_level,
+                       max_model_cost_usd=args.max_model_cost_usd)
     # Validate ALL targets/caches before the first potentially paid call.
-    plans = [run_model_evaluation(m, articles, items, results_dir, args.run_date,
-                                 max_workers=args.workers, capability_catalog=catalog, dry_run=True)
+    plans = [run_model_evaluation(m, articles, items, results_dir, args.run_date, dry_run=True, **run_options)
              for m in target_models]
     print(json.dumps({"dry_run": args.dry_run, "plans": plans}, indent=2, ensure_ascii=False))
     if args.dry_run:
         return
     with concurrent.futures.ThreadPoolExecutor(max_workers=min(3, len(target_models))) as executor:
-        futures = [executor.submit(run_model_evaluation, m, articles, items, results_dir, args.run_date,
-                                   max_workers=args.workers, capability_catalog=catalog)
+        futures = [executor.submit(run_model_evaluation, m, articles, items, results_dir, args.run_date, **run_options)
                    for m in target_models]
         for future in concurrent.futures.as_completed(futures):
             future.result()

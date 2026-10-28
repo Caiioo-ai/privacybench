@@ -23,6 +23,11 @@
         "qa_max_tokens": 4096,
         "summary_max_tokens": 4096,
         "reasoning_effort": "xhigh"
+      },
+      "cometapi": {
+        "model": "claude-opus-5-5",
+        "wire": "anthropic-messages",
+        "served_ids": []
       }
     },
     {
@@ -39,6 +44,11 @@
         "qa_max_tokens": 4096,
         "summary_max_tokens": 4096,
         "reasoning_effort": "high"
+      },
+      "cometapi": {
+        "model": "gemini-4-argon",
+        "wire": "gemini",
+        "served_ids": []
       }
     },
     {
@@ -55,6 +65,11 @@
         "qa_max_tokens": 4096,
         "summary_max_tokens": 4096,
         "reasoning_effort": "xhigh"
+      },
+      "cometapi": {
+        "model": "grok-4.7",
+        "wire": "openai-chat",
+        "served_ids": []
       }
     },
     {
@@ -71,6 +86,11 @@
         "qa_max_tokens": 4096,
         "summary_max_tokens": 4096,
         "reasoning_effort": "xhigh"
+      },
+      "cometapi": {
+        "model": "glm-5.3",
+        "wire": "openai-chat",
+        "served_ids": []
       }
     },
     {
@@ -103,6 +123,11 @@
         "qa_max_tokens": 4096,
         "summary_max_tokens": 4096,
         "reasoning_effort": "xhigh"
+      },
+      "cometapi": {
+        "model": "deepseek-v4.1-flash",
+        "wire": "openai-chat",
+        "served_ids": []
       }
     },
     {
@@ -119,6 +144,11 @@
         "qa_max_tokens": 4096,
         "summary_max_tokens": 4096,
         "reasoning_effort": "high"
+      },
+      "cometapi": {
+        "model": "mimo-v2.6-pro",
+        "wire": "openai-chat",
+        "served_ids": []
       }
     },
     {
@@ -135,6 +165,11 @@
         "qa_max_tokens": 4096,
         "summary_max_tokens": 4096,
         "reasoning_effort": "xhigh"
+      },
+      "cometapi": {
+        "model": "kimi-k3",
+        "wire": "openai-chat",
+        "served_ids": []
       }
     },
     {
@@ -167,6 +202,11 @@
         "qa_max_tokens": 2048,
         "summary_max_tokens": 2048,
         "reasoning_effort": "low"
+      },
+      "cometapi": {
+        "model": "claude-sonnet-5-5",
+        "wire": "anthropic-messages",
+        "served_ids": []
       }
     },
     {
@@ -183,6 +223,11 @@
         "qa_max_tokens": 1024,
         "summary_max_tokens": 1500,
         "reasoning_effort": "low"
+      },
+      "cometapi": {
+        "model": "gpt-6.1-sol",
+        "wire": "openai-responses",
+        "served_ids": []
       }
     },
     {
@@ -391,6 +436,11 @@
         "qa_max_tokens": 32768,
         "summary_max_tokens": 32768,
         "reasoning_effort": "max"
+      },
+      "cometapi": {
+        "model": "minimax-m3.1-flash",
+        "wire": "openai-chat",
+        "served_ids": []
       }
     },
     {
@@ -407,6 +457,11 @@
         "qa_max_tokens": 128000,
         "summary_max_tokens": 32768,
         "reasoning_effort": "xhigh"
+      },
+      "cometapi": {
+        "model": "gpt-5.6-luna",
+        "wire": "openai-responses",
+        "served_ids": []
       }
     },
     {
@@ -423,6 +478,11 @@
         "qa_max_tokens": 4096,
         "summary_max_tokens": 4096,
         "reasoning_effort": "xhigh"
+      },
+      "cometapi": {
+        "model": "claude-haiku-5-5",
+        "wire": "anthropic-messages",
+        "served_ids": []
       }
     },
     {
@@ -439,6 +499,11 @@
         "qa_max_tokens": 4096,
         "summary_max_tokens": 4096,
         "reasoning_effort": "xhigh"
+      },
+      "cometapi": {
+        "model": "glm-5.3-flash",
+        "wire": "openai-chat",
+        "served_ids": []
       }
     },
     {
@@ -487,6 +552,11 @@
         "qa_max_tokens": 32768,
         "summary_max_tokens": 32768,
         "reasoning_effort": "max"
+      },
+      "cometapi": {
+        "model": "deepseek-v4.1-flash-1017",
+        "wire": "openai-chat",
+        "served_ids": []
       }
     },
     {
@@ -503,6 +573,11 @@
         "qa_max_tokens": 4096,
         "summary_max_tokens": 4096,
         "reasoning_effort": "xhigh"
+      },
+      "cometapi": {
+        "model": "gpt-6-luna",
+        "wire": "openai-responses",
+        "served_ids": []
       }
     },
     {
@@ -599,6 +674,11 @@
         "qa_max_tokens": 32768,
         "summary_max_tokens": 32768,
         "reasoning_effort": "max"
+      },
+      "cometapi": {
+        "model": "kimi-k3.1-pro",
+        "wire": "openai-chat",
+        "served_ids": []
       }
     },
     {
@@ -647,6 +727,11 @@
         "qa_max_tokens": 128000,
         "summary_max_tokens": 32768,
         "reasoning_effort": "max"
+      },
+      "cometapi": {
+        "model": "gpt-6.1-terra",
+        "wire": "openai-responses",
+        "served_ids": []
       }
     }
   ]

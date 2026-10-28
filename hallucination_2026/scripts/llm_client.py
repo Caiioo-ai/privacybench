@@ -24,6 +24,8 @@ import urllib.request
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
+import cometapi_client
+
 SCRIPT_DIR = Path(__file__).resolve().parent
 TASK_ROOT = SCRIPT_DIR.parent
 REPO_ROOT = TASK_ROOT.parent
@@ -192,14 +194,20 @@ def call_llm(
     response_format: Optional[Dict[str, Any]] = None,
     timeout: int = 120,
     max_retries: int = 4,
+    cache_prefix: Optional[str] = None,
+    cache_key: Optional[str] = None,
 ) -> Dict[str, Any]:
     """
-    Execute an LLM chat completion call via OpenRouter (or local Ollama if `ollama:` prefix)
-    and return a structured telemetry dict containing content + full metadata.
+    Execute an LLM chat completion call via OpenRouter (or CometAPI after `use_cometapi`, or local Ollama if
+    `ollama:` prefix) and return a structured telemetry dict containing content + full metadata.
+    `cache_prefix` / `cache_key` mark the prompt's shared prefix for gateways that cache explicitly (CometAPI).
     """
     if model_id.startswith("ollama:"):
         ollama_model = model_id[len("ollama:"):]
         return _call_ollama(ollama_model, messages, temperature, max_tokens, timeout)
+    if _GATEWAY["name"] == cometapi_client.GATEWAY:
+        return _call_cometapi(model_id, messages, temperature, max_tokens, reasoning_effort, response_format,
+                              timeout, max_retries, cache_prefix, cache_key)
 
     api_key = os.environ.get("OPENROUTER_API_KEY")
     if not api_key:
@@ -293,6 +301,68 @@ def call_llm(
             last_error = e
             time.sleep(1.5 * attempt)
 
+    raise RuntimeError(f"LLM call failed after {max_retries} attempts for {model_id}: {last_error}")
+
+
+# The gateway every call in this process goes through; OpenRouter unless a script switches to CometAPI.
+_GATEWAY: Dict[str, Any] = {"name": "openrouter", "routes": {}}
+
+
+def cometapi_routes(models_file: Path, model_ids: List[str], catalog: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
+    """Each model's registry route (`models.json` -> `cometapi`) with the CometAPI catalogue facts it stands on."""
+    registry = {m["model_id"]: m for m in json.loads(Path(models_file).read_text(encoding="utf-8"))["models"]}
+    routes: Dict[str, Dict[str, Any]] = {}
+    for model_id in model_ids:
+        route = (registry.get(model_id) or {}).get("cometapi")
+        if not isinstance(route, dict):
+            raise RuntimeError(f"{model_id}: no CometAPI route in the model registry")
+        routes[model_id] = {**route, **cometapi_client.route_evidence(catalog, route)}
+    return routes
+
+
+def use_cometapi(routes: Dict[str, Dict[str, Any]]) -> None:
+    """Send every later call through CometAPI; a model without a route here fails loud, never falls back."""
+    _GATEWAY["name"] = cometapi_client.GATEWAY
+    _GATEWAY["routes"] = dict(routes)
+
+
+def gateway_name() -> str:
+    return _GATEWAY["name"]
+
+
+def loaded_route(model_id: str) -> Optional[Dict[str, Any]]:
+    """The CometAPI route (with its catalogue evidence) this run loaded for `model_id`; None on OpenRouter."""
+    if _GATEWAY["name"] != cometapi_client.GATEWAY:
+        return None
+    route = _GATEWAY["routes"].get(model_id)
+    if route is None:
+        raise RuntimeError(f"{model_id}: no CometAPI route was loaded for this run")
+    return route
+
+
+def _call_cometapi(model_id, messages, temperature, max_tokens, reasoning_effort, response_format, timeout,
+                   max_retries, cache_prefix, cache_key) -> Dict[str, Any]:
+    route = _GATEWAY["routes"].get(model_id)
+    if route is None:
+        raise RuntimeError(f"{model_id}: no CometAPI route was loaded for this run")
+    if response_format is not None:
+        raise RuntimeError("response_format is not carried on the CometAPI wires")
+    if len(messages) != 1 or messages[0].get("role") != "user":
+        raise RuntimeError("the CometAPI client sends one user prompt")
+    last_error: Optional[Exception] = None
+    for attempt in range(1, max_retries + 1):
+        try:
+            return cometapi_client.call(model_id, route, route["pricing"], messages[0]["content"],
+                                        temperature=temperature, max_tokens=max_tokens,
+                                        reasoning_effort=reasoning_effort, cache_prefix=cache_prefix,
+                                        cache_key=cache_key, timeout=timeout)
+        except cometapi_client.CometApiError as e:
+            last_error = e
+            if re.match(r"HTTP 4(00|01|02|03|04)\b", str(e)) or "served the call" in str(e):
+                break
+        except Exception as e:
+            last_error = e
+        time.sleep(1.5 * attempt)
     raise RuntimeError(f"LLM call failed after {max_retries} attempts for {model_id}: {last_error}")
 
 
