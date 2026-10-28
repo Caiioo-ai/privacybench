@@ -38,12 +38,12 @@ from collections import Counter
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
-from llm_client import TASK_ROOT, call_llm, get_article_text
+from llm_client import TASK_ROOT, call_llm, get_article_text, served_record
 
 JUDGE_PANEL = [
     "google/gemini-4-argon",
-    "meta/muse-wonder",
-    "x-ai/grok-4.7",
+    "openai/gpt-6.1-sol",
+    "xiaomi/mimo-v2.6-pro",
 ]
 
 # Adapted from AA-Omniscience's OMNISCIENCE_GRADER_TEMPLATE (Apache-2.0),
@@ -341,20 +341,21 @@ def judge_qa_with_panel(qa_item: Dict[str, Any]) -> Tuple[Dict[str, Any], List[D
 
     votes: Dict[str, str] = {}
     hedged_votes: Dict[str, bool] = {}
+    judge_telemetry: Dict[str, Dict[str, Any]] = {}
     telemetry: List[Dict[str, Any]] = []
 
-    def _call_one_qa_judge(jm: str) -> Tuple[str, str, bool, Optional[Dict[str, Any]]]:
-        resp_local = None
+    def _call_one_qa_judge(jm: str) -> Tuple[str, str, bool, Dict[str, Any]]:
+        # A failed call (403, or a transport error after call_llm's retries) raises: it is never a vote.
+        resp_local = call_llm(
+            model_id=jm,
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.0,
+            max_tokens=1024,
+            reasoning_effort="low",
+            timeout=60,
+        )
+        telem_entry = {"step": "judge_qa", "judge_model": jm, "item_id": qa_item["item_id"], **resp_local}
         try:
-            resp_local = call_llm(
-                model_id=jm,
-                messages=[{"role": "user", "content": prompt}],
-                temperature=0.0,
-                max_tokens=1024,
-                reasoning_effort="low",
-                timeout=60,
-            )
-            telem_entry = {"step": "judge_qa", "judge_model": jm, "item_id": qa_item["item_id"], **resp_local}
             parsed = _parse_json_Loose(resp_local["content"])
             g = str(parsed.get("grade", "INCORRECT")).upper().strip()
             if g not in ("CORRECT", "INCORRECT", "PARTIAL_ANSWER", "NOT_ATTEMPTED"):
@@ -362,21 +363,21 @@ def judge_qa_with_panel(qa_item: Dict[str, Any]) -> Tuple[Dict[str, Any], List[D
                 g = letter_map.get(g[:1], "INCORRECT")
             return jm, g, bool(parsed.get("hedged", False)), telem_entry
         except Exception:
-            raw_c = resp_local["content"] if resp_local else ""
+            # The judge answered but not in JSON: recover the grade from its text (unchanged pilot rule).
+            raw_c = resp_local.get("content") or ""
             found_g = "INCORRECT"
             for cand_g in ["NOT_ATTEMPTED", "PARTIAL_ANSWER", "INCORRECT", "CORRECT"]:
                 if cand_g in raw_c.upper():
                     found_g = cand_g
                     break
-            telem_entry = {"step": "judge_qa", "judge_model": jm, "item_id": qa_item["item_id"], **(resp_local or {})} if resp_local else None
             return jm, found_g, detect_abstention_and_hedge(qa_item.get("response", ""))[1], telem_entry
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=3) as j_ex:
         for jm, g, h_flag, t_entry in j_ex.map(_call_one_qa_judge, JUDGE_PANEL):
             votes[jm] = g
             hedged_votes[jm] = h_flag
-            if t_entry:
-                telemetry.append(t_entry)
+            judge_telemetry[jm] = served_record(t_entry)
+            telemetry.append(t_entry)
 
     vote_counts = Counter(votes.values())
     top_count = vote_counts.most_common(1)[0][1]
@@ -400,6 +401,7 @@ def judge_qa_with_panel(qa_item: Dict[str, Any]) -> Tuple[Dict[str, Any], List[D
         "hedged": bool(is_hedged and final_grade == "NOT_ATTEMPTED"),
         "judge_votes": votes,
         "judge_hedged_votes": hedged_votes,
+        "judge_telemetry": judge_telemetry,
         "disagreement": disagreement,
     }
     if qa_item.get("eval_mode") == "closed_book":
@@ -459,19 +461,20 @@ def grade_single_summary(
 
     per_judge_claims: Dict[str, List[str]] = {}
     per_judge_kfs: Dict[str, List[str]] = {}
+    sum_judge_telemetry: Dict[str, Dict[str, Any]] = {}
 
-    def _call_one_sum_judge(jm: str) -> Tuple[str, List[str], List[str], Optional[Dict[str, Any]]]:
-        v_resp_local = None
+    def _call_one_sum_judge(jm: str) -> Tuple[str, List[str], List[str], Dict[str, Any]]:
+        # A failed call (403, or a transport error after call_llm's retries) raises: it is never a set of labels.
+        v_resp_local = call_llm(
+            model_id=jm,
+            messages=[{"role": "user", "content": verify_prompt}],
+            temperature=0.0,
+            max_tokens=1500,
+            reasoning_effort="low",
+            timeout=90,
+        )
+        t_entry = {"step": "summary_verify", "judge_model": jm, "article_id": article["id"], **v_resp_local}
         try:
-            v_resp_local = call_llm(
-                model_id=jm,
-                messages=[{"role": "user", "content": verify_prompt}],
-                temperature=0.0,
-                max_tokens=1500,
-                reasoning_effort="low",
-                timeout=90,
-            )
-            t_entry = {"step": "summary_verify", "judge_model": jm, "article_id": article["id"], **v_resp_local}
             v_parsed = _parse_json_Loose(v_resp_local["content"])
 
             c_labels = ["SUPPORTED"] * len(claims)
@@ -489,15 +492,15 @@ def grade_single_summary(
                     kf_labels[idx] = lbl
             return jm, c_labels, kf_labels, t_entry
         except Exception:
-            t_entry = {"step": "summary_verify", "judge_model": jm, "article_id": article["id"], **(v_resp_local or {})} if v_resp_local else None
+            # The judge answered but its JSON did not parse: unchanged pilot rule.
             return jm, ["SUPPORTED"] * len(claims), ["OMITTED"] * len(key_facts), t_entry
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=3) as s_ex:
         for jm, c_labels, kf_labels, t_entry in s_ex.map(_call_one_sum_judge, JUDGE_PANEL):
             per_judge_claims[jm] = c_labels
             per_judge_kfs[jm] = kf_labels
-            if t_entry:
-                telemetry.append(t_entry)
+            sum_judge_telemetry[jm] = served_record(t_entry)
+            telemetry.append(t_entry)
 
     # Consolidate majority vote per claim and per key fact
     claim_results = []
@@ -553,6 +556,8 @@ def grade_single_summary(
         "judge_claim_disagreements": claim_disagreements,
         "claim_breakdown": claim_results,
         "key_fact_breakdown": kf_results,
+        "decompose_telemetry": served_record(decomp_resp),
+        "judge_telemetry": sum_judge_telemetry,
     }, telemetry
 
 
@@ -565,6 +570,18 @@ def grade_result_file(
     data = json.loads(result_path.read_text(encoding="utf-8"))
     qa_list = data.get("qa_responses", [])
     sum_list = data.get("summary_responses", [])
+
+    truncated_empty = [
+        f"{r.get('eval_mode')}::{r.get('item_id')}"
+        for r in (qa_list + sum_list)
+        if not (r.get("response") or "").strip() and r.get("telemetry", {}).get("finish_reason") == "length"
+    ]
+    if truncated_empty:
+        raise RuntimeError(
+            f"[grade_eval] Refusing to grade {result_path.name}: {len(truncated_empty)} response(s) are empty with "
+            f"finish_reason='length' (e.g. {truncated_empty[:5]}). Increase max_tokens and re-run inference so "
+            f"length-truncated reasoning calls are not misclassified as abstentions."
+        )
 
     ungraded_qa = [i for i, q in enumerate(qa_list) if force_regrade or not q.get("grading")]
     ungraded_sum = [i for i, s in enumerate(sum_list) if force_regrade or not s.get("grading")]
@@ -626,6 +643,7 @@ def grade_result_file(
 def main() -> None:
     ap = argparse.ArgumentParser(description="Grade PrivacyBench v2 model outputs.")
     ap.add_argument("--results-dir", default=str(TASK_ROOT / "results"))
+    ap.add_argument("--file", default=None, help="Single result JSON file to grade")
     ap.add_argument("--articles-file", default=str(TASK_ROOT / "evaluation_questions" / "articles.json"))
     ap.add_argument("--workers", type=int, default=8)
     ap.add_argument("--force", action="store_true")
@@ -634,8 +652,11 @@ def main() -> None:
     articles_data = json.loads(Path(args.articles_file).read_text(encoding="utf-8"))["articles"]
     articles_by_id = {a["id"]: a for a in articles_data}
 
-    res_dir = Path(args.results_dir)
-    result_files = sorted(p for p in res_dir.glob("2026-*.json") if "rollup" not in p.name)
+    if args.file:
+        result_files = [Path(args.file)]
+    else:
+        res_dir = Path(args.results_dir)
+        result_files = sorted(p for p in res_dir.glob("2026-*.json") if "rollup" not in p.name)
     with concurrent.futures.ThreadPoolExecutor(max_workers=2) as f_ex:
         futs = [
             f_ex.submit(grade_result_file, rf, articles_by_id, args.workers, args.force)

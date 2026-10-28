@@ -282,9 +282,9 @@ def call_llm(
                 err_body = he.read().decode("utf-8", errors="ignore")[:300]
             except Exception:
                 pass
-            if he.code == 403 and model_id == "meta/muse-wonder":
-                payload["model"] = "meta/muse-glimmer-30b"
-                continue
+            # Fail loud: a refused model (e.g. Meta's 403 user_blocked) is never replaced by another model. The
+            # 79f9508-983c5c8 client swapped meta/muse-wonder for meta/muse-glimmer-30b here, so a blocked judge or
+            # target was silently served by a different model under the requested name.
             last_error = RuntimeError(f"HTTP {he.code} for {model_id}: {err_body}")
             if he.code in (400, 401, 402, 403):
                 break
@@ -294,6 +294,11 @@ def call_llm(
             time.sleep(1.5 * attempt)
 
     raise RuntimeError(f"LLM call failed after {max_retries} attempts for {model_id}: {last_error}")
+
+
+def served_record(resp: Dict[str, Any]) -> Dict[str, Any]:
+    """Telemetry of one call without its content: who was asked, who served it, effort, tokens, cost, latency."""
+    return {k: v for k, v in resp.items() if k != "content"}
 
 
 def _call_ollama(

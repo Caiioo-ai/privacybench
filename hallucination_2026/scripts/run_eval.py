@@ -13,10 +13,15 @@ from __future__ import annotations
 
 import argparse
 import concurrent.futures
+import copy
+import hashlib
+import math
 import json
 import time
 from pathlib import Path
 from typing import Any, Dict, List, Optional
+
+from api_effort_policy import fetch_capability_catalog, resolve_effort, fingerprint
 
 from llm_client import (
     TASK_ROOT,
@@ -59,13 +64,26 @@ def run_model_evaluation(
     results_dir: Path,
     run_date: str,
     max_workers: int = 8,
-) -> Path:
+    *,
+    capability_catalog: Optional[Dict[str, Any]] = None,
+    dry_run: bool = False,
+) -> Path | Dict[str, Any]:
+    requested_model_meta = copy.deepcopy(model_meta)
+    model_meta = copy.deepcopy(model_meta)
     model_id = model_meta["model_id"]
-    params = model_meta.get("default_params", {})
+    effort_policy = resolve_effort(model_id, capability_catalog if capability_catalog is not None
+                                  else fetch_capability_catalog())
+    params = model_meta.setdefault("default_params", {})
+    params["reasoning_effort"] = effort_policy["selected_effort"]
     temperature = float(params.get("temperature", 0.0))
     qa_max_tokens = int(params.get("qa_max_tokens", 256))
     summary_max_tokens = int(params.get("summary_max_tokens", 600))
-    reasoning_effort = params.get("reasoning_effort", None)
+    reasoning_effort = params["reasoning_effort"]
+    if not math.isfinite(temperature) or qa_max_tokens <= 0 or summary_max_tokens <= 0:
+        raise ValueError("Invalid temperature/output token cap")
+    params.update(temperature=temperature, qa_max_tokens=qa_max_tokens, summary_max_tokens=summary_max_tokens)
+    if max_workers < 1:
+        raise ValueError("workers must be positive")
 
     out_path = results_dir / f"{run_date}-{slugify_model(model_id)}.json"
     print(f"\n[run_eval] Evaluating model={model_id} (effective_cutoff={model_meta['effective_cutoff']} via {model_meta['cutoff_source']})")
@@ -157,20 +175,76 @@ def run_model_evaluation(
             "max_tokens": summary_max_tokens,
         })
 
+    if not tasks:
+        raise ValueError(f"No eligible evaluation tasks for {model_id}")
+    for task in tasks:
+        task["request"] = {"model": model_id, "messages": [{"role": "user", "content": task["prompt"]}],
+                           "reasoning_effort": reasoning_effort, "temperature": temperature,
+                           "max_tokens": task["max_tokens"]}
+        task["request_sha256"] = fingerprint(task["request"])
+        task["prompt_sha256"] = hashlib.sha256(task["prompt"].encode()).hexdigest()
+    source_sha256 = {name: hashlib.sha256((Path(__file__).parent / name).read_bytes()).hexdigest()
+                     for name in ("run_eval.py", "api_effort_policy.py", "llm_client.py")}
+    # Retrieval time / whole-catalogue churn are receipts, not native capability changes.
+    policy_identity = {k: v for k, v in effort_policy.items() if k != "catalog_retrieval"}
+    contract = {"version": "api-exact-request-v1", "condition": "openrouter-api-highest-native-v1",
+                "requested_model_meta": requested_model_meta, "effective_model_meta": model_meta,
+                "effort_policy": policy_identity, "source_sha256": source_sha256,
+                "corpus_sha256": {"articles": fingerprint(articles), "items": fingerprint(items)},
+                "tasks": [{k: v for k, v in t.items() if k not in ("prompt", "request")}
+                          for t in tasks]}
+    contract["fingerprint"] = fingerprint(contract)
     existing_cache: Dict[str, Dict[str, Any]] = {}
-    old_grading_summary: Optional[Dict[str, Any]] = None
+    old_data = None
+    expected_tasks = {f"{t['eval_mode']}::{t['item_id']}": t for t in tasks}
+    if len(expected_tasks) != len(tasks):
+        raise ValueError("Duplicate task identity")
     if out_path.exists():
         try:
             old_data = json.loads(out_path.read_text(encoding="utf-8"))
-            old_grading_summary = old_data.get("grading_summary")
-            for r in old_data.get("qa_responses", []) + old_data.get("summary_responses", []):
-                resp_str = r.get("response", "").strip()
-                fin_reason = r.get("telemetry", {}).get("finish_reason")
-                if resp_str and not resp_str.startswith("[ERROR:") and fin_reason != "length":
-                    key = f"{r['eval_mode']}::{r['item_id']}"
-                    existing_cache[key] = r
-        except Exception:
-            pass
+        except (ValueError, OSError) as exc:
+            raise ValueError("Cache refused: unreadable existing output; preserve it and use a new path") from exc
+        if not isinstance(old_data, dict) or old_data.get("inference_contract") != contract:
+            raise ValueError("Cache refused: legacy or incompatible inference contract; use a new output path")
+        if old_data.get("model_meta") != model_meta:
+            raise ValueError("Cache refused: effective model metadata differs")
+        seen = set()
+        for group, kind in (("qa_responses", "qa"), ("summary_responses", "summary")):
+            rows = old_data.get(group)
+            if not isinstance(rows, list):
+                raise ValueError("Cache refused: malformed response collection")
+            for row in rows:
+                if not isinstance(row, dict):
+                    raise ValueError("Cache refused: malformed response")
+                key = f"{row.get('eval_mode')}::{row.get('item_id')}"
+                task = expected_tasks.get(key)
+                if task is None or key in seen or task["task_type"] != kind:
+                    raise ValueError("Cache refused: unknown/duplicate/misplaced response")
+                seen.add(key)
+                expected = {k: v for k, v in task.items() if k not in ("prompt", "request")}
+                if any(row.get(k) != v for k, v in expected.items()):
+                    raise ValueError("Cache refused: cached request/item differs")
+                telemetry = row.get("telemetry")
+                response = row.get("response")
+                if not isinstance(telemetry, dict) or not isinstance(response, str):
+                    raise ValueError("Cache refused: malformed response/telemetry")
+                if (telemetry.get("model_requested") != model_id or
+                        telemetry.get("reasoning_effort") != reasoning_effort or
+                        telemetry.get("temperature") != temperature):
+                    raise ValueError("Cache refused: cached delivery settings differ")
+                if (response.strip() and not response.startswith("[ERROR:") and
+                        telemetry.get("finish_reason") != "length" and not telemetry.get("error")):
+                    existing_cache[key] = row
+    plan = {"model_id": model_id, "requested_params": requested_model_meta.get("default_params", {}),
+            "resolved_params": params, "effort_policy": effort_policy,
+            "inference_fingerprint": contract["fingerprint"], "planned_calls": len(tasks),
+            "reusable_calls": len(existing_cache), "provider_calls": 0,
+            "output": str(out_path), "max_attempts_per_item": 1}
+    if dry_run:
+        return plan
+    # A fully unchanged replay preserves the entire graded result byte for byte.
+    if len(existing_cache) == len(tasks):
+        return out_path
 
     def _exec_one(t: Dict[str, Any]) -> Dict[str, Any]:
         cache_key = f"{t['eval_mode']}::{t['item_id']}"
@@ -184,11 +258,16 @@ def run_model_evaluation(
                 max_tokens=t["max_tokens"],
                 reasoning_effort=reasoning_effort,
                 timeout=90,
+                # The shared client otherwise silently doubles the output cap on retry.
+                max_retries=1,
             )
-            return {**{k: v for k, v in t.items() if k != "prompt"}, "response": resp["content"], "telemetry": {k: v for k, v in resp.items() if k != "content"}}
+            if (resp.get("model_requested") != model_id or resp.get("reasoning_effort") != reasoning_effort
+                    or resp.get("temperature") != temperature):
+                raise ValueError("Provider request telemetry differs from resolved settings")
+            return {**{k: v for k, v in t.items() if k not in ("prompt", "request")}, "response": resp["content"], "telemetry": {k: v for k, v in resp.items() if k != "content"}}
         except Exception as e:
             return {
-                **{k: v for k, v in t.items() if k != "prompt"},
+                **{k: v for k, v in t.items() if k not in ("prompt", "request")},
                 "response": f"[ERROR: {type(e).__name__}: {str(e)[:160]}]",
                 "telemetry": {
                     "model_requested": model_id,
@@ -218,6 +297,8 @@ def run_model_evaluation(
             if done_count % 25 == 0 or done_count == len(tasks):
                 print(f"  [{model_id}] completed {done_count}/{len(tasks)} calls ({time.time() - t_start:.1f}s)")
 
+    # Any new inference invalidates prior panel outcomes, including cached row grades.
+    results_list = [{k: v for k, v in r.items() if k != "grading"} for r in results_list]
     qa_responses = [r for r in results_list if r["task_type"] == "qa"]
     summary_responses = [r for r in results_list if r["task_type"] == "summary"]
 
@@ -227,6 +308,8 @@ def run_model_evaluation(
     payload = {
         "run_date": run_date,
         "model_meta": model_meta,
+        "effort_policy": effort_policy,
+        "inference_contract": contract,
         "eligibility": {
             "total_articles": len(articles),
             "eligible_articles": len(eligible_article_ids),
@@ -244,10 +327,10 @@ def run_model_evaluation(
         "qa_responses": qa_responses,
         "summary_responses": summary_responses,
     }
-    if old_grading_summary:
-        payload["grading_summary"] = old_grading_summary
-
-    out_path.write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")
+    results_dir.mkdir(parents=True, exist_ok=True)
+    temporary = out_path.with_suffix(".tmp")
+    temporary.write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")
+    temporary.replace(out_path)
     print(f"  -> Saved {out_path} (tokens={total_tokens}, cost=${total_cost:.4f})")
     return out_path
 
@@ -262,14 +345,14 @@ def main() -> None:
     ap.add_argument("--results-dir", default=str(TASK_ROOT / "results"))
     ap.add_argument("--run-date", default="2026-10-15")
     ap.add_argument("--workers", type=int, default=8)
+    ap.add_argument("--dry-run", "--preflight", action="store_true",
+                    help="Fetch current public capabilities and validate exact cache/settings without inference")
     args = ap.parse_args()
 
     models_data = json.loads(Path(args.models_file).read_text(encoding="utf-8"))["models"]
     articles = json.loads(Path(args.articles_file).read_text(encoding="utf-8"))["articles"]
     items = json.loads(Path(args.items_file).read_text(encoding="utf-8"))["items"]
     results_dir = Path(args.results_dir)
-    results_dir.mkdir(parents=True, exist_ok=True)
-
     if args.all_pilot_models:
         target_models = models_data
     elif args.model:
@@ -279,31 +362,20 @@ def main() -> None:
     else:
         raise ValueError("Specify --model <id> or --all-pilot-models")
 
-    if len(target_models) == 1:
-        run_model_evaluation(
-            model_meta=target_models[0],
-            articles=articles,
-            items=items,
-            results_dir=results_dir,
-            run_date=args.run_date,
-            max_workers=args.workers,
-        )
-    else:
-        with concurrent.futures.ThreadPoolExecutor(max_workers=3) as m_ex:
-            futs = [
-                m_ex.submit(
-                    run_model_evaluation,
-                    model_meta=m_meta,
-                    articles=articles,
-                    items=items,
-                    results_dir=results_dir,
-                    run_date=args.run_date,
-                    max_workers=args.workers,
-                )
-                for m_meta in target_models
-            ]
-            for fut in concurrent.futures.as_completed(futs):
-                fut.result()
+    catalog = fetch_capability_catalog()
+    # Validate ALL targets/caches before the first potentially paid call.
+    plans = [run_model_evaluation(m, articles, items, results_dir, args.run_date,
+                                 max_workers=args.workers, capability_catalog=catalog, dry_run=True)
+             for m in target_models]
+    print(json.dumps({"dry_run": args.dry_run, "plans": plans}, indent=2, ensure_ascii=False))
+    if args.dry_run:
+        return
+    with concurrent.futures.ThreadPoolExecutor(max_workers=min(3, len(target_models))) as executor:
+        futures = [executor.submit(run_model_evaluation, m, articles, items, results_dir, args.run_date,
+                                   max_workers=args.workers, capability_catalog=catalog)
+                   for m in target_models]
+        for future in concurrent.futures.as_completed(futures):
+            future.result()
 
 
 if __name__ == "__main__":

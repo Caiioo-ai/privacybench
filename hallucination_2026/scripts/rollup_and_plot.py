@@ -180,14 +180,16 @@ def compute_judge_agreement_stats(all_model_data: List[Dict[str, Any]]) -> Dict[
     def _stats_for_votes(vote_dicts: List[Dict[str, str]], categories: List[str]) -> Dict[str, Any]:
         if not vote_dicts:
             return {"n_items": 0, "unanimous_pct": 100.0, "pairwise": {}, "fleiss_kappa": 1.0}
-        judges = sorted(vote_dicts[0].keys())
+        judges = sorted({j for vd in vote_dicts for j in vd.keys()})
         unanimous = sum(1 for vd in vote_dicts if len(set(vd.values())) == 1)
         pairwise: Dict[str, float] = {}
         for i in range(len(judges)):
             for j in range(i + 1, len(judges)):
                 ja, jb = judges[i], judges[j]
-                agree = sum(1 for vd in vote_dicts if vd.get(ja) == vd.get(jb))
-                pairwise[f"{ja} vs {jb}"] = round(100.0 * agree / len(vote_dicts), 2)
+                shared = [vd for vd in vote_dicts if ja in vd and jb in vd]
+                if shared:
+                    agree = sum(1 for vd in shared if vd.get(ja) == vd.get(jb))
+                    pairwise[f"{ja} vs {jb}"] = round(100.0 * agree / len(shared), 2)
 
         # Fleiss' kappa
         N = len(vote_dicts)

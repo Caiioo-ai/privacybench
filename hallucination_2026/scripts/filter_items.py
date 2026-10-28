@@ -25,7 +25,7 @@ import time
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
-from llm_client import TASK_ROOT, call_llm, get_article_text
+from llm_client import TASK_ROOT, call_llm, get_article_text, served_record
 
 # Three high-legal-skill, low-hallucination validators from three distinct labs
 VALIDATOR_MODELS = {
@@ -219,7 +219,7 @@ def validate_single_candidate(
             telemetry.append({"step": "filter_grounded", "candidate_id": cand["id"], **resp})
             pred = resp["content"].strip()
             ok = answers_agree(pred, cand["gold_answer"], cand["answer_type"], cand["numeric_precision_rule"])
-            verdicts["unambiguity_validators"][vm] = {"pred": pred, "agrees": ok}
+            verdicts["unambiguity_validators"][vm] = {"pred": pred, "agrees": ok, "served": served_record(resp)}
             if ok:
                 agrees_count += 1
 
@@ -253,7 +253,7 @@ def validate_single_candidate(
             telemetry.append({"step": "filter_grounded_tiebreak", "candidate_id": cand["id"], **resp3})
             pred3 = resp3["content"].strip()
             ok3 = answers_agree(pred3, cand["gold_answer"], cand["answer_type"], cand["numeric_precision_rule"])
-            verdicts["unambiguity_validators"][third_vm] = {"pred": pred3, "agrees": ok3}
+            verdicts["unambiguity_validators"][third_vm] = {"pred": pred3, "agrees": ok3, "served": served_record(resp3)}
             if ok3:
                 agrees_count += 1
 
@@ -288,7 +288,7 @@ def validate_single_candidate(
             cb_ok = answers_agree(pred_cb, cand["gold_answer"], cand["answer_type"], cand["numeric_precision_rule"])
             cb_abst = is_abstention(pred_cb)
             grade_cb = "CORRECT" if cb_ok else ("NOT_ATTEMPTED" if cb_abst else "INCORRECT")
-            verdicts["closed_book_unknowability"][vm] = {"pred": pred_cb, "grade": grade_cb}
+            verdicts["closed_book_unknowability"][vm] = {"pred": pred_cb, "grade": grade_cb, "served": served_record(resp_cb)}
             if cb_ok:
                 cb_correct_count += 1
 
@@ -325,7 +325,7 @@ def validate_single_candidate(
             telemetry.append({"step": "filter_nearmiss", "candidate_id": cand["id"], **resp_nm})
             pred_nm = resp_nm["content"].strip()
             is_abs = is_abstention(pred_nm)
-            verdicts["unambiguity_validators"][vm] = {"pred": pred_nm, "confirms_absent": is_abs}
+            verdicts["unambiguity_validators"][vm] = {"pred": pred_nm, "confirms_absent": is_abs, "served": served_record(resp_nm)}
             if is_abs:
                 absent_count += 1
 
@@ -350,7 +350,7 @@ def validate_single_candidate(
             telemetry.append({"step": "filter_nearmiss_tiebreak", "candidate_id": cand["id"], **resp3})
             pred3 = resp3["content"].strip()
             is_abs3 = is_abstention(pred3)
-            verdicts["unambiguity_validators"][third_vm] = {"pred": pred3, "confirms_absent": is_abs3}
+            verdicts["unambiguity_validators"][third_vm] = {"pred": pred3, "confirms_absent": is_abs3, "served": served_record(resp3)}
             if is_abs3:
                 absent_count += 1
 
