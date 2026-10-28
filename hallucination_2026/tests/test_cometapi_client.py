@@ -39,12 +39,13 @@ class Cost(unittest.TestCase):
         usage = {'prompt_tokens': 101, 'completion_tokens': 0, 'cached_tokens': 0, 'cache_write_tokens': 0}
         self.assertEqual(cc.cost_usd(pricing, usage)[1]['tier'], 'long_context')
 
-    def test_an_unpriced_token_kind_fails_loud(self):
+    def test_an_unpriced_token_kind_is_billed_at_input_and_says_so(self):
         pricing = {'currency': 'USD / M Tokens', 'billing_mode': 'tiered_expr', 'ratio': 0.8,
                    'billing_expr': 'len <= 100 ? tier("s", p * 1 + c * 2) : tier("l", p * 1 + c * 2)'}
         usage = {'prompt_tokens': 50, 'completion_tokens': 1, 'cached_tokens': 10, 'cache_write_tokens': 0}
-        with self.assertRaises(cc.CometApiError):
-            cc.cost_usd(pricing, usage)
+        cost, basis = cc.cost_usd(pricing, usage)
+        self.assertAlmostEqual(cost, 0.8 * (50 * 1 + 1 * 2) / 1e6, places=12)
+        self.assertEqual(basis['assumptions'], ['cache-read-billed-at-input-rate'])
 
 
 class Usage(unittest.TestCase):
@@ -167,3 +168,56 @@ class Retries(unittest.TestCase):
             with self.assertRaises(RuntimeError):
                 self.llm.call_llm('x/m', [{'role': 'user', 'content': 'q'}], max_retries=3)
         self.assertEqual(call.call_count, 1)
+
+
+class PriceExpressions(unittest.TestCase):
+    """Every billing_expr shape a routed model used on 2026-10-28, and refusal of anything else before a call is sent."""
+    USAGE = {'prompt_tokens': 1_000_000, 'completion_tokens': 1_000_000, 'cached_tokens': 0, 'cache_write_tokens': 0}
+
+    def price(self, expr):
+        return {'currency': 'USD / M Tokens', 'billing_mode': 'tiered_expr', 'billing_expr': expr, 'ratio': 0.8}
+
+    def test_single_tier(self):
+        # claude-opus-5.5's live expression: one tier, no length condition.
+        cost, basis = cc.cost_usd(self.price('tier("base", p * 4 + c * 20 + cr * 0.2 + cc * 5 + cc1h * 8)'), self.USAGE)
+        self.assertAlmostEqual(cost, 0.8 * 24, places=6)
+        self.assertEqual(basis['tier'], 'base')
+
+    def test_time_of_day_multipliers_are_read_at_the_call_time(self):
+        from datetime import datetime, timezone
+        # deepseek-v4.1-flash's live expression: x2 on weekdays (1-5, Sunday = 0) at 01-04 and 06-10 UTC.
+        expr = ('(tier("base", p * 0.15 + c * 0.6 + cr * 0.003)) * (weekday("UTC") >= 1 && weekday("UTC") < 6 && '
+                'hour("UTC") >= 1 && hour("UTC") < 4 ? 2 : 1) * (weekday("UTC") >= 1 && weekday("UTC") < 6 && '
+                'hour("UTC") >= 6 && hour("UTC") < 10 ? 2 : 1)')
+        base = 0.8 * 0.75
+        for when, factor in ((datetime(2026, 10, 27, 2, 0, tzinfo=timezone.utc), 2),   # Tuesday 02:00
+                             (datetime(2026, 10, 27, 5, 0, tzinfo=timezone.utc), 1),   # Tuesday 05:00
+                             (datetime(2026, 10, 27, 7, 30, tzinfo=timezone.utc), 2),  # Tuesday 07:30
+                             (datetime(2026, 10, 31, 2, 0, tzinfo=timezone.utc), 1)):  # Saturday 02:00
+            with self.subTest(when=when.isoformat()):
+                cost, basis = cc.cost_usd(self.price(expr), self.USAGE, at=when)
+                self.assertAlmostEqual(cost, base * factor, places=6)
+                self.assertEqual(basis['billed_at'], when.isoformat())
+
+    def test_an_unknown_function_is_refused_when_the_route_is_checked(self):
+        catalog = {'models': [{'id': 'm1', 'supported_endpoint_types': ['openai']}],
+                   'pricing': [{'id': 'm1', 'pricing': self.price('tier("base", p * 1 + c * 2) * month("UTC")')}]}
+        with self.assertRaises(cc.CometApiError):
+            cc.route_evidence(catalog, {'model': 'm1', 'wire': 'openai-chat'})
+
+
+class InjectedInstructions(unittest.TestCase):
+    """A CometAPI channel backed by Codex answers under Codex's ~4.2k-token agent prompt (2/24 gpt-6-astra calls on
+    2026-10-28; echoed as `instructions`). PrivacyBench never sends instructions, so such a call is not the benchmark."""
+    def test_a_response_carrying_instructions_is_refused(self):
+        data = {'model': 'gpt-6-astra', 'status': 'completed', 'instructions': 'You are Codex, an agent based on GPT-6.',
+                'output': [{'type': 'message', 'content': [{'type': 'output_text', 'text': 'ok'}]}],
+                'usage': {'input_tokens': 4229, 'output_tokens': 5}}
+        with self.assertRaisesRegex(cc.CometApiError, 'instructions'):
+            cc.parse_response('openai-responses', data)
+
+    def test_a_response_without_instructions_is_read(self):
+        data = {'model': 'gpt-6-astra', 'status': 'completed', 'instructions': None,
+                'output': [{'type': 'message', 'content': [{'type': 'output_text', 'text': 'ok'}]}],
+                'usage': {'input_tokens': 13, 'output_tokens': 5}}
+        self.assertEqual(cc.parse_response('openai-responses', data)['content'], 'ok')

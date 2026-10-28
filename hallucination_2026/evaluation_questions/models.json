@@ -555,11 +555,6 @@
         "qa_max_tokens": 32768,
         "summary_max_tokens": 32768,
         "reasoning_effort": "max"
-      },
-      "cometapi": {
-        "model": "deepseek-v4.1-flash-1017",
-        "wire": "openai-chat",
-        "served_ids": []
       }
     },
     {
@@ -686,7 +681,7 @@
     },
     {
       "model_id": "anthropic/claude-fable-5.1",
-      "display_name": "Claude Fable 5.1 (max)",
+      "display_name": "Claude Fable 5.1 (high)",
       "lab": "anthropic",
       "size_class": "frontier",
       "vendor_published_cutoff": "2025-05-01",
@@ -697,12 +692,17 @@
         "temperature": 0.0,
         "qa_max_tokens": 32768,
         "summary_max_tokens": 32768,
-        "reasoning_effort": "max"
+        "reasoning_effort": "high"
+      },
+      "cometapi": {
+        "model": "claude-fable-5-1",
+        "wire": "anthropic-messages",
+        "served_ids": []
       }
     },
     {
       "model_id": "meta/muse-wonder",
-      "display_name": "Muse Wonder (max)",
+      "display_name": "Muse Wonder (high)",
       "lab": "meta",
       "size_class": "frontier",
       "vendor_published_cutoff": "2026-04-30",
@@ -713,7 +713,12 @@
         "temperature": 0.0,
         "qa_max_tokens": 32768,
         "summary_max_tokens": 32768,
-        "reasoning_effort": "max"
+        "reasoning_effort": "high"
+      },
+      "cometapi": {
+        "model": "muse-wonder",
+        "wire": "openai-chat",
+        "served_ids": []
       }
     },
     {
@@ -734,6 +739,600 @@
       "cometapi": {
         "model": "gpt-6.1-terra",
         "wire": "openai-responses",
+        "served_ids": []
+      }
+    },
+    {
+      "model_id": "openai/gpt-6-astra",
+      "display_name": "GPT-6 Astra (high)",
+      "lab": "openai",
+      "size_class": "frontier",
+      "vendor_published_cutoff": null,
+      "public_release_date": "2026-09-04",
+      "effective_cutoff": "2026-09-04",
+      "cutoff_source": "release_date_fallback",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": "high"
+      },
+      "cometapi": {
+        "model": "gpt-6-astra",
+        "wire": "openai-responses",
+        "served_ids": []
+      }
+    },
+    {
+      "model_id": "anthropic/claude-opus-5",
+      "display_name": "Claude Opus 5 (high)",
+      "lab": "anthropic",
+      "size_class": "frontier",
+      "vendor_published_cutoff": null,
+      "public_release_date": "2026-07-24",
+      "effective_cutoff": "2026-07-24",
+      "cutoff_source": "release_date_fallback",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": "high"
+      },
+      "cometapi": {
+        "model": "claude-opus-5",
+        "wire": "anthropic-messages",
+        "served_ids": []
+      }
+    },
+    {
+      "model_id": "anthropic/claude-fable-5",
+      "display_name": "Claude Fable 5 (high)",
+      "lab": "anthropic",
+      "size_class": "frontier",
+      "vendor_published_cutoff": null,
+      "public_release_date": "2026-06-09",
+      "effective_cutoff": "2026-06-09",
+      "cutoff_source": "release_date_fallback",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": "high"
+      },
+      "cometapi": {
+        "model": "claude-fable-5",
+        "wire": "anthropic-messages",
+        "served_ids": []
+      }
+    },
+    {
+      "model_id": "openai/gpt-6-sol",
+      "display_name": "GPT-6 Sol (high)",
+      "lab": "openai",
+      "size_class": "frontier",
+      "vendor_published_cutoff": null,
+      "public_release_date": "2026-09-22",
+      "effective_cutoff": "2026-09-22",
+      "cutoff_source": "release_date_fallback",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": "high"
+      },
+      "cometapi": {
+        "model": "gpt-6-sol",
+        "wire": "openai-responses",
+        "served_ids": []
+      }
+    },
+    {
+      "model_id": "openai/gpt-5.6-sol",
+      "display_name": "GPT-5.6 Sol (high)",
+      "lab": "openai",
+      "size_class": "frontier",
+      "vendor_published_cutoff": null,
+      "public_release_date": "2026-07-09",
+      "effective_cutoff": "2026-07-09",
+      "cutoff_source": "release_date_fallback",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": "high"
+      },
+      "cometapi": {
+        "model": "gpt-5.6-sol",
+        "wire": "openai-responses",
+        "served_ids": []
+      }
+    },
+    {
+      "model_id": "x-ai/grok-4.6",
+      "display_name": "Grok 4.6 (high)",
+      "lab": "x-ai",
+      "size_class": "frontier",
+      "vendor_published_cutoff": null,
+      "public_release_date": "2026-08-12",
+      "effective_cutoff": "2026-08-12",
+      "cutoff_source": "release_date_fallback",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": "high"
+      },
+      "cometapi": {
+        "model": "grok-4.6",
+        "wire": "openai-chat",
+        "served_ids": []
+      }
+    },
+    {
+      "model_id": "openai/gpt-5.6-terra",
+      "display_name": "GPT-5.6 Terra (high)",
+      "lab": "openai",
+      "size_class": "mid_size",
+      "vendor_published_cutoff": null,
+      "public_release_date": "2026-07-09",
+      "effective_cutoff": "2026-07-09",
+      "cutoff_source": "release_date_fallback",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": "high"
+      },
+      "cometapi": {
+        "model": "gpt-5.6-terra",
+        "wire": "openai-responses",
+        "served_ids": []
+      }
+    },
+    {
+      "model_id": "anthropic/claude-opus-4.8",
+      "display_name": "Claude Opus 4.8 (high)",
+      "lab": "anthropic",
+      "size_class": "frontier",
+      "vendor_published_cutoff": null,
+      "public_release_date": "2026-05-27",
+      "effective_cutoff": "2026-05-27",
+      "cutoff_source": "release_date_fallback",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": "high"
+      },
+      "cometapi": {
+        "model": "claude-opus-4-8",
+        "wire": "anthropic-messages",
+        "served_ids": []
+      }
+    },
+    {
+      "model_id": "anthropic/claude-opus-4.7",
+      "display_name": "Claude Opus 4.7 (high)",
+      "lab": "anthropic",
+      "size_class": "frontier",
+      "vendor_published_cutoff": null,
+      "public_release_date": "2026-04-16",
+      "effective_cutoff": "2026-04-16",
+      "cutoff_source": "release_date_fallback",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": "high"
+      },
+      "cometapi": {
+        "model": "claude-opus-4-7",
+        "wire": "anthropic-messages",
+        "served_ids": []
+      }
+    },
+    {
+      "model_id": "qwen/qwen3.8-2.4t-a95b",
+      "display_name": "Qwen3.8 2.4T A95B (medium)",
+      "lab": "qwen",
+      "size_class": "frontier",
+      "vendor_published_cutoff": null,
+      "public_release_date": "2026-08-12",
+      "effective_cutoff": "2026-08-12",
+      "cutoff_source": "release_date_fallback",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": "medium"
+      },
+      "cometapi": {
+        "model": "qwen3.8-2.4t-a95b",
+        "wire": "openai-chat",
+        "served_ids": []
+      }
+    },
+    {
+      "model_id": "google/gemini-3.7-flash",
+      "display_name": "Gemini 3.7 Flash (high)",
+      "lab": "google",
+      "size_class": "mid_size",
+      "vendor_published_cutoff": null,
+      "public_release_date": "2026-08-13",
+      "effective_cutoff": "2026-08-13",
+      "cutoff_source": "release_date_fallback",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": "high"
+      },
+      "cometapi": {
+        "model": "gemini-3.7-flash",
+        "wire": "gemini",
+        "served_ids": []
+      }
+    },
+    {
+      "model_id": "openai/gpt-5.4",
+      "display_name": "GPT-5.4 (high)",
+      "lab": "openai",
+      "size_class": "frontier",
+      "vendor_published_cutoff": null,
+      "public_release_date": "2026-03-05",
+      "effective_cutoff": "2026-03-05",
+      "cutoff_source": "release_date_fallback",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": "high"
+      },
+      "cometapi": {
+        "model": "gpt-5.4",
+        "wire": "openai-responses",
+        "served_ids": [
+          "gpt-5.4-2026-03-05"
+        ]
+      }
+    },
+    {
+      "model_id": "x-ai/grok-4.5",
+      "display_name": "Grok 4.5 (high)",
+      "lab": "x-ai",
+      "size_class": "frontier",
+      "vendor_published_cutoff": null,
+      "public_release_date": "2026-07-08",
+      "effective_cutoff": "2026-07-08",
+      "cutoff_source": "release_date_fallback",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": "high"
+      },
+      "cometapi": {
+        "model": "grok-4.5",
+        "wire": "openai-chat",
+        "served_ids": []
+      }
+    },
+    {
+      "model_id": "openai/gpt-5.5",
+      "display_name": "GPT-5.5 (high)",
+      "lab": "openai",
+      "size_class": "frontier",
+      "vendor_published_cutoff": null,
+      "public_release_date": "2026-04-24",
+      "effective_cutoff": "2026-04-24",
+      "cutoff_source": "release_date_fallback",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": "high"
+      },
+      "cometapi": {
+        "model": "gpt-5.5",
+        "wire": "openai-chat",
+        "served_ids": [
+          "gpt-5.5-2026-04-24"
+        ]
+      }
+    },
+    {
+      "model_id": "anthropic/claude-sonnet-5",
+      "display_name": "Claude Sonnet 5 (high)",
+      "lab": "anthropic",
+      "size_class": "frontier",
+      "vendor_published_cutoff": null,
+      "public_release_date": "2026-06-30",
+      "effective_cutoff": "2026-06-30",
+      "cutoff_source": "release_date_fallback",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": "high"
+      },
+      "cometapi": {
+        "model": "claude-sonnet-5",
+        "wire": "anthropic-messages",
+        "served_ids": []
+      }
+    },
+    {
+      "model_id": "deepseek/deepseek-v4-flash-0731",
+      "display_name": "DeepSeek V4 Flash 0731 (high)",
+      "lab": "deepseek",
+      "size_class": "open_weight_large",
+      "vendor_published_cutoff": null,
+      "public_release_date": "2026-07-31",
+      "effective_cutoff": "2026-07-31",
+      "cutoff_source": "release_date_fallback",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": "high"
+      },
+      "cometapi": {
+        "model": "deepseek-v4-flash-0731",
+        "wire": "openai-chat",
+        "served_ids": []
+      }
+    },
+    {
+      "model_id": "google/gemini-3.6-flash",
+      "display_name": "Gemini 3.6 Flash (high)",
+      "lab": "google",
+      "size_class": "mid_size",
+      "vendor_published_cutoff": null,
+      "public_release_date": "2026-07-21",
+      "effective_cutoff": "2026-07-21",
+      "cutoff_source": "release_date_fallback",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": "high"
+      },
+      "cometapi": {
+        "model": "gemini-3.6-flash",
+        "wire": "gemini",
+        "served_ids": []
+      }
+    },
+    {
+      "model_id": "z-ai/glm-5.2",
+      "display_name": "GLM 5.2 (high)",
+      "lab": "z-ai",
+      "size_class": "frontier",
+      "vendor_published_cutoff": null,
+      "public_release_date": "2026-06-16",
+      "effective_cutoff": "2026-06-16",
+      "cutoff_source": "release_date_fallback",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": "high"
+      },
+      "cometapi": {
+        "model": "glm-5.2",
+        "wire": "openai-chat",
+        "served_ids": []
+      }
+    },
+    {
+      "model_id": "google/gemini-3.5-flash",
+      "display_name": "Gemini 3.5 Flash (high)",
+      "lab": "google",
+      "size_class": "mid_size",
+      "vendor_published_cutoff": null,
+      "public_release_date": "2026-05-19",
+      "effective_cutoff": "2026-05-19",
+      "cutoff_source": "release_date_fallback",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": "high"
+      },
+      "cometapi": {
+        "model": "gemini-3.5-flash",
+        "wire": "gemini",
+        "served_ids": []
+      }
+    },
+    {
+      "model_id": "openai/gpt-5.3-codex",
+      "display_name": "GPT-5.3-Codex (high)",
+      "lab": "openai",
+      "size_class": "frontier",
+      "vendor_published_cutoff": null,
+      "public_release_date": "2026-02-24",
+      "effective_cutoff": "2026-02-24",
+      "cutoff_source": "release_date_fallback",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": "high"
+      },
+      "cometapi": {
+        "model": "gpt-5.3-codex",
+        "wire": "openai-responses",
+        "served_ids": []
+      }
+    },
+    {
+      "model_id": "anthropic/claude-opus-4.6",
+      "display_name": "Claude Opus 4.6 (high)",
+      "lab": "anthropic",
+      "size_class": "frontier",
+      "vendor_published_cutoff": null,
+      "public_release_date": "2026-02-04",
+      "effective_cutoff": "2026-02-04",
+      "cutoff_source": "release_date_fallback",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": "high"
+      },
+      "cometapi": {
+        "model": "claude-opus-4-6",
+        "wire": "anthropic-messages",
+        "served_ids": []
+      }
+    },
+    {
+      "model_id": "openai/gpt-5.2",
+      "display_name": "GPT-5.2 (high)",
+      "lab": "openai",
+      "size_class": "frontier",
+      "vendor_published_cutoff": null,
+      "public_release_date": "2025-12-10",
+      "effective_cutoff": "2025-12-10",
+      "cutoff_source": "release_date_fallback",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": "high"
+      },
+      "cometapi": {
+        "model": "gpt-5.2",
+        "wire": "openai-responses",
+        "served_ids": []
+      }
+    },
+    {
+      "model_id": "anthropic/claude-sonnet-4.6",
+      "display_name": "Claude Sonnet 4.6 (high)",
+      "lab": "anthropic",
+      "size_class": "frontier",
+      "vendor_published_cutoff": null,
+      "public_release_date": "2026-02-17",
+      "effective_cutoff": "2026-02-17",
+      "cutoff_source": "release_date_fallback",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": "high"
+      },
+      "cometapi": {
+        "model": "claude-sonnet-4-6",
+        "wire": "anthropic-messages",
+        "served_ids": []
+      }
+    },
+    {
+      "model_id": "google/gemini-3.1-pro-preview",
+      "display_name": "Gemini 3.1 Pro Preview (high)",
+      "lab": "google",
+      "size_class": "frontier",
+      "vendor_published_cutoff": null,
+      "public_release_date": "2026-02-19",
+      "effective_cutoff": "2026-02-19",
+      "cutoff_source": "release_date_fallback",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": "high"
+      },
+      "cometapi": {
+        "model": "gemini-3.1-pro-preview",
+        "wire": "gemini",
+        "served_ids": []
+      }
+    },
+    {
+      "model_id": "qwen/qwen3.7-max",
+      "display_name": "Qwen3.7 Max",
+      "lab": "qwen",
+      "size_class": "frontier",
+      "vendor_published_cutoff": null,
+      "public_release_date": "2026-05-21",
+      "effective_cutoff": "2026-05-21",
+      "cutoff_source": "release_date_fallback",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": null
+      },
+      "cometapi": {
+        "model": "qwen3.7-max",
+        "wire": "openai-chat",
+        "served_ids": []
+      }
+    },
+    {
+      "model_id": "z-ai/glm-5",
+      "display_name": "GLM 5",
+      "lab": "z-ai",
+      "size_class": "frontier",
+      "vendor_published_cutoff": null,
+      "public_release_date": "2026-02-11",
+      "effective_cutoff": "2026-02-11",
+      "cutoff_source": "release_date_fallback",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": null
+      },
+      "cometapi": {
+        "model": "glm-5",
+        "wire": "openai-chat",
+        "served_ids": [
+          "GLM-5"
+        ]
+      }
+    },
+    {
+      "model_id": "moonshotai/kimi-k2.6",
+      "display_name": "Kimi K2.6",
+      "lab": "moonshotai",
+      "size_class": "frontier",
+      "vendor_published_cutoff": null,
+      "public_release_date": "2026-04-20",
+      "effective_cutoff": "2026-04-20",
+      "cutoff_source": "release_date_fallback",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": null
+      },
+      "cometapi": {
+        "model": "kimi-k2.6",
+        "wire": "openai-chat",
+        "served_ids": []
+      }
+    },
+    {
+      "model_id": "qwen/qwen3.6-plus",
+      "display_name": "Qwen3.6 Plus",
+      "lab": "qwen",
+      "size_class": "mid_size",
+      "vendor_published_cutoff": null,
+      "public_release_date": "2026-04-02",
+      "effective_cutoff": "2026-04-02",
+      "cutoff_source": "release_date_fallback",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": null
+      },
+      "cometapi": {
+        "model": "qwen3.6-plus",
+        "wire": "openai-chat",
         "served_ids": []
       }
     }

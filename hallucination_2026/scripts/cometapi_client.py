@@ -21,6 +21,7 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 import hashlib
+import http.client
 import json
 import os
 import re
@@ -28,6 +29,7 @@ import time
 import urllib.error
 import urllib.request
 from typing import Any, Dict, List, Optional, Tuple
+from zoneinfo import ZoneInfo
 
 BASE_URL = 'https://api.cometapi.com'
 MODELS_URL = f'{BASE_URL}/v1/models'
@@ -49,11 +51,18 @@ class CometApiError(RuntimeError):
     pass
 
 
-def _get(url: str, key: str) -> Tuple[Any, bytes]:
-    req = urllib.request.Request(url, headers={'Authorization': f'Bearer {key}'})
-    with urllib.request.urlopen(req, timeout=60) as response:
-        raw = response.read()
-    return json.loads(raw), raw
+def _get(url: str, key: str, attempts: int = 3) -> Tuple[Any, bytes]:
+    """A catalogue GET (no cost), retried: the 450 KB gateway catalogue has arrived truncated."""
+    for attempt in range(1, attempts + 1):
+        try:
+            req = urllib.request.Request(url, headers={'Authorization': f'Bearer {key}'})
+            with urllib.request.urlopen(req, timeout=60) as response:
+                raw = response.read()
+            return json.loads(raw), raw
+        except (http.client.IncompleteRead, urllib.error.URLError, ValueError):
+            if attempt == attempts:
+                raise
+            time.sleep(2 * attempt)
 
 
 def api_key() -> str:
@@ -146,27 +155,131 @@ def route_evidence(catalog: dict, route: dict) -> dict:
         raise CometApiError(f'{model}: expected one CometAPI price, found {len(distinct)}')
     if not _declares(words, wire):
         raise CometApiError(f'{model}: CometAPI does not declare the {wire} wire (declares {sorted(words)})')
-    return {'model': model, 'wire': wire, 'declared_endpoints': sorted(words), 'pricing': json.loads(distinct.pop())}
+    pricing = json.loads(distinct.pop())
+    try:
+        # A price this client cannot read must stop the run before a call is paid for, not after.
+        cost_usd(pricing, {'prompt_tokens': 4, 'completion_tokens': 1, 'cached_tokens': 1, 'cache_write_tokens': 1})
+    except CometApiError as e:
+        raise CometApiError(f'{model}: unreadable CometAPI price: {e}') from None
+    return {'model': model, 'wire': wire, 'declared_endpoints': sorted(words), 'pricing': pricing}
 
 
 # ── Cost ─────────────────────────────────────────────────────────────────────────────────────────────────────────
+# CometAPI's `billing_expr` grammar, as live on 2026-10-28: per-million rates over token counts (p uncached prompt,
+# c completion, cr cache read, cc cache write, cc1h one-hour cache write), `len` (prompt length) tiers, and
+# weekday()/hour() peak multipliers (Sunday = 0). Parsed, never eval'd; anything else is refused.
 
-_TIERED = re.compile(r'^len\s*(<=|<)\s*(\d+)\s*\?\s*tier\("([\w-]+)",\s*(.+?)\)\s*:\s*tier\("([\w-]+)",\s*(.+?)\)$')
-_TERM = re.compile(r'^(\w+)\s*\*\s*([0-9.]+)$')
-
-
-def _rates(sum_expression: str) -> Dict[str, float]:
-    rates: Dict[str, float] = {}
-    for term in sum_expression.split('+'):
-        match = _TERM.match(term.strip())
-        if not match or match.group(1) not in PRICE_VARIABLES or match.group(1) in rates:
-            raise CometApiError(f'unreadable price term {term.strip()!r}')
-        rates[match.group(1)] = float(match.group(2))
-    return rates
+_TOKEN = re.compile(r'\s*(?:(\d+(?:\.\d+)?)|("[^"]*")|([A-Za-z_]\w*)|(<=|>=|==|!=|&&|\|\||[-+*/()<>?:,]))')
+_VARIABLES = {'p', 'c', 'cr', 'cc', 'cc1h', 'len'}
 
 
-def price_rates(pricing: dict, prompt_tokens: int) -> Tuple[Dict[str, float], dict]:
-    """Per-million rates for each billed token kind at this prompt length, and the basis they were read from."""
+class _Expression:
+    def __init__(self, text: str, variables: Dict[str, float], at: datetime):
+        self.tokens, pos = [], 0
+        text = text.strip()
+        while pos < len(text):
+            match = _TOKEN.match(text, pos)
+            if not match or match.end() == pos:
+                raise CometApiError(f'unreadable price expression at {text[pos:pos + 20]!r}')
+            self.tokens.append(next(g for g in match.groups() if g is not None))
+            pos = match.end()
+        self.i, self.variables, self.at, self.tiers, self.names = 0, variables, at, [], set()
+
+    def peek(self):
+        return self.tokens[self.i] if self.i < len(self.tokens) else None
+
+    def take(self, expected=None):
+        token = self.peek()
+        if token is None or (expected is not None and token != expected):
+            raise CometApiError(f'price expression: expected {expected!r}, found {token!r}')
+        self.i += 1
+        return token
+
+    def parse(self):
+        value = self.ternary()
+        if self.peek() is not None:
+            raise CometApiError(f'price expression: trailing {self.peek()!r}')
+        return value
+
+    def ternary(self):
+        condition = self.logical_or()
+        if self.peek() != '?':
+            return condition
+        self.take('?')
+        # Both branches are parsed (so a malformed one is refused); only the chosen one counts.
+        tiers_before = list(self.tiers)
+        yes = self.ternary()
+        tiers_yes = list(self.tiers)
+        self.tiers = list(tiers_before)
+        self.take(':')
+        no = self.ternary()
+        if condition:
+            self.tiers = tiers_yes
+        return yes if condition else no
+
+    def logical_or(self):
+        value = self.logical_and()
+        while self.peek() == '||':
+            self.take(); right = self.logical_and(); value = bool(value) or bool(right)
+        return value
+
+    def logical_and(self):
+        value = self.comparison()
+        while self.peek() == '&&':
+            self.take(); right = self.comparison(); value = bool(value) and bool(right)
+        return value
+
+    def comparison(self):
+        left = self.additive()
+        op = self.peek()
+        if op in ('<=', '<', '>=', '>', '==', '!='):
+            self.take(); right = self.additive()
+            return {'<=': left <= right, '<': left < right, '>=': left >= right, '>': left > right,
+                    '==': left == right, '!=': left != right}[op]
+        return left
+
+    def additive(self):
+        value = self.multiplicative()
+        while self.peek() in ('+', '-'):
+            op = self.take(); right = self.multiplicative()
+            value = value + right if op == '+' else value - right
+        return value
+
+    def multiplicative(self):
+        value = self.unary()
+        while self.peek() in ('*', '/'):
+            op = self.take(); right = self.unary()
+            value = value * right if op == '*' else value / right
+        return value
+
+    def unary(self):
+        token = self.take()
+        if token == '(':
+            value = self.ternary(); self.take(')'); return value
+        if re.fullmatch(r'\d+(?:\.\d+)?', token):
+            return float(token)
+        if token in _VARIABLES:
+            self.names.add(token)
+            return self.variables[token]
+        if token in ('tier', 'weekday', 'hour') and self.peek() == '(':
+            self.take('(')
+            label = self.take()
+            if not (label.startswith('"') and label.endswith('"')):
+                raise CometApiError(f'price expression: {token}() takes a quoted name, got {label!r}')
+            label = label[1:-1]
+            if token == 'tier':
+                self.take(','); value = self.ternary(); self.take(')')
+                self.tiers.append(label)
+                return value
+            self.take(')')
+            local = self.at.astimezone(ZoneInfo(label))
+            return float(local.isoweekday() % 7) if token == 'weekday' else float(local.hour)
+        raise CometApiError(f'price expression: unknown name {token!r}')
+
+
+def cost_usd(pricing: dict, usage: dict, at: Optional[datetime] = None) -> Tuple[float, dict]:
+    """ratio x catalogue price of one call's tokens; uncached prompt = whole prompt - cache reads - cache writes.
+    A token kind the price does not name is billed at the input rate, and the basis records that assumption."""
     if not isinstance(pricing, dict) or pricing.get('currency') != 'USD / M Tokens':
         raise CometApiError(f'unsupported CometAPI pricing {pricing!r}')
     if pricing.get('per_request') or pricing.get('per_second'):
@@ -174,49 +287,41 @@ def price_rates(pricing: dict, prompt_tokens: int) -> Tuple[Dict[str, float], di
     ratio = pricing.get('ratio')
     if not isinstance(ratio, (int, float)) or not 0 < ratio <= 1:
         raise CometApiError(f'unreadable CometAPI ratio {ratio!r}')
-    if pricing.get('billing_mode') == 'tiered_expr':
-        match = _TIERED.match(str(pricing.get('billing_expr', '')).strip())
-        if not match:
-            raise CometApiError(f'unreadable billing_expr {pricing.get("billing_expr")!r}')
-        comparator, limit, short_name, short_sum, long_name, long_sum = match.groups()
-        short = prompt_tokens <= int(limit) if comparator == '<=' else prompt_tokens < int(limit)
-        tier, expression = (short_name, short_sum) if short else (long_name, long_sum)
-        rates = _rates(expression)
-        basis = {'mode': 'tiered_expr', 'billing_expr': pricing['billing_expr'], 'tier': tier, 'ratio': ratio}
-    else:
-        if not isinstance(pricing.get('input'), (int, float)) or not isinstance(pricing.get('output'), (int, float)):
-            raise CometApiError(f'pricing without input/output rates {pricing!r}')
-        rates = {'p': float(pricing['input']), 'c': float(pricing['output'])}
-        assumptions = []
-        if isinstance(pricing.get('cached_input'), (int, float)):
-            rates['cr'] = float(pricing['cached_input'])
-        else:
-            rates['cr'] = rates['p']
-            assumptions.append('cache-read-billed-at-input-rate')
-        if isinstance(pricing.get('cache_write'), (int, float)):
-            rates['cc'] = float(pricing['cache_write'])
-        else:
-            rates['cc'] = rates['p']
-            assumptions.append('cache-write-billed-at-input-rate')
-        basis = {'mode': 'flat', 'input': pricing['input'], 'output': pricing['output'],
-                 'cached_input': pricing.get('cached_input'), 'cache_write': pricing.get('cache_write'),
-                 'ratio': ratio, 'assumptions': assumptions}
-    return rates, basis
-
-
-def cost_usd(pricing: dict, usage: dict) -> Tuple[float, dict]:
-    """ratio x catalogue price of one call's tokens; uncached prompt = whole prompt - cache reads - cache writes."""
+    at = at or datetime.now(timezone.utc)
     cached, written = usage['cached_tokens'], usage['cache_write_tokens']
     uncached = usage['prompt_tokens'] - cached - written
     if uncached < 0:
         raise CometApiError(f'cached + written tokens exceed the prompt: {usage}')
-    rates, basis = price_rates(pricing, usage['prompt_tokens'])
     counts = {'p': uncached, 'c': usage['completion_tokens'], 'cr': cached, 'cc': written, 'cc1h': 0}
-    for kind, count in counts.items():
-        if count and kind not in rates:
-            raise CometApiError(f'{count} {kind} tokens billed, but the price names no {kind} rate')
-    list_usd = sum(rates.get(kind, 0.0) * count for kind, count in counts.items()) / 1e6
-    return round(list_usd * basis['ratio'], 8), basis
+    assumptions: List[str] = []
+    if pricing.get('billing_mode') == 'tiered_expr':
+        expression = str(pricing.get('billing_expr', ''))
+        probe = _Expression(expression, {**counts, 'len': usage['prompt_tokens']}, at)
+        probe.parse()
+        for kind, label in (('cr', 'cache-read'), ('cc', 'cache-write')):
+            if counts[kind] and kind not in probe.names:
+                counts['p'] += counts[kind]
+                counts[kind] = 0
+                assumptions.append(f'{label}-billed-at-input-rate')
+        parsed = _Expression(expression, {**counts, 'len': usage['prompt_tokens']}, at)
+        list_usd = parsed.parse() / 1e6
+        basis = {'mode': 'tiered_expr', 'billing_expr': expression, 'tier': parsed.tiers[-1] if parsed.tiers else None,
+                 'ratio': ratio, 'billed_at': at.isoformat(), 'assumptions': assumptions}
+    else:
+        if not isinstance(pricing.get('input'), (int, float)) or not isinstance(pricing.get('output'), (int, float)):
+            raise CometApiError(f'pricing without input/output rates {pricing!r}')
+        rates = {'p': float(pricing['input']), 'c': float(pricing['output'])}
+        for kind, field, label in (('cr', 'cached_input', 'cache-read'), ('cc', 'cache_write', 'cache-write')):
+            if isinstance(pricing.get(field), (int, float)):
+                rates[kind] = float(pricing[field])
+            else:
+                rates[kind] = rates['p']
+                assumptions.append(f'{label}-billed-at-input-rate')
+        list_usd = sum(rates.get(kind, 0.0) * count for kind, count in counts.items()) / 1e6
+        basis = {'mode': 'flat', 'input': pricing['input'], 'output': pricing['output'],
+                 'cached_input': pricing.get('cached_input'), 'cache_write': pricing.get('cache_write'),
+                 'ratio': ratio, 'billed_at': at.isoformat(), 'assumptions': assumptions}
+    return round(list_usd * ratio, 8), basis
 
 
 # ── Wires ────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -303,6 +408,10 @@ def parse_response(wire: str, data: dict) -> dict:
                  'cached_tokens': read, 'cache_write_tokens': written}
         return {'content': text, 'finish_reason': finish, 'served': data.get('model'), 'usage': usage}
     if wire == 'openai-responses':
+        if data.get('instructions'):
+            # A Codex-backed channel answers under its own agent prompt; PrivacyBench sends no instructions.
+            raise CometApiError(f'a CometAPI channel applied instructions to {data.get("model")!r}: '
+                                f'{str(data["instructions"])[:60]!r}')
         u = data.get('usage') or {}
         details = u.get('input_tokens_details') or {}
         text = ''.join(c.get('text', '') for o in data.get('output') or [] if isinstance(o, dict) and o.get('type') == 'message'
