@@ -171,7 +171,8 @@
         "wire": "openai-chat",
         "served_ids": [
           "accounts/fireworks/models/kimi-k3",
-          "moonshotai/kimi-k3"
+          "moonshotai/kimi-k3",
+          "FW-Kimi-K3"
         ]
       }
     },
@@ -539,11 +540,6 @@
         "qa_max_tokens": 4096,
         "summary_max_tokens": 4096,
         "reasoning_effort": null
-      },
-      "cometapi": {
-        "model": "mimo-v2.6-flash",
-        "wire": "openai-chat",
-        "served_ids": []
       }
     },
     {
@@ -866,11 +862,6 @@
         "qa_max_tokens": 32768,
         "summary_max_tokens": 32768,
         "reasoning_effort": "high"
-      },
-      "cometapi": {
-        "model": "grok-4.6",
-        "wire": "openai-chat",
-        "served_ids": []
       }
     },
     {
@@ -1015,11 +1006,6 @@
         "qa_max_tokens": 32768,
         "summary_max_tokens": 32768,
         "reasoning_effort": "high"
-      },
-      "cometapi": {
-        "model": "grok-4.5",
-        "wire": "openai-chat",
-        "served_ids": []
       }
     },
     {

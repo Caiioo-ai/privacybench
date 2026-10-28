@@ -1,8 +1,9 @@
 """Per-call prompt-token audit of a PrivacyBench result: finds calls a gateway channel padded with its own prompt.
 
 A model reads only the benchmark's prompt, so its billed prompt tokens are fixed by the item. Two checks:
-- against a reference run of the same model (same tokenizer, e.g. its earlier OpenRouter run): every item's count
-  moves by one constant (a gateway's fixed framing) or not at all; a call off that constant was padded;
+- against a reference run of the same model (same tokenizer, e.g. its earlier OpenRouter run): within each prompt
+  mode every item moves by one constant (a host's chat template: glm-5.3-flash's closed-book prompts sit 15 below its
+  OpenRouter run) give or take host jitter (up to 32 on glm-5.3); a call further off than that was padded;
 - self-consistency, where no reference exists: an article's grounded prompts differ only by their questions,
   closed-book prompts only by theirs, and each summary sits a constant below its article's grounded prompts.
   Clean runs spread up to 77.5 / 74 / 22 tokens (all 37 results at 9f5ef22), hence the thresholds.
@@ -20,7 +21,10 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Any, Dict, List
 
-REFERENCE_THRESHOLD = 5
+REFERENCE_THRESHOLD = 60
+# A per-mode constant up to this is a host's chat template (minimax-m3.1-flash +19); beyond it, a hidden prompt on
+# every call (mimo-v2.6-flash on CometAPI: +792), so the whole mode is flagged.
+TEMPLATE_TOLERANCE = 20
 SELF_THRESHOLDS = {'grounded': 100, 'closed_book': 100, 'summary': 60}
 
 
@@ -40,13 +44,20 @@ def _tokens(row: Dict[str, Any]) -> int:
     return int(row['telemetry']['prompt_tokens'])
 
 
+def _family(eval_mode: str) -> str:
+    return 'grounded' if eval_mode.startswith('grounded') else eval_mode
+
+
 def against_reference(new: Dict[str, Any], reference: Dict[str, Any], threshold: int = REFERENCE_THRESHOLD) -> List[dict]:
     ref = {_key(r): _tokens(r) for r in _rows(reference) if _ok(r)}
     deltas = {_key(r): _tokens(r) - ref[_key(r)] for r in _rows(new) if _ok(r) and _key(r) in ref}
-    if not deltas:
-        return []
-    offset = statistics.median(deltas.values())
-    return [{'key': k, 'excess': d - offset} for k, d in sorted(deltas.items()) if abs(d - offset) > threshold]
+    by_family = defaultdict(list)
+    for key, delta in deltas.items():
+        by_family[_family(key[0])].append(delta)
+    offsets = {family: statistics.median(values) for family, values in by_family.items()}
+    template = {family: offset if abs(offset) <= TEMPLATE_TOLERANCE else 0 for family, offset in offsets.items()}
+    return [{'key': k, 'excess': d - template[_family(k[0])]} for k, d in sorted(deltas.items())
+            if abs(d - template[_family(k[0])]) > threshold]
 
 
 def self_consistency(data: Dict[str, Any], thresholds: Dict[str, int] = SELF_THRESHOLDS) -> List[dict]:

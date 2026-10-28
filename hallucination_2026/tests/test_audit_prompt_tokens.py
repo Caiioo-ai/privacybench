@@ -36,6 +36,28 @@ class Reference(unittest.TestCase):
         self.assertEqual([f['key'] for f in flagged], [('grounded_answerable', 'a0_q3')])
 
 
+    def test_a_per_mode_template_offset_and_small_jitter_are_not_padding(self):
+        # Live 2026-10-28: glm-5.3-flash's closed-book prompts sit 15 below its OpenRouter run on every item, and
+        # glm-5.3 items jitter by up to 32 between hosts; neither is a padded prompt.
+        new = []
+        for n, r in enumerate(CLEAN):
+            shift = -15 if r['eval_mode'] == 'closed_book' else 0
+            jitter = 32 if n % 7 == 0 else 0
+            new.append(dict(r, telemetry={'prompt_tokens': r['telemetry']['prompt_tokens'] + shift + jitter}))
+        self.assertEqual(audit.against_reference(result(new), result(CLEAN)), [])
+
+
+    def test_a_large_constant_offset_is_a_hidden_prompt_not_a_template(self):
+        # Live 2026-10-28: mimo-v2.6-flash on CometAPI read ~790 more tokens than on OpenRouter on most calls.
+        new = [dict(r, telemetry={'prompt_tokens': r['telemetry']['prompt_tokens'] + 792}) for r in CLEAN]
+        self.assertEqual(len(audit.against_reference(result(new), result(CLEAN))), len(CLEAN))
+
+    def test_a_small_constant_offset_is_a_template(self):
+        # Live 2026-10-28: minimax-m3.1-flash read 19 more on every call (a host's default system line).
+        new = [dict(r, telemetry={'prompt_tokens': r['telemetry']['prompt_tokens'] + 19}) for r in CLEAN]
+        self.assertEqual(audit.against_reference(result(new), result(CLEAN)), [])
+
+
 class SelfConsistency(unittest.TestCase):
     def test_clean_run_has_no_flags(self):
         self.assertEqual(audit.self_consistency(result(CLEAN)), [])

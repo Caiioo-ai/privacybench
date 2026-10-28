@@ -360,7 +360,8 @@ def _call_cometapi(model_id, messages, temperature, max_tokens, reasoning_effort
             last_error = e
             # A refused request fails the same way again; a call another channel served is retried, since CometAPI
             # spreads calls over channels and the next one usually lands on the requested model.
-            if re.match(r"HTTP 4(00|01|02|03|04)\b", str(e)):
+            # A content filter is a channel's (gpt-6.1-sol's Azure channel refused a judge prompt as invalid_prompt).
+            if re.match(r"HTTP 4(00|01|02|03|04)\b", str(e)) and "invalid_prompt" not in str(e):
                 break
         except Exception as e:
             last_error = e

@@ -162,6 +162,14 @@ class Retries(unittest.TestCase):
             self.assertEqual(self.llm.call_llm('x/m', [{'role': 'user', 'content': 'q'}], max_retries=3)['content'], 'ok')
         self.assertEqual(call.call_count, 2)
 
+    def test_a_channel_content_filter_is_retried(self):
+        # Live 2026-10-28: gpt-6.1-sol's Azure channel refused a judge prompt as invalid_prompt; others may not.
+        from unittest.mock import patch
+        refusal = cc.CometApiError('HTTP 400 for x/m via CometAPI m: {"error":{"code":"invalid_prompt","message":"flagged"}}')
+        with patch.object(cc, 'call', side_effect=[refusal, {'content': 'ok'}]) as call:
+            self.assertEqual(self.llm.call_llm('x/m', [{'role': 'user', 'content': 'q'}], max_retries=3)['content'], 'ok')
+        self.assertEqual(call.call_count, 2)
+
     def test_a_refused_request_is_not_retried(self):
         from unittest.mock import patch
         with patch.object(cc, 'call', side_effect=cc.CometApiError('HTTP 400 for x/m via CometAPI m: bad')) as call:
