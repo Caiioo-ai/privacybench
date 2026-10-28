@@ -224,7 +224,7 @@
       "cutoff_source": "vendor_published",
       "default_params": {
         "temperature": 0.0,
-        "qa_max_tokens": 1024,
+        "qa_max_tokens": 4096,
         "summary_max_tokens": 1500,
         "reasoning_effort": "high"
       },
