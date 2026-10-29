@@ -87,8 +87,9 @@ def use_gateway(gateway: str, models_file: Path) -> None:
     JUDGE_TIMEOUT.update(qa=300, summary=300)
     global JUDGE_RETRIES
     JUDGE_RETRIES = 10
+    # Snapped for every judge, whichever gateway carries it, so a judge moved off CometAPI asks what it asked there.
     catalog = fetch_capability_catalog()
-    for jm in routed:
+    for jm in JUDGE_PANEL:
         JUDGE_EFFORT[jm] = resolve_level_effort(jm, catalog, JUDGE_EFFORT_REQUESTED)["selected_effort"]
 
 

@@ -97,6 +97,17 @@ class JudgeRoutes(Panel):
         self.assertEqual(grade_eval.JUDGE_GATEWAY, {argon: 'openrouter', sol: 'openrouter', mimo: 'cometapi'})
         self.assertEqual(grade_eval.JUDGE_ROUTE_NOTES, {argon: self.REASON, sol: self.REASON})
 
+    def test_a_judge_asks_the_same_effort_whichever_gateway_carries_it(self):
+        # mimo-v2.6-pro declares no effort levels: snapped, "low" becomes none, as on the 16 files it judged on CometAPI.
+        argon, sol, mimo = grade_eval.JUDGE_PANEL
+        catalog = {'data': [{'id': jm, 'supported_parameters': ['reasoning', 'reasoning_effort'],
+                             'reasoning': {'supported_efforts': ['high', 'low']}} for jm in (argon, sol)]
+                   + [{'id': mimo, 'supported_parameters': ['reasoning'], 'reasoning': {'mandatory': True}}]}
+        self.use_cometapi_panel(self.registry(**{jm: {'cometapi_excluded': self.REASON} for jm in grade_eval.JUDGE_PANEL}),
+                                catalog)
+        self.assertEqual(set(grade_eval.JUDGE_GATEWAY.values()), {'openrouter'})
+        self.assertEqual(grade_eval.JUDGE_EFFORT, {argon: 'low', sol: 'low', mimo: None})
+
     def test_a_judge_with_no_route_and_no_reason_fails_loud(self):
         with self.assertRaises(RuntimeError):
             self.use_cometapi_panel(self.registry(**{grade_eval.JUDGE_PANEL[0]: {}}))
