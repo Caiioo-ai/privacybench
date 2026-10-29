@@ -70,6 +70,26 @@ class SelfConsistency(unittest.TestCase):
                 flagged = audit.self_consistency(result(padded))
                 self.assertEqual([f['key'] for f in flagged], [(CLEAN[index]['eval_mode'], CLEAN[index]['item_id'])])
 
+    def test_when_most_calls_are_padded_the_padded_ones_are_flagged_not_the_clean_ones(self):
+        # Live 2026-10-29: qwen3.7-max on CometAPI read ~320 more tokens on 4 of an article's 7 grounded calls. Both
+        # gateways read 3,117 for the same text on a probe, so the LOW calls were the clean ones; a median baseline
+        # re-queued them and kept the padded majority. A channel can add to our prompt, never remove from it.
+        padded = list(CLEAN)
+        for index in range(3, 8):
+            padded[index] = dict(CLEAN[index], telemetry={'prompt_tokens': CLEAN[index]['telemetry']['prompt_tokens'] + 320})
+        flagged = audit.self_consistency(result(padded))
+        self.assertEqual([f['key'] for f in flagged], [('grounded_answerable', f'a0_q{q}') for q in range(3, 8)])
+        self.assertTrue(all(f['excess'] > 0 for f in flagged))
+
+    def test_the_widest_clean_spread_measured_at_9f5ef22_is_not_padding(self):
+        # Max minus min over clean runs (all 37 results at 9f5ef22): an article's grounded prompts 96 (opus-5.5,
+        # art_07), closed-book prompts 103 (opus-5.5), summary offsets 38 (glm-5.3-flash).
+        wide = [dict(r) for r in CLEAN]
+        wide[7] = dict(CLEAN[7], telemetry={'prompt_tokens': CLEAN[0]['telemetry']['prompt_tokens'] + 96})
+        wide[32] = dict(CLEAN[32], telemetry={'prompt_tokens': CLEAN[32]['telemetry']['prompt_tokens'] + 103})
+        wide[52] = dict(CLEAN[52], telemetry={'prompt_tokens': CLEAN[52]['telemetry']['prompt_tokens'] + 38})
+        self.assertEqual(audit.self_consistency(result(wide)), [])
+
 
 class Requeue(unittest.TestCase):
     def test_flagged_rows_become_errors_a_resume_reruns(self):

@@ -6,7 +6,11 @@ A model reads only the benchmark's prompt, so its billed prompt tokens are fixed
   OpenRouter run) give or take host jitter (up to 32 on glm-5.3); a call further off than that was padded;
 - self-consistency, where no reference exists: an article's grounded prompts differ only by their questions,
   closed-book prompts only by theirs, and each summary sits a constant below its article's grounded prompts.
-  Clean runs spread up to 77.5 / 74 / 22 tokens (all 37 results at 9f5ef22), hence the thresholds.
+  A channel can add to our prompt, never remove from it, so the baseline is the LOWEST call, not the median: when most
+  of an article's calls were padded (qwen3.7-max on CometAPI, 2026-10-29: +320 on 4 of 7), a median re-queues the clean
+  ones and keeps the padded. Clean runs spread up to 96 / 103 / 38 tokens from the lowest (max minus min, all 37
+  results at 9f5ef22), hence the thresholds. A pad on EVERY call of an article is invisible here; that needs a
+  reference run.
 
 Measured 2026-10-28 on CometAPI: a Codex-backed channel adds ~4,216 tokens (it also echoes them and is refused at
 call time) and a gemini-4-argon channel adds ~132 without saying so. `--requeue` turns flagged rows into error rows,
@@ -25,7 +29,7 @@ REFERENCE_THRESHOLD = 60
 # A per-mode constant up to this is a host's chat template (minimax-m3.1-flash +19); beyond it, a hidden prompt on
 # every call (mimo-v2.6-flash on CometAPI: +792), so the whole mode is flagged.
 TEMPLATE_TOLERANCE = 20
-SELF_THRESHOLDS = {'grounded': 100, 'closed_book': 100, 'summary': 60}
+SELF_THRESHOLDS = {'grounded': 120, 'closed_book': 130, 'summary': 60}
 
 
 def _rows(data: Dict[str, Any]) -> List[Dict[str, Any]]:
@@ -66,23 +70,22 @@ def self_consistency(data: Dict[str, Any], thresholds: Dict[str, int] = SELF_THR
     for r in rows:
         if r['eval_mode'].startswith('grounded'):
             grounded[r['article_id']].append(_tokens(r))
-    grounded_median = {a: statistics.median(v) for a, v in grounded.items()}
+    grounded_floor = {a: min(v) for a, v in grounded.items()}
     flagged = []
     for r in rows:
         if r['eval_mode'].startswith('grounded'):
-            excess = _tokens(r) - grounded_median[r['article_id']]
-            if abs(excess) > thresholds['grounded']:
+            excess = _tokens(r) - grounded_floor[r['article_id']]
+            if excess > thresholds['grounded']:
                 flagged.append({'key': _key(r), 'excess': excess})
     closed = [r for r in rows if r['eval_mode'] == 'closed_book']
     if closed:
-        middle = statistics.median(_tokens(r) for r in closed)
-        flagged += [{'key': _key(r), 'excess': _tokens(r) - middle} for r in closed
-                    if abs(_tokens(r) - middle) > thresholds['closed_book']]
-    summaries = [r for r in rows if r['eval_mode'] == 'summary' and r['article_id'] in grounded_median]
+        floor = min(_tokens(r) for r in closed)
+        flagged += [{'key': _key(r), 'excess': _tokens(r) - floor} for r in closed if _tokens(r) - floor > thresholds['closed_book']]
+    summaries = [r for r in rows if r['eval_mode'] == 'summary' and r['article_id'] in grounded_floor]
     if summaries:
-        offsets = {_key(r): _tokens(r) - grounded_median[r['article_id']] for r in summaries}
-        middle = statistics.median(offsets.values())
-        flagged += [{'key': k, 'excess': o - middle} for k, o in offsets.items() if abs(o - middle) > thresholds['summary']]
+        offsets = {_key(r): _tokens(r) - grounded_floor[r['article_id']] for r in summaries}
+        floor = min(offsets.values())
+        flagged += [{'key': k, 'excess': o - floor} for k, o in offsets.items() if o - floor > thresholds['summary']]
     return sorted(flagged, key=lambda f: f['key'])
 
 
