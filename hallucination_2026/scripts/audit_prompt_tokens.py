@@ -5,13 +5,14 @@ A model reads only the benchmark's prompt, so its billed prompt tokens are fixed
   mode every item moves by one constant (a host's chat template: glm-5.3-flash's closed-book prompts sit 15 below its
   OpenRouter run) give or take host jitter (up to 32 on glm-5.3); a call further off than that was padded;
 - self-consistency, where no reference exists: an article's grounded prompts differ only by their questions,
-  closed-book prompts only by theirs, and each summary sits a constant below its article's grounded prompts.
-  A channel can add to our prompt, never remove from it, so the baseline is the LOWEST call, not the median: when most
-  of an article's calls were padded (qwen3.7-max on CometAPI, 2026-10-29: +320 on 4 of 7), a median re-queues the clean
-  ones and keeps the padded. Clean runs spread up to 96 / 103 / 38 tokens from the lowest (max minus min, all 37
-  results at 9f5ef22), hence the thresholds. A pad on EVERY call of an article is invisible here; that needs a
-  reference run.
-
+  closed-book prompts only by theirs, and each summary sits a constant below its article's grounded prompts. So each
+  call's tokens less its question's share (the model's tokens per question character, the median slope between an
+  article's calls) is a constant per article, and per run for closed-book. A channel can add to our prompt, never
+  remove from it, so the baseline is the LOWEST call, not the median: when most of an article's calls were padded
+  (qwen3.7-max on CometAPI, 2026-10-29: +320 on 4 of 7), a median re-queues the clean ones and keeps the padded.
+  Clean runs sit at most 33.3 / 56.8 / 37.1 tokens above that baseline (all 37 results at 9f5ef22), hence the
+  thresholds, which find kimi-k2.6's +78 channel (2026-10-29) inside the ~100-token spread questions alone make. A
+  pad on EVERY call of an article is invisible here; that needs a reference run.
 Measured 2026-10-28 on CometAPI: a Codex-backed channel adds ~4,216 tokens (it also echoes them and is refused at
 call time) and a gemini-4-argon channel adds ~132 without saying so. `--requeue` turns flagged rows into error rows,
 which `run_eval.py` re-runs on its next pass over the same output.
@@ -29,7 +30,9 @@ REFERENCE_THRESHOLD = 60
 # A per-mode constant up to this is a host's chat template (minimax-m3.1-flash +19); beyond it, a hidden prompt on
 # every call (mimo-v2.6-flash on CometAPI: +792), so the whole mode is flagged.
 TEMPLATE_TOLERANCE = 20
-SELF_THRESHOLDS = {'grounded': 120, 'closed_book': 130, 'summary': 60}
+SELF_THRESHOLDS = {'grounded': 50, 'closed_book': 75, 'summary': 60}
+# Calls whose questions differ by fewer characters say too little about the slope.
+MIN_SLOPE_SPAN = 20
 
 
 def _rows(data: Dict[str, Any]) -> List[Dict[str, Any]]:
@@ -64,28 +67,40 @@ def against_reference(new: Dict[str, Any], reference: Dict[str, Any], threshold:
             if abs(d - template[_family(k[0])]) > threshold]
 
 
+def _question_slope(groups: List[List[Dict[str, Any]]]) -> float:
+    """Tokens per question character: the median slope between calls of one group whose questions differ enough (0
+    when none do: then nothing varies but the pad)."""
+    slopes = [(_tokens(b) - _tokens(a)) / (len(b['question']) - len(a['question']))
+              for group in groups for i, a in enumerate(group) for b in group[i + 1:]
+              if abs(len(b['question']) - len(a['question'])) >= MIN_SLOPE_SPAN]
+    return statistics.median(slopes) if slopes else 0.0
+
+
 def self_consistency(data: Dict[str, Any], thresholds: Dict[str, int] = SELF_THRESHOLDS) -> List[dict]:
-    rows = [r for r in _rows(data) if _ok(r)]
+    # A call that reported no prompt tokens (muse-spark-1.3: empty answers with usage 0) counted nothing of our prompt.
+    rows = [r for r in _rows(data) if _ok(r) and r['telemetry'].get('prompt_tokens')]
     grounded = defaultdict(list)
     for r in rows:
         if r['eval_mode'].startswith('grounded'):
-            grounded[r['article_id']].append(_tokens(r))
-    grounded_floor = {a: min(v) for a, v in grounded.items()}
+            grounded[r['article_id']].append(r)
+    slope = _question_slope(list(grounded.values()))
+    level = {_key(r): _tokens(r) - slope * len(r['question']) for group in grounded.values() for r in group}
+    floor = {a: min(level[_key(r)] for r in group) for a, group in grounded.items()}
     flagged = []
-    for r in rows:
-        if r['eval_mode'].startswith('grounded'):
-            excess = _tokens(r) - grounded_floor[r['article_id']]
-            if excess > thresholds['grounded']:
-                flagged.append({'key': _key(r), 'excess': excess})
+    for a, group in grounded.items():
+        flagged += [{'key': _key(r), 'excess': round(level[_key(r)] - floor[a], 1)} for r in group
+                    if level[_key(r)] - floor[a] > thresholds['grounded']]
     closed = [r for r in rows if r['eval_mode'] == 'closed_book']
     if closed:
-        floor = min(_tokens(r) for r in closed)
-        flagged += [{'key': _key(r), 'excess': _tokens(r) - floor} for r in closed if _tokens(r) - floor > thresholds['closed_book']]
-    summaries = [r for r in rows if r['eval_mode'] == 'summary' and r['article_id'] in grounded_floor]
+        closed_slope = _question_slope([closed])
+        closed_level = {_key(r): _tokens(r) - closed_slope * len(r['question']) for r in closed}
+        lowest = min(closed_level.values())
+        flagged += [{'key': k, 'excess': round(v - lowest, 1)} for k, v in closed_level.items() if v - lowest > thresholds['closed_book']]
+    summaries = [r for r in rows if r['eval_mode'] == 'summary' and r['article_id'] in floor]
     if summaries:
-        offsets = {_key(r): _tokens(r) - grounded_floor[r['article_id']] for r in summaries}
-        floor = min(offsets.values())
-        flagged += [{'key': k, 'excess': o - floor} for k, o in offsets.items() if o - floor > thresholds['summary']]
+        offsets = {_key(r): _tokens(r) - floor[r['article_id']] for r in summaries}
+        lowest = min(offsets.values())
+        flagged += [{'key': k, 'excess': round(o - lowest, 1)} for k, o in offsets.items() if o - lowest > thresholds['summary']]
     return sorted(flagged, key=lambda f: f['key'])
 
 

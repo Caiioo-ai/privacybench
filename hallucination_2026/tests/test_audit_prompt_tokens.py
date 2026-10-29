@@ -12,9 +12,12 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts'))
 import audit_prompt_tokens as audit
 
 
-def row(mode, item, article, tokens, response='ok'):
-    return {'eval_mode': mode, 'item_id': item, 'article_id': article, 'task_type': 'summary' if mode == 'summary' else 'qa',
-            'response': response, 'telemetry': {'prompt_tokens': tokens}}
+def row(mode, item, article, tokens, question_chars=0, response='ok'):
+    r = {'eval_mode': mode, 'item_id': item, 'article_id': article, 'task_type': 'summary' if mode == 'summary' else 'qa',
+         'response': response, 'telemetry': {'prompt_tokens': tokens}}
+    if mode != 'summary':
+        r['question'] = 'x' * question_chars
+    return r
 
 
 def result(rows):
@@ -23,8 +26,9 @@ def result(rows):
             'summary_responses': [r for r in rows if r['task_type'] == 'summary']}
 
 
-CLEAN = ([row('grounded_answerable', f'a{a}_q{q}', f'a{a}', 3000 + 100 * a + q) for a in range(4) for q in range(8)]
-         + [row('closed_book', f'a{a}_q{q}', f'a{a}', 90 + q) for a in range(4) for q in range(5)]
+# A prompt grows with its question: here one token per 4 characters, as on the live tokenizers (0.22-0.36).
+CLEAN = ([row('grounded_answerable', f'a{a}_q{q}', f'a{a}', 3000 + 100 * a + q, 40 + 4 * q) for a in range(4) for q in range(8)]
+         + [row('closed_book', f'a{a}_q{q}', f'a{a}', 90 + q, 40 + 4 * q) for a in range(4) for q in range(5)]
          + [row('summary', f'a{a}_summary', f'a{a}', 2950 + 100 * a) for a in range(4)])
 
 
@@ -82,13 +86,38 @@ class SelfConsistency(unittest.TestCase):
         self.assertTrue(all(f['excess'] > 0 for f in flagged))
 
     def test_the_widest_clean_spread_measured_at_9f5ef22_is_not_padding(self):
-        # Max minus min over clean runs (all 37 results at 9f5ef22): an article's grounded prompts 96 (opus-5.5,
-        # art_07), closed-book prompts 103 (opus-5.5), summary offsets 38 (glm-5.3-flash).
+        # Over the 37 clean results at 9f5ef22, once each call's question length is accounted for, a call sits at most
+        # 33.3 above its article's lowest grounded call (opus-5.5), 56.8 above the lowest closed-book call (glm-5.3), and
+        # a summary 37.1 above the lowest summary offset (glm-5.3-flash).
         wide = [dict(r) for r in CLEAN]
-        wide[7] = dict(CLEAN[7], telemetry={'prompt_tokens': CLEAN[0]['telemetry']['prompt_tokens'] + 96})
-        wide[32] = dict(CLEAN[32], telemetry={'prompt_tokens': CLEAN[32]['telemetry']['prompt_tokens'] + 103})
-        wide[52] = dict(CLEAN[52], telemetry={'prompt_tokens': CLEAN[52]['telemetry']['prompt_tokens'] + 38})
+        for index, extra in ((7, 33), (32, 57), (52, 37)):
+            wide[index] = dict(CLEAN[index], telemetry={'prompt_tokens': CLEAN[index]['telemetry']['prompt_tokens'] + extra})
         self.assertEqual(audit.self_consistency(result(wide)), [])
+
+    def test_a_long_question_is_not_padding(self):
+        # Live: an article's grounded prompts span ~100 tokens on question length alone (opus-5.5, art_07: 96).
+        long = [dict(r) for r in CLEAN]
+        long[7] = row('grounded_answerable', 'a0_q7', 'a0', 3000 + 100, 40 + 400)
+        long[33] = row('closed_book', 'a0_q1', 'a0', 90 + 120, 40 + 480)
+        self.assertEqual(audit.self_consistency(result(long)), [])
+
+    def test_a_call_that_reported_no_prompt_tokens_is_not_the_baseline(self):
+        # At 9f5ef22, muse-spark-1.3 has 8 closed-book calls Meta answered empty with usage 0: no count of our prompt,
+        # so they say nothing about padding, and as the lowest call they would flag every other one.
+        unmeasured = [dict(r) for r in CLEAN]
+        for index in (2, 32):
+            unmeasured[index] = dict(CLEAN[index], response='', telemetry={'prompt_tokens': 0})
+        self.assertEqual(audit.self_consistency(result(unmeasured)), [])
+
+    def test_a_small_hidden_prompt_on_a_third_of_the_calls_is_found(self):
+        # Live 2026-10-29: kimi-k2.6 on CometAPI read 2,994 on one channel where Moonshot read 2,916 and CometAPI's
+        # other channel 2,927-2,930: +78 on 33 of 96 grounded calls, inside the ~100-token question-length spread.
+        padded = [dict(r) for r in CLEAN]
+        hit = [1, 4, 9, 14, 22, 27, 33, 40, 53]  # grounded calls, closed-book calls, a summary
+        for index in hit:
+            padded[index] = dict(CLEAN[index], telemetry={'prompt_tokens': CLEAN[index]['telemetry']['prompt_tokens'] + 78})
+        flagged = audit.self_consistency(result(padded))
+        self.assertEqual(sorted(f['key'] for f in flagged), sorted((CLEAN[i]['eval_mode'], CLEAN[i]['item_id']) for i in hit))
 
 
 class Requeue(unittest.TestCase):
