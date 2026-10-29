@@ -1176,7 +1176,9 @@
       "cometapi": {
         "model": "gpt-5.2",
         "wire": "openai-responses",
-        "served_ids": []
+        "served_ids": [
+          "gpt-5.2-2025-12-11"
+        ]
       }
     },
     {
