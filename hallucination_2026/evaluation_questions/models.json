@@ -951,11 +951,7 @@
         "summary_max_tokens": 32768,
         "reasoning_effort": "high"
       },
-      "cometapi": {
-        "model": "gemini-3.7-flash",
-        "wire": "gemini",
-        "served_ids": []
-      }
+      "cometapi_excluded": "Hidden prompt on CometAPI, measured 2026-10-28: its gemini-3.7-flash channel read 1,037 prompt tokens where Google, via OpenRouter, read 942 on the same ~4,000-character prompt (4 of 4 calls); the +95 appears only on prompts over ~2,000 characters, so every grounded and summary call carries it, and its content could not be recovered. Runs through OpenRouter."
     },
     {
       "model_id": "openai/gpt-5.4",
@@ -1118,11 +1114,7 @@
         "summary_max_tokens": 32768,
         "reasoning_effort": "high"
       },
-      "cometapi": {
-        "model": "gemini-3.5-flash",
-        "wire": "gemini",
-        "served_ids": []
-      }
+      "cometapi_excluded": "Hidden prompt on CometAPI, measured 2026-10-28: its gemini-3.5-flash channel read 1,037 prompt tokens where Google, via OpenRouter, read 942 on the same ~4,000-character prompt (4 of 4 calls); the +95 appears only on prompts over ~2,000 characters, so every grounded and summary call carries it, and its content could not be recovered. Runs through OpenRouter."
     },
     {
       "model_id": "openai/gpt-5.3-codex",
@@ -1223,11 +1215,7 @@
         "summary_max_tokens": 32768,
         "reasoning_effort": "high"
       },
-      "cometapi": {
-        "model": "gemini-3.1-pro-preview",
-        "wire": "gemini",
-        "served_ids": []
-      }
+      "cometapi_excluded": "Hidden prompt on CometAPI, measured 2026-10-28: its gemini-3.1-pro-preview channel read 1,037 prompt tokens where Google, via OpenRouter, read 942 on the same ~4,000-character prompt (4 of 4 calls); the +95 appears only on prompts over ~2,000 characters, so every grounded and summary call carries it, and its content could not be recovered. Runs through OpenRouter."
     },
     {
       "model_id": "qwen/qwen3.7-max",
