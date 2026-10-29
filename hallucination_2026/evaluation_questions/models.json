@@ -141,11 +141,7 @@
         "summary_max_tokens": 4096,
         "reasoning_effort": "high"
       },
-      "cometapi": {
-        "model": "mimo-v2.6-pro",
-        "wire": "openai-chat",
-        "served_ids": []
-      }
+      "cometapi_excluded": "Hidden prompt on CometAPI, measured 2026-10-29 01:03-01:11 UTC: as a judge it read ~770 extra prompt tokens on 166 of 248 judged rows in the 5 files graded then (clean on the 16 graded before, and mimo-v2.6-flash read +792 the same way). Judges through OpenRouter."
     },
     {
       "model_id": "moonshotai/kimi-k3",
