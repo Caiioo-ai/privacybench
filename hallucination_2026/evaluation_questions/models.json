@@ -368,18 +368,18 @@
     },
     {
       "model_id": "nvidia/nemotron-3.5-super-vl",
-      "display_name": "Nemotron 3.5 Super VL (high)",
+      "display_name": "Nemotron 3.5 Super VL",
       "lab": "nvidia",
       "size_class": "open_weight_large",
-      "vendor_published_cutoff": null,
+      "vendor_published_cutoff": "2026-05-01",
       "public_release_date": "2026-10-15",
-      "effective_cutoff": "2026-10-15",
-      "cutoff_source": "release_date_fallback",
+      "effective_cutoff": "2026-05-01",
+      "cutoff_source": "vendor_published",
       "default_params": {
         "temperature": 0.0,
-        "qa_max_tokens": 4096,
-        "summary_max_tokens": 4096,
-        "reasoning_effort": "high"
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": null
       }
     },
     {
@@ -1425,6 +1425,70 @@
       "vendor_published_cutoff": null,
       "public_release_date": "2026-09-23",
       "effective_cutoff": "2026-09-23",
+      "cutoff_source": "release_date_fallback",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": "high"
+      }
+    },
+    {
+      "model_id": "deepseek/deepseek-v4-pro-0813",
+      "display_name": "DeepSeek V4 Pro 0813 (high)",
+      "lab": "deepseek",
+      "size_class": "frontier",
+      "vendor_published_cutoff": null,
+      "public_release_date": "2026-08-12",
+      "effective_cutoff": "2026-08-12",
+      "cutoff_source": "release_date_fallback",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": "high"
+      }
+    },
+    {
+      "model_id": "qwen/qwen3.8-27b",
+      "display_name": "Qwen 3.8 27B (medium)",
+      "lab": "qwen",
+      "size_class": "open_weight_mid",
+      "vendor_published_cutoff": null,
+      "public_release_date": "2026-08-14",
+      "effective_cutoff": "2026-08-14",
+      "cutoff_source": "release_date_fallback",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": "medium"
+      }
+    },
+    {
+      "model_id": "cohere/command-a-plus",
+      "display_name": "Command A Plus",
+      "lab": "cohere",
+      "size_class": "frontier",
+      "vendor_published_cutoff": null,
+      "public_release_date": "2026-09-22",
+      "effective_cutoff": "2026-09-22",
+      "cutoff_source": "release_date_fallback",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": null
+      }
+    },
+    {
+      "model_id": "inception/mercury-2.5",
+      "display_name": "Mercury 2.5 (high)",
+      "lab": "inception",
+      "size_class": "mid_size",
+      "vendor_published_cutoff": null,
+      "public_release_date": "2026-09-08",
+      "effective_cutoff": "2026-09-08",
       "cutoff_source": "release_date_fallback",
       "default_params": {
         "temperature": 0.0,
