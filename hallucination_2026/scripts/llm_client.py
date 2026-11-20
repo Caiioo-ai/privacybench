@@ -262,8 +262,18 @@ def call_llm(
             details = usage.get("completion_tokens_details") or {}
             reasoning_tok = int(details.get("reasoning_tokens") or 0)
 
-            # Cost from OpenRouter usage.cost if present, else fallback pricing table
+            # Cost from OpenRouter usage.cost (adding upstream_inference_cost on BYOK calls
+            # where usage.cost is OpenRouter's $0 platform fee), else fallback pricing table.
             cost_usd = usage.get("cost")
+            cost_details = usage.get("cost_details") or {}
+            upstream_cost = cost_details.get("upstream_inference_cost")
+            if usage.get("is_byok"):
+                if upstream_cost is not None:
+                    cost_usd = float(cost_usd or 0.0) + float(upstream_cost)
+                elif cost_usd is not None and float(cost_usd) == 0.0:
+                    cost_usd = None
+            elif cost_usd is not None and float(cost_usd) == 0.0 and upstream_cost is not None and float(upstream_cost) > 0.0:
+                cost_usd = float(upstream_cost)
             if cost_usd is None:
                 p_rate, c_rate = MODEL_PRICING_PER_TOKEN.get(model_id, (1.0e-6, 3.0e-6))
                 cost_usd = prompt_tok * p_rate + compl_tok * c_rate
