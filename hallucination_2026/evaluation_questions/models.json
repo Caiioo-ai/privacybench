@@ -1640,6 +1640,70 @@
         "summary_max_tokens": 32768,
         "reasoning_effort": "high"
       }
+    },
+    {
+      "model_id": "openai/gpt-6.2-sol",
+      "display_name": "GPT-6.2 Sol (high)",
+      "lab": "openai",
+      "size_class": "mid_size",
+      "vendor_published_cutoff": null,
+      "public_release_date": "2026-11-17",
+      "effective_cutoff": "2026-11-17",
+      "cutoff_source": "release_date_fallback",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": "high"
+      }
+    },
+    {
+      "model_id": "google/gemini-4-carbon",
+      "display_name": "Gemini 4 Carbon (high)",
+      "lab": "google",
+      "size_class": "frontier",
+      "vendor_published_cutoff": null,
+      "public_release_date": "2026-11-10",
+      "effective_cutoff": "2026-11-10",
+      "cutoff_source": "release_date_fallback",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": "high"
+      }
+    },
+    {
+      "model_id": "google/gemini-4-hydrogen",
+      "display_name": "Gemini 4 Hydrogen (high)",
+      "lab": "google",
+      "size_class": "mid_size",
+      "vendor_published_cutoff": null,
+      "public_release_date": "2026-11-12",
+      "effective_cutoff": "2026-11-12",
+      "cutoff_source": "release_date_fallback",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": "high"
+      }
+    },
+    {
+      "model_id": "anthropic/claude-fable-5.2",
+      "display_name": "Claude Fable 5.2 (high)",
+      "lab": "anthropic",
+      "size_class": "frontier",
+      "vendor_published_cutoff": null,
+      "public_release_date": "2026-11-09",
+      "effective_cutoff": "2026-11-09",
+      "cutoff_source": "release_date_fallback",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": "high"
+      }
     }
   ]
 }
