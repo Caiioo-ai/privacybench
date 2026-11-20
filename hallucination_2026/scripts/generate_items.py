@@ -52,7 +52,7 @@ Your task is to generate:
 - **`near_miss_target_asked`:** Briefly state what specific unstated detail the question asks for and why it is absent.
 
 ### Output JSON Format
-Return ONLY a valid JSON object matching this exact schema (no markdown fences, no commentary):
+Return ONLY a valid JSON object matching this exact schema (no markdown fences, no commentary). Be sure to escape any internal double quotes inside JSON string values using `\"`:
 {{
   "answerable_questions": [
     {{
@@ -127,6 +127,23 @@ def find_quote_offsets(norm_article: str, quote: str) -> Tuple[Optional[int], Op
     return None, None, q_norm
 
 
+def _repair_unescaped_quotes(text: str) -> str:
+    """Repair unescaped double quotes inside JSON string values (e.g., verbatim quotes containing ("OCC"))."""
+    repaired_lines = []
+    # Match `"key": "value"` lines where value may contain unescaped `"`
+    line_re = re.compile(r'^(\s*"[^"]+"\s*:\s*")(.*)("(?:\s*,?\s*))$')
+    for line in text.splitlines():
+        m = line_re.match(line)
+        if m:
+            prefix, val, suffix = m.group(1), m.group(2), m.group(3)
+            # Temporarily protect already-escaped \" and \\, escape bare ", restore
+            val_fixed = re.sub(r'(?<!\\)"', r'\"', val)
+            repaired_lines.append(f"{prefix}{val_fixed}{suffix}")
+        else:
+            repaired_lines.append(line)
+    return "\n".join(repaired_lines)
+
+
 def parse_json_from_llm(raw_text: str) -> Dict[str, Any]:
     text = raw_text.strip()
     if text.startswith("```"):
@@ -136,14 +153,15 @@ def parse_json_from_llm(raw_text: str) -> Dict[str, Any]:
         if lines and lines[-1].strip().startswith("```"):
             lines = lines[:-1]
         text = "\n".join(lines).strip()
-    try:
-        return json.loads(text)
-    except json.JSONDecodeError:
-        s = text.find("{")
-        e = text.rfind("}")
-        if s != -1 and e != -1 and e > s:
-            return json.loads(text[s : e + 1])
-        raise
+    s = text.find("{")
+    e = text.rfind("}")
+    candidate = text[s : e + 1] if (s != -1 and e != -1 and e > s) else text
+    for blob in (text, candidate, _repair_unescaped_quotes(candidate)):
+        try:
+            return json.loads(blob)
+        except json.JSONDecodeError:
+            pass
+    return json.loads(candidate)
 
 
 def generate_for_article(
@@ -173,21 +191,31 @@ def generate_for_article(
             article_text=norm_text,
         )
         print(f"  [generate] article={art_id} generator={gen_model}")
-        resp = call_llm(
-            model_id=gen_model,
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0.2,
-            max_tokens=3000,
-            timeout=120,
-        )
-        telemetry_log.append({
-            "step": "generate",
-            "article_id": art_id,
-            "generator_model": gen_model,
-            **{k: v for k, v in resp.items() if k != "content"},
-        })
-
-        parsed = parse_json_from_llm(resp["content"])
+        parsed = None
+        last_err: Optional[Exception] = None
+        for attempt in range(3):
+            resp = call_llm(
+                model_id=gen_model,
+                messages=[{"role": "user", "content": prompt}],
+                temperature=0.2 if attempt == 0 else 0.0,
+                max_tokens=4096,
+                timeout=120,
+            )
+            telemetry_log.append({
+                "step": "generate",
+                "article_id": art_id,
+                "generator_model": gen_model,
+                "attempt": attempt + 1,
+                **{k: v for k, v in resp.items() if k != "content"},
+            })
+            try:
+                parsed = parse_json_from_llm(resp["content"])
+                break
+            except json.JSONDecodeError as exc:
+                last_err = exc
+                print(f"  [generate] JSON parse failed for {art_id}/{gen_model} (attempt {attempt + 1}/3): {exc}")
+        if parsed is None:
+            raise RuntimeError(f"Failed to parse JSON for {art_id}/{gen_model}: {last_err}")
 
         for aq in parsed.get("answerable_questions", []):
             s_off, e_off, matched_quote = find_quote_offsets(norm_text, aq.get("evidence_quote", ""))

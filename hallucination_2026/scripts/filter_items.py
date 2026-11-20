@@ -30,7 +30,7 @@ from llm_client import TASK_ROOT, call_llm, get_article_text, served_record
 # Three high-legal-skill, low-hallucination validators from three distinct labs
 VALIDATOR_MODELS = {
     "google": "google/gemini-4-argon",
-    "meta": "meta/muse-wonder",
+    "anthropic": "anthropic/claude-opus-5.5",
     "x-ai": "x-ai/grok-4.7",
 }
 
@@ -213,7 +213,7 @@ def validate_single_candidate(
                     }
                 ],
                 temperature=0.0,
-                max_tokens=256,
+                max_tokens=1024,
                 reasoning_effort="low",
             )
             telemetry.append({"step": "filter_grounded", "candidate_id": cand["id"], **resp})
@@ -247,7 +247,7 @@ def validate_single_candidate(
                     }
                 ],
                 temperature=0.0,
-                max_tokens=256,
+                max_tokens=1024,
                 reasoning_effort="low",
             )
             telemetry.append({"step": "filter_grounded_tiebreak", "candidate_id": cand["id"], **resp3})
@@ -280,7 +280,7 @@ def validate_single_candidate(
                     }
                 ],
                 temperature=0.0,
-                max_tokens=256,
+                max_tokens=1024,
                 reasoning_effort="low",
             )
             telemetry.append({"step": "filter_closed_book", "candidate_id": cand["id"], **resp_cb})
@@ -319,7 +319,7 @@ def validate_single_candidate(
                     }
                 ],
                 temperature=0.0,
-                max_tokens=256,
+                max_tokens=1024,
                 reasoning_effort="low",
             )
             telemetry.append({"step": "filter_nearmiss", "candidate_id": cand["id"], **resp_nm})
@@ -344,7 +344,7 @@ def validate_single_candidate(
                     }
                 ],
                 temperature=0.0,
-                max_tokens=256,
+                max_tokens=1024,
                 reasoning_effort="low",
             )
             telemetry.append({"step": "filter_nearmiss_tiebreak", "candidate_id": cand["id"], **resp3})
