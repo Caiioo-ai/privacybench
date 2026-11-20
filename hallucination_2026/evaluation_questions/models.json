@@ -1576,6 +1576,38 @@
         "summary_max_tokens": 32768,
         "reasoning_effort": "high"
       }
+    },
+    {
+      "model_id": "qwen/qwen4-max",
+      "display_name": "Qwen4 Max (high)",
+      "lab": "alibaba",
+      "size_class": "frontier",
+      "vendor_published_cutoff": null,
+      "public_release_date": "2026-11-16",
+      "effective_cutoff": "2026-11-16",
+      "cutoff_source": "release_date_fallback",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": "high"
+      }
+    },
+    {
+      "model_id": "thinkingmachines/inkling-2-small",
+      "display_name": "Inkling 2 Small (high)",
+      "lab": "thinkingmachines",
+      "size_class": "mid",
+      "vendor_published_cutoff": null,
+      "public_release_date": "2026-11-09",
+      "effective_cutoff": "2026-11-09",
+      "cutoff_source": "release_date_fallback",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": "high"
+      }
     }
   ]
 }
