@@ -1832,6 +1832,102 @@
         "summary_max_tokens": 32768,
         "reasoning_effort": "high"
       }
+    },
+    {
+      "model_id": "openai/gpt-6-luna-pro",
+      "display_name": "GPT-6 Luna Pro (high)",
+      "lab": "openai",
+      "size_class": "small",
+      "vendor_published_cutoff": null,
+      "public_release_date": "2026-09-22",
+      "effective_cutoff": "2026-09-22",
+      "cutoff_source": "release_date_fallback",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 65536,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": "high"
+      }
+    },
+    {
+      "model_id": "qwen/qwen3.7-flash",
+      "display_name": "Qwen3.7 Flash (high)",
+      "lab": "qwen",
+      "size_class": "small",
+      "vendor_published_cutoff": null,
+      "public_release_date": "2026-07-27",
+      "effective_cutoff": "2026-07-27",
+      "cutoff_source": "release_date_fallback",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 65536,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": "high"
+      }
+    },
+    {
+      "model_id": "google/gemma-4-26b-a4b-it",
+      "display_name": "Gemma 4 26B A4B (high)",
+      "lab": "google",
+      "size_class": "small",
+      "vendor_published_cutoff": null,
+      "public_release_date": "2026-04-03",
+      "effective_cutoff": "2026-04-03",
+      "cutoff_source": "release_date_fallback",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 65536,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": "high"
+      }
+    },
+    {
+      "model_id": "mistralai/mistral-small-2603",
+      "display_name": "Mistral Small 2603 (high)",
+      "lab": "mistralai",
+      "size_class": "small",
+      "vendor_published_cutoff": null,
+      "public_release_date": "2026-03-16",
+      "effective_cutoff": "2026-03-16",
+      "cutoff_source": "release_date_fallback",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 65536,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": "high"
+      }
+    },
+    {
+      "model_id": "bytedance-seed/seed-2.0-mini",
+      "display_name": "Seed 2.0 Mini (high)",
+      "lab": "bytedance-seed",
+      "size_class": "small",
+      "vendor_published_cutoff": null,
+      "public_release_date": "2026-02-26",
+      "effective_cutoff": "2026-02-26",
+      "cutoff_source": "release_date_fallback",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 65536,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": "high"
+      }
+    },
+    {
+      "model_id": "inclusionai/ling-3.0-tiny",
+      "display_name": "Ling 3.0 Tiny (high)",
+      "lab": "inclusionai",
+      "size_class": "small",
+      "vendor_published_cutoff": null,
+      "public_release_date": "2026-08-06",
+      "effective_cutoff": "2026-08-06",
+      "cutoff_source": "release_date_fallback",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 65536,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": "high"
+      }
     }
   ]
 }
