@@ -1704,6 +1704,134 @@
         "summary_max_tokens": 32768,
         "reasoning_effort": "high"
       }
+    },
+    {
+      "model_id": "inclusionai/ling-3.0-flash",
+      "display_name": "Ling 3.0 Flash (high)",
+      "lab": "inclusionai",
+      "size_class": "small",
+      "vendor_published_cutoff": null,
+      "public_release_date": "2026-07-23",
+      "effective_cutoff": "2026-07-23",
+      "cutoff_source": "release_date_fallback",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": "high"
+      }
+    },
+    {
+      "model_id": "liquid/lfm-3-1.7b",
+      "display_name": "LFM3-1.7B (high)",
+      "lab": "liquid",
+      "size_class": "small",
+      "vendor_published_cutoff": null,
+      "public_release_date": "2026-11-06",
+      "effective_cutoff": "2026-11-06",
+      "cutoff_source": "release_date_fallback",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": "high"
+      }
+    },
+    {
+      "model_id": "ibm-granite/granite-4.2-8b",
+      "display_name": "Granite 4.2 8B (high)",
+      "lab": "ibm-granite",
+      "size_class": "small",
+      "vendor_published_cutoff": null,
+      "public_release_date": "2026-08-31",
+      "effective_cutoff": "2026-08-31",
+      "cutoff_source": "release_date_fallback",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": "high"
+      }
+    },
+    {
+      "model_id": "openai/gpt-5-nano",
+      "display_name": "GPT-5 Nano (high)",
+      "lab": "openai",
+      "size_class": "small",
+      "vendor_published_cutoff": null,
+      "public_release_date": "2025-08-07",
+      "effective_cutoff": "2025-08-07",
+      "cutoff_source": "release_date_fallback",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": "high"
+      }
+    },
+    {
+      "model_id": "openai/gpt-oss-120b",
+      "display_name": "GPT-OSS 120B (high)",
+      "lab": "openai",
+      "size_class": "mid_size",
+      "vendor_published_cutoff": null,
+      "public_release_date": "2025-08-05",
+      "effective_cutoff": "2025-08-05",
+      "cutoff_source": "release_date_fallback",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": "high"
+      }
+    },
+    {
+      "model_id": "openai/gpt-oss-20b",
+      "display_name": "GPT-OSS 20B (high)",
+      "lab": "openai",
+      "size_class": "small",
+      "vendor_published_cutoff": null,
+      "public_release_date": "2025-08-05",
+      "effective_cutoff": "2025-08-05",
+      "cutoff_source": "release_date_fallback",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": "high"
+      }
+    },
+    {
+      "model_id": "qwen/qwen3.5-9b",
+      "display_name": "Qwen3.5-9B (high)",
+      "lab": "qwen",
+      "size_class": "small",
+      "vendor_published_cutoff": null,
+      "public_release_date": "2026-03-10",
+      "effective_cutoff": "2026-03-10",
+      "cutoff_source": "release_date_fallback",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": "high"
+      }
+    },
+    {
+      "model_id": "google/gemini-2.5-flash-lite",
+      "display_name": "Gemini 2.5 Flash Lite (high)",
+      "lab": "google",
+      "size_class": "small",
+      "vendor_published_cutoff": null,
+      "public_release_date": "2025-07-22",
+      "effective_cutoff": "2025-07-22",
+      "cutoff_source": "release_date_fallback",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": "high"
+      }
     }
   ]
 }
