@@ -1780,7 +1780,7 @@
       "cutoff_source": "release_date_fallback",
       "default_params": {
         "temperature": 0.0,
-        "qa_max_tokens": 32768,
+        "qa_max_tokens": 65536,
         "summary_max_tokens": 32768,
         "reasoning_effort": "high"
       }
