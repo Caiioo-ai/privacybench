@@ -1928,6 +1928,22 @@
         "summary_max_tokens": 32768,
         "reasoning_effort": "high"
       }
+    },
+    {
+      "model_id": "openai/gpt-4o",
+      "display_name": "GPT-4o",
+      "lab": "openai",
+      "size_class": "frontier",
+      "vendor_published_cutoff": "2023-10-01",
+      "public_release_date": "2024-05-13",
+      "effective_cutoff": "2023-10-01",
+      "cutoff_source": "vendor_published",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 256,
+        "summary_max_tokens": 600,
+        "reasoning_effort": null
+      }
     }
   ]
 }
