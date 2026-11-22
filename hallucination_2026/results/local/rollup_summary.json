@@ -1,0 +1,1306 @@
+{
+  "generated_at": "2026-10-15",
+  "stage6_saturated_items_all": [
+    "art_2026_11_01_q01",
+    "art_2026_11_01_q02",
+    "art_2026_11_01_q03",
+    "art_2026_11_01_q04",
+    "art_2026_11_01_q05",
+    "art_2026_11_01_q06",
+    "art_2026_11_01_q07",
+    "art_2026_11_02_q01",
+    "art_2026_11_02_q02",
+    "art_2026_11_02_q03",
+    "art_2026_11_02_q04",
+    "art_2026_11_02_q05",
+    "art_2026_11_02_q06",
+    "art_2026_11_02_q07",
+    "art_2026_11_03_q01",
+    "art_2026_11_03_q02",
+    "art_2026_11_03_q03",
+    "art_2026_11_03_q04",
+    "art_2026_11_03_q06",
+    "art_2026_11_03_q07",
+    "art_2026_11_04_q01",
+    "art_2026_11_04_q03",
+    "art_2026_11_04_q04",
+    "art_2026_11_04_q05",
+    "art_2026_11_04_q06",
+    "art_2026_11_04_q07",
+    "art_2026_11_05_q01",
+    "art_2026_11_05_q02",
+    "art_2026_11_05_q03",
+    "art_2026_11_05_q04",
+    "art_2026_11_05_q05",
+    "art_2026_11_05_q06",
+    "art_2026_11_05_q07",
+    "art_2026_11_06_q01",
+    "art_2026_11_06_q02",
+    "art_2026_11_06_q03",
+    "art_2026_11_06_q04",
+    "art_2026_11_06_q05",
+    "art_2026_11_06_q06",
+    "art_2026_11_06_q07",
+    "art_2026_11_07_q01",
+    "art_2026_11_07_q02",
+    "art_2026_11_07_q03",
+    "art_2026_11_07_q04",
+    "art_2026_11_07_q05",
+    "art_2026_11_07_q06",
+    "art_2026_11_07_q07",
+    "art_2026_11_08_q01",
+    "art_2026_11_08_q02",
+    "art_2026_11_08_q03",
+    "art_2026_11_08_q04",
+    "art_2026_11_08_q05",
+    "art_2026_11_08_q06",
+    "art_2026_11_08_q07",
+    "art_2026_11_09_q01",
+    "art_2026_11_09_q03",
+    "art_2026_11_09_q04",
+    "art_2026_11_09_q05",
+    "art_2026_11_09_q06",
+    "art_2026_11_09_q07",
+    "art_2026_11_10_q01",
+    "art_2026_11_10_q02",
+    "art_2026_11_10_q03",
+    "art_2026_11_10_q04",
+    "art_2026_11_10_q05",
+    "art_2026_11_10_q06",
+    "art_2026_11_10_q07"
+  ],
+  "stage6_saturated_items_dropped": [
+    "art_2026_11_01_q01",
+    "art_2026_11_01_q02",
+    "art_2026_11_01_q03",
+    "art_2026_11_02_q01",
+    "art_2026_11_02_q02",
+    "art_2026_11_02_q03",
+    "art_2026_11_03_q01",
+    "art_2026_11_03_q02",
+    "art_2026_11_03_q03",
+    "art_2026_11_04_q01",
+    "art_2026_11_04_q03",
+    "art_2026_11_04_q04",
+    "art_2026_11_05_q01",
+    "art_2026_11_05_q02",
+    "art_2026_11_05_q03",
+    "art_2026_11_06_q01",
+    "art_2026_11_06_q02",
+    "art_2026_11_06_q03",
+    "art_2026_11_07_q01",
+    "art_2026_11_07_q02",
+    "art_2026_11_07_q03",
+    "art_2026_11_08_q01",
+    "art_2026_11_08_q02",
+    "art_2026_11_08_q03",
+    "art_2026_11_09_q01",
+    "art_2026_11_09_q03",
+    "art_2026_11_09_q04",
+    "art_2026_11_10_q01",
+    "art_2026_11_10_q02",
+    "art_2026_11_10_q03"
+  ],
+  "judge_agreement": {
+    "qa_residue_panel": {
+      "n_items": 168,
+      "unanimous_pct": 97.62,
+      "pairwise_agreement_pct": {
+        "google/gemini-4-argon vs openai/gpt-6.1-sol": 98.21,
+        "google/gemini-4-argon vs xiaomi/mimo-v2.6-pro": 97.62,
+        "openai/gpt-6.1-sol vs xiaomi/mimo-v2.6-pro": 99.4
+      },
+      "fleiss_kappa": 0.971
+    },
+    "summary_claims_panel": {
+      "n_items": 710,
+      "unanimous_pct": 91.13,
+      "pairwise_agreement_pct": {
+        "google/gemini-4-argon vs openai/gpt-6.1-sol": 93.24,
+        "google/gemini-4-argon vs xiaomi/mimo-v2.6-pro": 96.34,
+        "openai/gpt-6.1-sol vs xiaomi/mimo-v2.6-pro": 92.39
+      },
+      "fleiss_kappa": 0.46
+    }
+  },
+  "total_inference_cost_usd": 0.0,
+  "total_grading_cost_usd": 3.2322,
+  "models": [
+    {
+      "model_id": "local/granite4.2-8b-q4_k_m",
+      "display_name": "Granite 4.2 8B (Q4_K_M)",
+      "lab": "ibm",
+      "size_class": "local",
+      "effective_cutoff": "2026-08-31",
+      "cutoff_source": "public_release_date",
+      "eligible_counts": {
+        "eligible_articles": 10,
+        "total_articles": 10,
+        "grounded_answerable": 40,
+        "grounded_nearmiss": 29,
+        "closed_book": 70,
+        "summaries": 10,
+        "total_scored_evaluations": 149
+      },
+      "metrics": {
+        "grounded_accuracy_pct": 100.0,
+        "omniscience_index": 100.0,
+        "nearmiss_abstention_pct": 93.1,
+        "closed_book_abstention_pct": 100.0,
+        "closed_book_correct_without_source_pct": 0.0,
+        "aa_hallucination_rate_pct": 2.02,
+        "grounded_hallucination_rate_pct": 0.0,
+        "false_answer_rate_pct": 2.02,
+        "hedged_abstention_pct": 4.32,
+        "summary_unsupported_pct": 0.0,
+        "summary_contradicted_pct": 3.28,
+        "summary_hallucinated_pct": 3.28,
+        "summary_key_fact_coverage_pct": 75.86,
+        "proposed_pb_nhs": 97.62
+      },
+      "metrics_including_stage6_easy": {
+        "grounded_accuracy_pct": 98.57,
+        "omniscience_index": 98.57,
+        "nearmiss_abstention_pct": 93.1,
+        "closed_book_abstention_pct": 100.0,
+        "closed_book_correct_without_source_pct": 0.0,
+        "aa_hallucination_rate_pct": 2.0,
+        "grounded_hallucination_rate_pct": 0.0,
+        "false_answer_rate_pct": 2.02,
+        "hedged_abstention_pct": 3.55,
+        "summary_unsupported_pct": 0.0,
+        "summary_contradicted_pct": 3.28,
+        "summary_hallucinated_pct": 3.28,
+        "summary_key_fact_coverage_pct": 75.86,
+        "proposed_pb_nhs": 97.05
+      },
+      "metrics_hard_only_grounded": {
+        "grounded_accuracy_pct": 100.0,
+        "omniscience_index": 100.0,
+        "nearmiss_abstention_pct": 93.1,
+        "closed_book_abstention_pct": 100.0,
+        "closed_book_correct_without_source_pct": 0.0,
+        "aa_hallucination_rate_pct": 2.02,
+        "grounded_hallucination_rate_pct": 0.0,
+        "false_answer_rate_pct": 2.02,
+        "hedged_abstention_pct": 5.88,
+        "summary_unsupported_pct": 0.0,
+        "summary_contradicted_pct": 3.28,
+        "summary_hallucinated_pct": 3.28,
+        "summary_key_fact_coverage_pct": 75.86,
+        "proposed_pb_nhs": 97.62
+      },
+      "cis_95": {
+        "grounded_accuracy_pct": [
+          100.0,
+          100.0
+        ],
+        "omniscience_index": [
+          100.0,
+          100.0
+        ],
+        "nearmiss_abstention_pct": [
+          82.14,
+          100.0
+        ],
+        "closed_book_abstention_pct": [
+          100.0,
+          100.0
+        ],
+        "closed_book_correct_without_source_pct": [
+          0.0,
+          0.0
+        ],
+        "aa_hallucination_rate_pct": [
+          0.0,
+          5.1
+        ],
+        "grounded_hallucination_rate_pct": [
+          0.0,
+          0.0
+        ],
+        "false_answer_rate_pct": [
+          0.0,
+          5.1
+        ],
+        "hedged_abstention_pct": [
+          1.43,
+          7.3
+        ],
+        "summary_unsupported_pct": [
+          0.0,
+          0.0
+        ],
+        "summary_contradicted_pct": [
+          0.0,
+          8.2
+        ],
+        "summary_hallucinated_pct": [
+          0.0,
+          8.2
+        ],
+        "summary_key_fact_coverage_pct": [
+          63.79,
+          86.67
+        ],
+        "proposed_pb_nhs": [
+          95.22,
+          99.51
+        ]
+      },
+      "by_generator": {
+        "anthropic/claude-sonnet-4.5": {
+          "n_grounded_answerable": 20,
+          "n_grounded_nearmiss": 9,
+          "grounded_accuracy_pct": 100.0,
+          "omniscience_index": 100.0,
+          "nearmiss_abstention_pct": 88.89,
+          "closed_book_abstention_pct": 100.0
+        },
+        "openai/gpt-4.1": {
+          "n_grounded_answerable": 20,
+          "n_grounded_nearmiss": 20,
+          "grounded_accuracy_pct": 100.0,
+          "omniscience_index": 100.0,
+          "nearmiss_abstention_pct": 95.0,
+          "closed_book_abstention_pct": 100.0
+        }
+      },
+      "by_domain": {
+        "business": {
+          "n_grounded_answerable": 8,
+          "n_grounded_nearmiss": 6,
+          "grounded_accuracy_pct": 100.0,
+          "omniscience_index": 100.0,
+          "nearmiss_abstention_pct": 100.0,
+          "proposed_pb_nhs": 97.69
+        },
+        "health": {
+          "n_grounded_answerable": 4,
+          "n_grounded_nearmiss": 3,
+          "grounded_accuracy_pct": 100.0,
+          "omniscience_index": 100.0,
+          "nearmiss_abstention_pct": 100.0,
+          "proposed_pb_nhs": 100.0
+        },
+        "humanities_social_sciences": {
+          "n_grounded_answerable": 4,
+          "n_grounded_nearmiss": 3,
+          "grounded_accuracy_pct": 100.0,
+          "omniscience_index": 100.0,
+          "nearmiss_abstention_pct": 100.0,
+          "proposed_pb_nhs": 100.0
+        },
+        "law": {
+          "n_grounded_answerable": 16,
+          "n_grounded_nearmiss": 11,
+          "grounded_accuracy_pct": 100.0,
+          "omniscience_index": 100.0,
+          "nearmiss_abstention_pct": 90.91,
+          "proposed_pb_nhs": 97.34
+        },
+        "science_engineering_math": {
+          "n_grounded_answerable": 4,
+          "n_grounded_nearmiss": 3,
+          "grounded_accuracy_pct": 100.0,
+          "omniscience_index": 100.0,
+          "nearmiss_abstention_pct": 66.67,
+          "proposed_pb_nhs": 91.67
+        },
+        "software_engineering": {
+          "n_grounded_answerable": 4,
+          "n_grounded_nearmiss": 3,
+          "grounded_accuracy_pct": 100.0,
+          "omniscience_index": 100.0,
+          "nearmiss_abstention_pct": 100.0,
+          "proposed_pb_nhs": 100.0
+        }
+      },
+      "cost_and_tokens": {
+        "inference_tokens": 524672,
+        "inference_cost_usd": 0.0,
+        "grading_cost_usd": 0.45065
+      }
+    },
+    {
+      "model_id": "local/nemotron-3.5-bolt-e4b-optiq-4bit",
+      "display_name": "Nemotron 3.5 Bolt E4B (MLX OptiQ 4-bit)",
+      "lab": "nvidia",
+      "size_class": "local",
+      "effective_cutoff": "2026-10-15",
+      "cutoff_source": "public_release_date",
+      "eligible_counts": {
+        "eligible_articles": 10,
+        "total_articles": 10,
+        "grounded_answerable": 40,
+        "grounded_nearmiss": 29,
+        "closed_book": 70,
+        "summaries": 10,
+        "total_scored_evaluations": 149
+      },
+      "metrics": {
+        "grounded_accuracy_pct": 87.5,
+        "omniscience_index": 85.0,
+        "nearmiss_abstention_pct": 93.1,
+        "closed_book_abstention_pct": 100.0,
+        "closed_book_correct_without_source_pct": 0.0,
+        "aa_hallucination_rate_pct": 2.88,
+        "grounded_hallucination_rate_pct": 20.0,
+        "false_answer_rate_pct": 2.02,
+        "hedged_abstention_pct": 0.0,
+        "summary_unsupported_pct": 0.0,
+        "summary_contradicted_pct": 1.74,
+        "summary_hallucinated_pct": 1.74,
+        "summary_key_fact_coverage_pct": 60.34,
+        "proposed_pb_nhs": 91.93
+      },
+      "metrics_including_stage6_easy": {
+        "grounded_accuracy_pct": 88.57,
+        "omniscience_index": 87.14,
+        "nearmiss_abstention_pct": 93.1,
+        "closed_book_abstention_pct": 100.0,
+        "closed_book_correct_without_source_pct": 0.0,
+        "aa_hallucination_rate_pct": 2.8,
+        "grounded_hallucination_rate_pct": 12.5,
+        "false_answer_rate_pct": 2.02,
+        "hedged_abstention_pct": 0.0,
+        "summary_unsupported_pct": 0.0,
+        "summary_contradicted_pct": 1.74,
+        "summary_hallucinated_pct": 1.74,
+        "summary_key_fact_coverage_pct": 60.34,
+        "proposed_pb_nhs": 92.79
+      },
+      "metrics_hard_only_grounded": {
+        "grounded_accuracy_pct": 33.33,
+        "omniscience_index": 33.33,
+        "nearmiss_abstention_pct": 93.1,
+        "closed_book_abstention_pct": 100.0,
+        "closed_book_correct_without_source_pct": 0.0,
+        "aa_hallucination_rate_pct": 1.98,
+        "grounded_hallucination_rate_pct": 0.0,
+        "false_answer_rate_pct": 2.02,
+        "hedged_abstention_pct": 0.0,
+        "summary_unsupported_pct": 0.0,
+        "summary_contradicted_pct": 1.74,
+        "summary_hallucinated_pct": 1.74,
+        "summary_key_fact_coverage_pct": 60.34,
+        "proposed_pb_nhs": 71.26
+      },
+      "cis_95": {
+        "grounded_accuracy_pct": [
+          80.0,
+          95.0
+        ],
+        "omniscience_index": [
+          75.0,
+          95.0
+        ],
+        "nearmiss_abstention_pct": [
+          82.14,
+          100.0
+        ],
+        "closed_book_abstention_pct": [
+          100.0,
+          100.0
+        ],
+        "closed_book_correct_without_source_pct": [
+          0.0,
+          0.0
+        ],
+        "aa_hallucination_rate_pct": [
+          0.0,
+          7.77
+        ],
+        "grounded_hallucination_rate_pct": [
+          0.0,
+          66.67
+        ],
+        "false_answer_rate_pct": [
+          0.0,
+          5.1
+        ],
+        "hedged_abstention_pct": [
+          0.0,
+          0.0
+        ],
+        "summary_unsupported_pct": [
+          0.0,
+          0.0
+        ],
+        "summary_contradicted_pct": [
+          0.0,
+          4.1
+        ],
+        "summary_hallucinated_pct": [
+          0.0,
+          4.1
+        ],
+        "summary_key_fact_coverage_pct": [
+          48.21,
+          71.67
+        ],
+        "proposed_pb_nhs": [
+          85.98,
+          96.63
+        ]
+      },
+      "by_generator": {
+        "anthropic/claude-sonnet-4.5": {
+          "n_grounded_answerable": 20,
+          "n_grounded_nearmiss": 9,
+          "grounded_accuracy_pct": 90.0,
+          "omniscience_index": 85.0,
+          "nearmiss_abstention_pct": 88.89,
+          "closed_book_abstention_pct": 100.0
+        },
+        "openai/gpt-4.1": {
+          "n_grounded_answerable": 20,
+          "n_grounded_nearmiss": 20,
+          "grounded_accuracy_pct": 85.0,
+          "omniscience_index": 85.0,
+          "nearmiss_abstention_pct": 95.0,
+          "closed_book_abstention_pct": 100.0
+        }
+      },
+      "by_domain": {
+        "business": {
+          "n_grounded_answerable": 8,
+          "n_grounded_nearmiss": 6,
+          "grounded_accuracy_pct": 100.0,
+          "omniscience_index": 100.0,
+          "nearmiss_abstention_pct": 100.0,
+          "proposed_pb_nhs": 100.0
+        },
+        "health": {
+          "n_grounded_answerable": 4,
+          "n_grounded_nearmiss": 3,
+          "grounded_accuracy_pct": 100.0,
+          "omniscience_index": 100.0,
+          "nearmiss_abstention_pct": 100.0,
+          "proposed_pb_nhs": 100.0
+        },
+        "humanities_social_sciences": {
+          "n_grounded_answerable": 4,
+          "n_grounded_nearmiss": 3,
+          "grounded_accuracy_pct": 100.0,
+          "omniscience_index": 100.0,
+          "nearmiss_abstention_pct": 66.67,
+          "proposed_pb_nhs": 91.67
+        },
+        "law": {
+          "n_grounded_answerable": 16,
+          "n_grounded_nearmiss": 11,
+          "grounded_accuracy_pct": 75.0,
+          "omniscience_index": 68.75,
+          "nearmiss_abstention_pct": 90.91,
+          "proposed_pb_nhs": 85.23
+        },
+        "science_engineering_math": {
+          "n_grounded_answerable": 4,
+          "n_grounded_nearmiss": 3,
+          "grounded_accuracy_pct": 75.0,
+          "omniscience_index": 75.0,
+          "nearmiss_abstention_pct": 100.0,
+          "proposed_pb_nhs": 88.33
+        },
+        "software_engineering": {
+          "n_grounded_answerable": 4,
+          "n_grounded_nearmiss": 3,
+          "grounded_accuracy_pct": 100.0,
+          "omniscience_index": 100.0,
+          "nearmiss_abstention_pct": 100.0,
+          "proposed_pb_nhs": 98.33
+        }
+      },
+      "cost_and_tokens": {
+        "inference_tokens": 449553,
+        "inference_cost_usd": 0.0,
+        "grading_cost_usd": 0.455895
+      }
+    },
+    {
+      "model_id": "local/gemma4-e4b-q4_k_m",
+      "display_name": "Gemma 4 E4B (Q4_K_M)",
+      "lab": "google",
+      "size_class": "local",
+      "effective_cutoff": "2026-04-03",
+      "cutoff_source": "public_release_date",
+      "eligible_counts": {
+        "eligible_articles": 10,
+        "total_articles": 10,
+        "grounded_answerable": 40,
+        "grounded_nearmiss": 29,
+        "closed_book": 70,
+        "summaries": 10,
+        "total_scored_evaluations": 149
+      },
+      "metrics": {
+        "grounded_accuracy_pct": 90.0,
+        "omniscience_index": 86.25,
+        "nearmiss_abstention_pct": 93.1,
+        "closed_book_abstention_pct": 100.0,
+        "closed_book_correct_without_source_pct": 0.0,
+        "aa_hallucination_rate_pct": 3.88,
+        "grounded_hallucination_rate_pct": 50.0,
+        "false_answer_rate_pct": 2.02,
+        "hedged_abstention_pct": 0.0,
+        "summary_unsupported_pct": 3.54,
+        "summary_contradicted_pct": 2.65,
+        "summary_hallucinated_pct": 6.19,
+        "summary_key_fact_coverage_pct": 50.0,
+        "proposed_pb_nhs": 91.54
+      },
+      "metrics_including_stage6_easy": {
+        "grounded_accuracy_pct": 92.86,
+        "omniscience_index": 90.71,
+        "nearmiss_abstention_pct": 93.1,
+        "closed_book_abstention_pct": 100.0,
+        "closed_book_correct_without_source_pct": 0.0,
+        "aa_hallucination_rate_pct": 3.85,
+        "grounded_hallucination_rate_pct": 40.0,
+        "false_answer_rate_pct": 2.02,
+        "hedged_abstention_pct": 0.0,
+        "summary_unsupported_pct": 3.54,
+        "summary_contradicted_pct": 2.65,
+        "summary_hallucinated_pct": 6.19,
+        "summary_key_fact_coverage_pct": 50.0,
+        "proposed_pb_nhs": 93.32
+      },
+      "metrics_hard_only_grounded": {
+        "grounded_accuracy_pct": 33.33,
+        "omniscience_index": 50.0,
+        "nearmiss_abstention_pct": 93.1,
+        "closed_book_abstention_pct": 100.0,
+        "closed_book_correct_without_source_pct": 0.0,
+        "aa_hallucination_rate_pct": 1.98,
+        "grounded_hallucination_rate_pct": 0.0,
+        "false_answer_rate_pct": 2.02,
+        "hedged_abstention_pct": 0.0,
+        "summary_unsupported_pct": 3.54,
+        "summary_contradicted_pct": 2.65,
+        "summary_hallucinated_pct": 6.19,
+        "summary_key_fact_coverage_pct": 50.0,
+        "proposed_pb_nhs": 77.04
+      },
+      "cis_95": {
+        "grounded_accuracy_pct": [
+          82.5,
+          97.5
+        ],
+        "omniscience_index": [
+          72.5,
+          97.5
+        ],
+        "nearmiss_abstention_pct": [
+          82.14,
+          100.0
+        ],
+        "closed_book_abstention_pct": [
+          100.0,
+          100.0
+        ],
+        "closed_book_correct_without_source_pct": [
+          0.0,
+          0.0
+        ],
+        "aa_hallucination_rate_pct": [
+          0.0,
+          8.0
+        ],
+        "grounded_hallucination_rate_pct": [
+          0.0,
+          100.0
+        ],
+        "false_answer_rate_pct": [
+          0.0,
+          5.1
+        ],
+        "hedged_abstention_pct": [
+          0.0,
+          0.0
+        ],
+        "summary_unsupported_pct": [
+          0.0,
+          9.17
+        ],
+        "summary_contradicted_pct": [
+          0.84,
+          5.26
+        ],
+        "summary_hallucinated_pct": [
+          0.93,
+          12.07
+        ],
+        "summary_key_fact_coverage_pct": [
+          41.38,
+          59.26
+        ],
+        "proposed_pb_nhs": [
+          85.21,
+          97.05
+        ]
+      },
+      "by_generator": {
+        "anthropic/claude-sonnet-4.5": {
+          "n_grounded_answerable": 20,
+          "n_grounded_nearmiss": 9,
+          "grounded_accuracy_pct": 90.0,
+          "omniscience_index": 80.0,
+          "nearmiss_abstention_pct": 100.0,
+          "closed_book_abstention_pct": 100.0
+        },
+        "openai/gpt-4.1": {
+          "n_grounded_answerable": 20,
+          "n_grounded_nearmiss": 20,
+          "grounded_accuracy_pct": 90.0,
+          "omniscience_index": 92.5,
+          "nearmiss_abstention_pct": 90.0,
+          "closed_book_abstention_pct": 100.0
+        }
+      },
+      "by_domain": {
+        "business": {
+          "n_grounded_answerable": 8,
+          "n_grounded_nearmiss": 6,
+          "grounded_accuracy_pct": 100.0,
+          "omniscience_index": 100.0,
+          "nearmiss_abstention_pct": 83.33,
+          "proposed_pb_nhs": 91.67
+        },
+        "health": {
+          "n_grounded_answerable": 4,
+          "n_grounded_nearmiss": 3,
+          "grounded_accuracy_pct": 75.0,
+          "omniscience_index": 50.0,
+          "nearmiss_abstention_pct": 100.0,
+          "proposed_pb_nhs": 80.0
+        },
+        "humanities_social_sciences": {
+          "n_grounded_answerable": 4,
+          "n_grounded_nearmiss": 3,
+          "grounded_accuracy_pct": 100.0,
+          "omniscience_index": 100.0,
+          "nearmiss_abstention_pct": 100.0,
+          "proposed_pb_nhs": 98.33
+        },
+        "law": {
+          "n_grounded_answerable": 16,
+          "n_grounded_nearmiss": 11,
+          "grounded_accuracy_pct": 87.5,
+          "omniscience_index": 81.25,
+          "nearmiss_abstention_pct": 90.91,
+          "proposed_pb_nhs": 90.23
+        },
+        "science_engineering_math": {
+          "n_grounded_answerable": 4,
+          "n_grounded_nearmiss": 3,
+          "grounded_accuracy_pct": 75.0,
+          "omniscience_index": 87.5,
+          "nearmiss_abstention_pct": 100.0,
+          "proposed_pb_nhs": 93.18
+        },
+        "software_engineering": {
+          "n_grounded_answerable": 4,
+          "n_grounded_nearmiss": 3,
+          "grounded_accuracy_pct": 100.0,
+          "omniscience_index": 100.0,
+          "nearmiss_abstention_pct": 100.0,
+          "proposed_pb_nhs": 100.0
+        }
+      },
+      "cost_and_tokens": {
+        "inference_tokens": 454502,
+        "inference_cost_usd": 0.0,
+        "grading_cost_usd": 0.493771
+      }
+    },
+    {
+      "model_id": "local/nemotron-3.5-bolt-e4b-q4_k_m",
+      "display_name": "Nemotron 3.5 Bolt E4B (Q4_K_M)",
+      "lab": "nvidia",
+      "size_class": "local",
+      "effective_cutoff": "2026-10-15",
+      "cutoff_source": "public_release_date",
+      "eligible_counts": {
+        "eligible_articles": 10,
+        "total_articles": 10,
+        "grounded_answerable": 40,
+        "grounded_nearmiss": 29,
+        "closed_book": 70,
+        "summaries": 10,
+        "total_scored_evaluations": 149
+      },
+      "metrics": {
+        "grounded_accuracy_pct": 75.0,
+        "omniscience_index": 72.5,
+        "nearmiss_abstention_pct": 93.1,
+        "closed_book_abstention_pct": 100.0,
+        "closed_book_correct_without_source_pct": 0.0,
+        "aa_hallucination_rate_pct": 2.75,
+        "grounded_hallucination_rate_pct": 10.0,
+        "false_answer_rate_pct": 2.02,
+        "hedged_abstention_pct": 0.0,
+        "summary_unsupported_pct": 0.0,
+        "summary_contradicted_pct": 4.31,
+        "summary_hallucinated_pct": 4.31,
+        "summary_key_fact_coverage_pct": 51.72,
+        "proposed_pb_nhs": 86.41
+      },
+      "metrics_including_stage6_easy": {
+        "grounded_accuracy_pct": 77.14,
+        "omniscience_index": 75.71,
+        "nearmiss_abstention_pct": 93.1,
+        "closed_book_abstention_pct": 100.0,
+        "closed_book_correct_without_source_pct": 0.0,
+        "aa_hallucination_rate_pct": 2.61,
+        "grounded_hallucination_rate_pct": 6.25,
+        "false_answer_rate_pct": 2.02,
+        "hedged_abstention_pct": 0.0,
+        "summary_unsupported_pct": 0.0,
+        "summary_contradicted_pct": 4.31,
+        "summary_hallucinated_pct": 4.31,
+        "summary_key_fact_coverage_pct": 51.72,
+        "proposed_pb_nhs": 87.7
+      },
+      "metrics_hard_only_grounded": {
+        "grounded_accuracy_pct": 33.33,
+        "omniscience_index": 33.33,
+        "nearmiss_abstention_pct": 93.1,
+        "closed_book_abstention_pct": 100.0,
+        "closed_book_correct_without_source_pct": 0.0,
+        "aa_hallucination_rate_pct": 1.98,
+        "grounded_hallucination_rate_pct": 0.0,
+        "false_answer_rate_pct": 2.02,
+        "hedged_abstention_pct": 0.0,
+        "summary_unsupported_pct": 0.0,
+        "summary_contradicted_pct": 4.31,
+        "summary_hallucinated_pct": 4.31,
+        "summary_key_fact_coverage_pct": 51.72,
+        "proposed_pb_nhs": 70.75
+      },
+      "cis_95": {
+        "grounded_accuracy_pct": [
+          60.0,
+          90.0
+        ],
+        "omniscience_index": [
+          55.0,
+          90.0
+        ],
+        "nearmiss_abstention_pct": [
+          82.14,
+          100.0
+        ],
+        "closed_book_abstention_pct": [
+          100.0,
+          100.0
+        ],
+        "closed_book_correct_without_source_pct": [
+          0.0,
+          0.0
+        ],
+        "aa_hallucination_rate_pct": [
+          0.0,
+          7.41
+        ],
+        "grounded_hallucination_rate_pct": [
+          0.0,
+          40.0
+        ],
+        "false_answer_rate_pct": [
+          0.0,
+          5.1
+        ],
+        "hedged_abstention_pct": [
+          0.0,
+          0.0
+        ],
+        "summary_unsupported_pct": [
+          0.0,
+          0.0
+        ],
+        "summary_contradicted_pct": [
+          0.88,
+          7.83
+        ],
+        "summary_hallucinated_pct": [
+          0.88,
+          7.83
+        ],
+        "summary_key_fact_coverage_pct": [
+          39.29,
+          63.33
+        ],
+        "proposed_pb_nhs": [
+          79.53,
+          93.44
+        ]
+      },
+      "by_generator": {
+        "anthropic/claude-sonnet-4.5": {
+          "n_grounded_answerable": 20,
+          "n_grounded_nearmiss": 9,
+          "grounded_accuracy_pct": 85.0,
+          "omniscience_index": 80.0,
+          "nearmiss_abstention_pct": 88.89,
+          "closed_book_abstention_pct": 100.0
+        },
+        "openai/gpt-4.1": {
+          "n_grounded_answerable": 20,
+          "n_grounded_nearmiss": 20,
+          "grounded_accuracy_pct": 65.0,
+          "omniscience_index": 65.0,
+          "nearmiss_abstention_pct": 95.0,
+          "closed_book_abstention_pct": 100.0
+        }
+      },
+      "by_domain": {
+        "business": {
+          "n_grounded_answerable": 8,
+          "n_grounded_nearmiss": 6,
+          "grounded_accuracy_pct": 100.0,
+          "omniscience_index": 100.0,
+          "nearmiss_abstention_pct": 100.0,
+          "proposed_pb_nhs": 99.23
+        },
+        "health": {
+          "n_grounded_answerable": 4,
+          "n_grounded_nearmiss": 3,
+          "grounded_accuracy_pct": 75.0,
+          "omniscience_index": 75.0,
+          "nearmiss_abstention_pct": 100.0,
+          "proposed_pb_nhs": 90.0
+        },
+        "humanities_social_sciences": {
+          "n_grounded_answerable": 4,
+          "n_grounded_nearmiss": 3,
+          "grounded_accuracy_pct": 100.0,
+          "omniscience_index": 100.0,
+          "nearmiss_abstention_pct": 66.67,
+          "proposed_pb_nhs": 91.67
+        },
+        "law": {
+          "n_grounded_answerable": 16,
+          "n_grounded_nearmiss": 11,
+          "grounded_accuracy_pct": 50.0,
+          "omniscience_index": 43.75,
+          "nearmiss_abstention_pct": 90.91,
+          "proposed_pb_nhs": 74.39
+        },
+        "science_engineering_math": {
+          "n_grounded_answerable": 4,
+          "n_grounded_nearmiss": 3,
+          "grounded_accuracy_pct": 75.0,
+          "omniscience_index": 75.0,
+          "nearmiss_abstention_pct": 100.0,
+          "proposed_pb_nhs": 86.67
+        },
+        "software_engineering": {
+          "n_grounded_answerable": 4,
+          "n_grounded_nearmiss": 3,
+          "grounded_accuracy_pct": 100.0,
+          "omniscience_index": 100.0,
+          "nearmiss_abstention_pct": 100.0,
+          "proposed_pb_nhs": 100.0
+        }
+      },
+      "cost_and_tokens": {
+        "inference_tokens": 450311,
+        "inference_cost_usd": 0.0,
+        "grading_cost_usd": 0.427206
+      }
+    },
+    {
+      "model_id": "local/gemma4-e2b-q4_k_m",
+      "display_name": "Gemma 4 E2B (Q4_K_M)",
+      "lab": "google",
+      "size_class": "local",
+      "effective_cutoff": "2026-04-03",
+      "cutoff_source": "public_release_date",
+      "eligible_counts": {
+        "eligible_articles": 10,
+        "total_articles": 10,
+        "grounded_answerable": 40,
+        "grounded_nearmiss": 29,
+        "closed_book": 70,
+        "summaries": 10,
+        "total_scored_evaluations": 149
+      },
+      "metrics": {
+        "grounded_accuracy_pct": 87.5,
+        "omniscience_index": 80.0,
+        "nearmiss_abstention_pct": 79.31,
+        "closed_book_abstention_pct": 100.0,
+        "closed_book_correct_without_source_pct": 0.0,
+        "aa_hallucination_rate_pct": 8.65,
+        "grounded_hallucination_rate_pct": 60.0,
+        "false_answer_rate_pct": 6.06,
+        "hedged_abstention_pct": 0.0,
+        "summary_unsupported_pct": 3.42,
+        "summary_contradicted_pct": 0.85,
+        "summary_hallucinated_pct": 4.27,
+        "summary_key_fact_coverage_pct": 44.83,
+        "proposed_pb_nhs": 85.97
+      },
+      "metrics_including_stage6_easy": {
+        "grounded_accuracy_pct": 92.86,
+        "omniscience_index": 88.57,
+        "nearmiss_abstention_pct": 79.31,
+        "closed_book_abstention_pct": 100.0,
+        "closed_book_correct_without_source_pct": 0.0,
+        "aa_hallucination_rate_pct": 8.65,
+        "grounded_hallucination_rate_pct": 60.0,
+        "false_answer_rate_pct": 6.06,
+        "hedged_abstention_pct": 0.0,
+        "summary_unsupported_pct": 3.42,
+        "summary_contradicted_pct": 0.85,
+        "summary_hallucinated_pct": 4.27,
+        "summary_key_fact_coverage_pct": 44.83,
+        "proposed_pb_nhs": 89.4
+      },
+      "metrics_hard_only_grounded": {
+        "grounded_accuracy_pct": 66.67,
+        "omniscience_index": 33.33,
+        "nearmiss_abstention_pct": 79.31,
+        "closed_book_abstention_pct": 100.0,
+        "closed_book_correct_without_source_pct": 0.0,
+        "aa_hallucination_rate_pct": 7.0,
+        "grounded_hallucination_rate_pct": 100.0,
+        "false_answer_rate_pct": 6.06,
+        "hedged_abstention_pct": 0.0,
+        "summary_unsupported_pct": 3.42,
+        "summary_contradicted_pct": 0.85,
+        "summary_hallucinated_pct": 4.27,
+        "summary_key_fact_coverage_pct": 44.83,
+        "proposed_pb_nhs": 67.31
+      },
+      "cis_95": {
+        "grounded_accuracy_pct": [
+          77.5,
+          97.5
+        ],
+        "omniscience_index": [
+          62.5,
+          95.0
+        ],
+        "nearmiss_abstention_pct": [
+          58.62,
+          96.55
+        ],
+        "closed_book_abstention_pct": [
+          100.0,
+          100.0
+        ],
+        "closed_book_correct_without_source_pct": [
+          0.0,
+          0.0
+        ],
+        "aa_hallucination_rate_pct": [
+          3.85,
+          14.42
+        ],
+        "grounded_hallucination_rate_pct": [
+          0.0,
+          100.0
+        ],
+        "false_answer_rate_pct": [
+          1.01,
+          12.12
+        ],
+        "hedged_abstention_pct": [
+          0.0,
+          0.0
+        ],
+        "summary_unsupported_pct": [
+          0.0,
+          8.55
+        ],
+        "summary_contradicted_pct": [
+          0.0,
+          2.61
+        ],
+        "summary_hallucinated_pct": [
+          0.0,
+          9.09
+        ],
+        "summary_key_fact_coverage_pct": [
+          28.57,
+          61.67
+        ],
+        "proposed_pb_nhs": [
+          77.15,
+          94.23
+        ]
+      },
+      "by_generator": {
+        "anthropic/claude-sonnet-4.5": {
+          "n_grounded_answerable": 20,
+          "n_grounded_nearmiss": 9,
+          "grounded_accuracy_pct": 85.0,
+          "omniscience_index": 75.0,
+          "nearmiss_abstention_pct": 77.78,
+          "closed_book_abstention_pct": 100.0
+        },
+        "openai/gpt-4.1": {
+          "n_grounded_answerable": 20,
+          "n_grounded_nearmiss": 20,
+          "grounded_accuracy_pct": 90.0,
+          "omniscience_index": 85.0,
+          "nearmiss_abstention_pct": 80.0,
+          "closed_book_abstention_pct": 100.0
+        }
+      },
+      "by_domain": {
+        "business": {
+          "n_grounded_answerable": 8,
+          "n_grounded_nearmiss": 6,
+          "grounded_accuracy_pct": 100.0,
+          "omniscience_index": 100.0,
+          "nearmiss_abstention_pct": 83.33,
+          "proposed_pb_nhs": 93.33
+        },
+        "health": {
+          "n_grounded_answerable": 4,
+          "n_grounded_nearmiss": 3,
+          "grounded_accuracy_pct": 75.0,
+          "omniscience_index": 50.0,
+          "nearmiss_abstention_pct": 100.0,
+          "proposed_pb_nhs": 80.0
+        },
+        "humanities_social_sciences": {
+          "n_grounded_answerable": 4,
+          "n_grounded_nearmiss": 3,
+          "grounded_accuracy_pct": 100.0,
+          "omniscience_index": 100.0,
+          "nearmiss_abstention_pct": 66.67,
+          "proposed_pb_nhs": 91.67
+        },
+        "law": {
+          "n_grounded_answerable": 16,
+          "n_grounded_nearmiss": 11,
+          "grounded_accuracy_pct": 81.25,
+          "omniscience_index": 68.75,
+          "nearmiss_abstention_pct": 90.91,
+          "proposed_pb_nhs": 84.34
+        },
+        "science_engineering_math": {
+          "n_grounded_answerable": 4,
+          "n_grounded_nearmiss": 3,
+          "grounded_accuracy_pct": 75.0,
+          "omniscience_index": 75.0,
+          "nearmiss_abstention_pct": 0.0,
+          "proposed_pb_nhs": 65.0
+        },
+        "software_engineering": {
+          "n_grounded_answerable": 4,
+          "n_grounded_nearmiss": 3,
+          "grounded_accuracy_pct": 100.0,
+          "omniscience_index": 100.0,
+          "nearmiss_abstention_pct": 100.0,
+          "proposed_pb_nhs": 100.0
+        }
+      },
+      "cost_and_tokens": {
+        "inference_tokens": 453112,
+        "inference_cost_usd": 0.0,
+        "grading_cost_usd": 0.497119
+      }
+    },
+    {
+      "model_id": "apple/foundation-model",
+      "display_name": "Apple Intelligence (On-Device)",
+      "lab": "apple",
+      "size_class": "local",
+      "effective_cutoff": "2026-09-15",
+      "cutoff_source": "public_release_date",
+      "eligible_counts": {
+        "eligible_articles": 10,
+        "total_articles": 10,
+        "grounded_answerable": 40,
+        "grounded_nearmiss": 29,
+        "closed_book": 70,
+        "summaries": 10,
+        "total_scored_evaluations": 149
+      },
+      "metrics": {
+        "grounded_accuracy_pct": 90.0,
+        "omniscience_index": 86.25,
+        "nearmiss_abstention_pct": 58.62,
+        "closed_book_abstention_pct": 7.14,
+        "closed_book_correct_without_source_pct": 1.43,
+        "aa_hallucination_rate_pct": 76.47,
+        "grounded_hallucination_rate_pct": 50.0,
+        "false_answer_rate_pct": 76.77,
+        "hedged_abstention_pct": 0.0,
+        "summary_unsupported_pct": 3.15,
+        "summary_contradicted_pct": 4.72,
+        "summary_hallucinated_pct": 7.87,
+        "summary_key_fact_coverage_pct": 77.59,
+        "proposed_pb_nhs": 68.65
+      },
+      "metrics_including_stage6_easy": {
+        "grounded_accuracy_pct": 92.86,
+        "omniscience_index": 89.29,
+        "nearmiss_abstention_pct": 58.62,
+        "closed_book_abstention_pct": 7.14,
+        "closed_book_correct_without_source_pct": 1.43,
+        "aa_hallucination_rate_pct": 76.7,
+        "grounded_hallucination_rate_pct": 60.0,
+        "false_answer_rate_pct": 76.77,
+        "hedged_abstention_pct": 0.0,
+        "summary_unsupported_pct": 3.15,
+        "summary_contradicted_pct": 4.72,
+        "summary_hallucinated_pct": 7.87,
+        "summary_key_fact_coverage_pct": 77.59,
+        "proposed_pb_nhs": 69.87
+      },
+      "metrics_hard_only_grounded": {
+        "grounded_accuracy_pct": 100.0,
+        "omniscience_index": 100.0,
+        "nearmiss_abstention_pct": 58.62,
+        "closed_book_abstention_pct": 7.14,
+        "closed_book_correct_without_source_pct": 1.43,
+        "aa_hallucination_rate_pct": 77.55,
+        "grounded_hallucination_rate_pct": 0.0,
+        "false_answer_rate_pct": 76.77,
+        "hedged_abstention_pct": 0.0,
+        "summary_unsupported_pct": 3.15,
+        "summary_contradicted_pct": 4.72,
+        "summary_hallucinated_pct": 7.87,
+        "summary_key_fact_coverage_pct": 77.59,
+        "proposed_pb_nhs": 74.15
+      },
+      "cis_95": {
+        "grounded_accuracy_pct": [
+          82.5,
+          97.5
+        ],
+        "omniscience_index": [
+          73.75,
+          97.5
+        ],
+        "nearmiss_abstention_pct": [
+          39.29,
+          77.78
+        ],
+        "closed_book_abstention_pct": [
+          0.0,
+          18.57
+        ],
+        "closed_book_correct_without_source_pct": [
+          0.0,
+          4.29
+        ],
+        "aa_hallucination_rate_pct": [
+          65.35,
+          87.0
+        ],
+        "grounded_hallucination_rate_pct": [
+          0.0,
+          100.0
+        ],
+        "false_answer_rate_pct": [
+          64.95,
+          87.0
+        ],
+        "hedged_abstention_pct": [
+          0.0,
+          0.0
+        ],
+        "summary_unsupported_pct": [
+          0.81,
+          5.38
+        ],
+        "summary_contradicted_pct": [
+          0.83,
+          8.73
+        ],
+        "summary_hallucinated_pct": [
+          1.65,
+          14.06
+        ],
+        "summary_key_fact_coverage_pct": [
+          63.79,
+          90.0
+        ],
+        "proposed_pb_nhs": [
+          65.44,
+          72.02
+        ]
+      },
+      "by_generator": {
+        "anthropic/claude-sonnet-4.5": {
+          "n_grounded_answerable": 20,
+          "n_grounded_nearmiss": 9,
+          "grounded_accuracy_pct": 90.0,
+          "omniscience_index": 80.0,
+          "nearmiss_abstention_pct": 55.56,
+          "closed_book_abstention_pct": 5.0
+        },
+        "openai/gpt-4.1": {
+          "n_grounded_answerable": 20,
+          "n_grounded_nearmiss": 20,
+          "grounded_accuracy_pct": 90.0,
+          "omniscience_index": 92.5,
+          "nearmiss_abstention_pct": 60.0,
+          "closed_book_abstention_pct": 10.0
+        }
+      },
+      "by_domain": {
+        "business": {
+          "n_grounded_answerable": 8,
+          "n_grounded_nearmiss": 6,
+          "grounded_accuracy_pct": 87.5,
+          "omniscience_index": 93.75,
+          "nearmiss_abstention_pct": 83.33,
+          "proposed_pb_nhs": 74.79
+        },
+        "health": {
+          "n_grounded_answerable": 4,
+          "n_grounded_nearmiss": 3,
+          "grounded_accuracy_pct": 75.0,
+          "omniscience_index": 75.0,
+          "nearmiss_abstention_pct": 66.67,
+          "proposed_pb_nhs": 66.67
+        },
+        "humanities_social_sciences": {
+          "n_grounded_answerable": 4,
+          "n_grounded_nearmiss": 3,
+          "grounded_accuracy_pct": 100.0,
+          "omniscience_index": 100.0,
+          "nearmiss_abstention_pct": 33.33,
+          "proposed_pb_nhs": 65.48
+        },
+        "law": {
+          "n_grounded_answerable": 16,
+          "n_grounded_nearmiss": 11,
+          "grounded_accuracy_pct": 87.5,
+          "omniscience_index": 75.0,
+          "nearmiss_abstention_pct": 72.73,
+          "proposed_pb_nhs": 69.56
+        },
+        "science_engineering_math": {
+          "n_grounded_answerable": 4,
+          "n_grounded_nearmiss": 3,
+          "grounded_accuracy_pct": 100.0,
+          "omniscience_index": 100.0,
+          "nearmiss_abstention_pct": 0.0,
+          "proposed_pb_nhs": 60.0
+        },
+        "software_engineering": {
+          "n_grounded_answerable": 4,
+          "n_grounded_nearmiss": 3,
+          "grounded_accuracy_pct": 100.0,
+          "omniscience_index": 100.0,
+          "nearmiss_abstention_pct": 33.33,
+          "proposed_pb_nhs": 68.33
+        }
+      },
+      "cost_and_tokens": {
+        "inference_tokens": 385367,
+        "inference_cost_usd": 0.0,
+        "grading_cost_usd": 0.907531
+      }
+    }
+  ]
+}

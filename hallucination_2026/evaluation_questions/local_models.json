@@ -1,0 +1,384 @@
+{
+  "schema_version": "2.1-local",
+  "description": "Local and on-device models evaluated on PrivacyBench v2.1 (hallucination_2026) using frozen Stage-6 items and the canonical 3-lab judge panel.",
+  "models": [
+    {
+      "model_id": "apple/foundation-model",
+      "display_name": "Apple Intelligence (On-Device)",
+      "lab": "apple",
+      "size_class": "local",
+      "vendor_published_cutoff": "2026-06-01",
+      "public_release_date": "2026-09-15",
+      "effective_cutoff": "2026-09-15",
+      "cutoff_source": "public_release_date",
+      "local": {
+        "engine": "apple-foundation-models",
+        "served_model": "apple-intelligence",
+        "quantization": "on-device",
+        "context_length": 8192
+      },
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 512,
+        "summary_max_tokens": 768
+      }
+    },
+    {
+      "model_id": "local/gpt-oss-20b-optiq-4bit",
+      "display_name": "GPT-OSS 20B (MLX OptiQ 4-bit)",
+      "lab": "openai",
+      "size_class": "local",
+      "vendor_published_cutoff": "2025-06-01",
+      "public_release_date": "2025-08-05",
+      "effective_cutoff": "2025-08-05",
+      "cutoff_source": "public_release_date",
+      "local": {
+        "engine": "mlx_lm.server",
+        "served_model": "mlx-community/gpt-oss-20b-OptiQ-4bit",
+        "quantization": "OptiQ 4-bit",
+        "context_length": 131072
+      },
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768
+      }
+    },
+    {
+      "model_id": "local/gemma4-e4b-q4_k_m",
+      "display_name": "Gemma 4 E4B (Q4_K_M)",
+      "lab": "google",
+      "size_class": "local",
+      "vendor_published_cutoff": "2026-03-01",
+      "public_release_date": "2026-04-03",
+      "effective_cutoff": "2026-04-03",
+      "cutoff_source": "public_release_date",
+      "local": {
+        "engine": "ollama",
+        "served_model": "gemma4:e4b",
+        "quantization": "Q4_K_M",
+        "context_length": 32768
+      },
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 16384,
+        "summary_max_tokens": 16384
+      }
+    },
+    {
+      "model_id": "local/nemotron-3.5-bolt-e4b-optiq-4bit",
+      "display_name": "Nemotron 3.5 Bolt E4B (MLX OptiQ 4-bit)",
+      "lab": "nvidia",
+      "size_class": "local",
+      "vendor_published_cutoff": "2026-05-01",
+      "public_release_date": "2026-10-15",
+      "effective_cutoff": "2026-10-15",
+      "cutoff_source": "public_release_date",
+      "local": {
+        "engine": "mlx_lm.server",
+        "served_model": "mlx-community/NVIDIA-Nemotron-3.5-Bolt-E4B-OptiQ-4bit",
+        "quantization": "OptiQ 4-bit",
+        "context_length": 65536
+      },
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 16384,
+        "summary_max_tokens": 16384
+      }
+    },
+    {
+      "model_id": "local/granite4.2-8b-q4_k_m",
+      "display_name": "Granite 4.2 8B (Q4_K_M)",
+      "lab": "ibm",
+      "size_class": "local",
+      "vendor_published_cutoff": "2026-06-01",
+      "public_release_date": "2026-08-31",
+      "effective_cutoff": "2026-08-31",
+      "cutoff_source": "public_release_date",
+      "local": {
+        "engine": "ollama",
+        "served_model": "granite4.2:8b",
+        "quantization": "Q4_K_M",
+        "context_length": 32768
+      },
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768
+      }
+    },
+    {
+      "model_id": "local/qwen3.5-4b-q4_k_m",
+      "display_name": "Qwen3.5 4B (Q4_K_M)",
+      "lab": "qwen",
+      "size_class": "local",
+      "vendor_published_cutoff": "2026-02-01",
+      "public_release_date": "2026-03-10",
+      "effective_cutoff": "2026-03-10",
+      "cutoff_source": "public_release_date",
+      "local": {
+        "engine": "ollama",
+        "served_model": "qwen3.5:4b-q4_K_M",
+        "quantization": "Q4_K_M",
+        "context_length": 32768
+      },
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768
+      }
+    },
+    {
+      "model_id": "local/minicpm5-2b-q4_k_m",
+      "display_name": "MiniCPM5 2B (Q4_K_M)",
+      "lab": "openbmb",
+      "size_class": "local",
+      "vendor_published_cutoff": "2026-06-01",
+      "public_release_date": "2026-10-01",
+      "effective_cutoff": "2026-10-01",
+      "cutoff_source": "public_release_date",
+      "local": {
+        "engine": "ollama",
+        "served_model": "hf.co/openbmb/MiniCPM5-2B-GGUF:Q4_K_M",
+        "quantization": "Q4_K_M",
+        "context_length": 32768
+      },
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768
+      }
+    },
+    {
+      "model_id": "local/nanbeige4.2-3b-q4_k_m",
+      "display_name": "Nanbeige4.2 3B (Q4_K_M)",
+      "lab": "nanbeige",
+      "size_class": "local",
+      "vendor_published_cutoff": "2026-06-01",
+      "public_release_date": "2026-09-01",
+      "effective_cutoff": "2026-09-01",
+      "cutoff_source": "public_release_date",
+      "local": {
+        "engine": "ollama",
+        "served_model": "hf.co/owao/Nanbeige4.2-3B-GGUF:Q4_K_M",
+        "quantization": "Q4_K_M",
+        "context_length": 32768
+      },
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768
+      }
+    },
+    {
+      "model_id": "local/lfm3-1.7b-q4_k_m",
+      "display_name": "LFM3 1.7B (Q4_K_M)",
+      "lab": "liquid",
+      "size_class": "local",
+      "vendor_published_cutoff": "2026-10-01",
+      "public_release_date": "2026-11-06",
+      "effective_cutoff": "2026-11-06",
+      "cutoff_source": "public_release_date",
+      "local": {
+        "engine": "ollama",
+        "served_model": "lfm3:1.7b-q4_K_M",
+        "quantization": "Q4_K_M",
+        "context_length": 32768
+      },
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768
+      }
+    },
+    {
+      "model_id": "local/granite4.2-3b-q4_k_m",
+      "display_name": "Granite 4.2 3B (Q4_K_M)",
+      "lab": "ibm",
+      "size_class": "local",
+      "vendor_published_cutoff": "2026-06-01",
+      "public_release_date": "2026-08-31",
+      "effective_cutoff": "2026-08-31",
+      "cutoff_source": "public_release_date",
+      "local": {
+        "engine": "ollama",
+        "served_model": "granite4.2:3b-q4_K_M",
+        "quantization": "Q4_K_M",
+        "context_length": 32768
+      },
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768
+      }
+    },
+    {
+      "model_id": "local/gemma4-e2b-q4_k_m",
+      "display_name": "Gemma 4 E2B (Q4_K_M)",
+      "lab": "google",
+      "size_class": "local",
+      "vendor_published_cutoff": "2026-03-01",
+      "public_release_date": "2026-04-03",
+      "effective_cutoff": "2026-04-03",
+      "cutoff_source": "public_release_date",
+      "local": {
+        "engine": "ollama",
+        "served_model": "gemma4:e2b",
+        "quantization": "Q4_K_M",
+        "context_length": 32768
+      },
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 16384,
+        "summary_max_tokens": 16384
+      }
+    },
+    {
+      "model_id": "local/qwen3.5-9b-q4_k_m",
+      "display_name": "Qwen3.5 9B (Q4_K_M)",
+      "lab": "qwen",
+      "size_class": "local",
+      "vendor_published_cutoff": "2026-02-01",
+      "public_release_date": "2026-03-10",
+      "effective_cutoff": "2026-03-10",
+      "cutoff_source": "public_release_date",
+      "local": {
+        "engine": "ollama",
+        "served_model": "qwen3.5:9b-q4_K_M",
+        "quantization": "Q4_K_M",
+        "context_length": 32768
+      },
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768
+      }
+    },
+    {
+      "model_id": "local/mimo-v2.6-9b-q4_k_m",
+      "display_name": "MiMo V2.6 9B (Q4_K_M)",
+      "lab": "xiaomi",
+      "size_class": "local",
+      "vendor_published_cutoff": "2026-09-01",
+      "public_release_date": "2026-09-21",
+      "effective_cutoff": "2026-09-21",
+      "cutoff_source": "public_release_date",
+      "local": {
+        "engine": "ollama",
+        "served_model": "mimo-v2.6:9b-q4_K_M",
+        "quantization": "Q4_K_M",
+        "context_length": 32768
+      },
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768
+      }
+    },
+    {
+      "model_id": "local/nemotron-3.5-bolt-e4b-q4_k_m",
+      "display_name": "Nemotron 3.5 Bolt E4B (Q4_K_M)",
+      "lab": "nvidia",
+      "size_class": "local",
+      "vendor_published_cutoff": "2026-05-01",
+      "public_release_date": "2026-10-15",
+      "effective_cutoff": "2026-10-15",
+      "cutoff_source": "public_release_date",
+      "local": {
+        "engine": "ollama",
+        "served_model": "nemotron-3.5-bolt:e4b-q4_K_M",
+        "quantization": "Q4_K_M",
+        "context_length": 32768
+      },
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768
+      }
+    },
+    {
+      "model_id": "local/lfm2.5-2.6b-q4_k_m",
+      "display_name": "LFM2.5 2.6B (Q4_K_M)",
+      "lab": "liquid",
+      "size_class": "local",
+      "vendor_published_cutoff": "2025-10-01",
+      "public_release_date": "2026-01-15",
+      "effective_cutoff": "2026-01-15",
+      "cutoff_source": "public_release_date",
+      "local": {
+        "engine": "ollama",
+        "served_model": "LiquidAI/lfm2.5-2.6b:q4_k_m",
+        "quantization": "Q4_K_M",
+        "context_length": 32768
+      },
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768
+      }
+    },
+    {
+      "model_id": "local/gemma4-12b-q4_k_m",
+      "display_name": "Gemma 4 12B (Q4_K_M)",
+      "lab": "google",
+      "size_class": "local",
+      "vendor_published_cutoff": "2026-03-01",
+      "public_release_date": "2026-04-03",
+      "effective_cutoff": "2026-04-03",
+      "cutoff_source": "public_release_date",
+      "local": {
+        "engine": "ollama",
+        "served_model": "gemma4:12b-it-q4_K_M",
+        "quantization": "Q4_K_M",
+        "context_length": 32768
+      },
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768
+      }
+    },
+    {
+      "model_id": "local/gemma4-26b-a4b-4bit",
+      "display_name": "Gemma 4 26B A4B (MLX 4-bit)",
+      "lab": "google",
+      "size_class": "local",
+      "vendor_published_cutoff": "2026-03-01",
+      "public_release_date": "2026-04-03",
+      "effective_cutoff": "2026-04-03",
+      "cutoff_source": "public_release_date",
+      "local": {
+        "engine": "mlx_lm.server",
+        "served_model": "mlx-community/gemma-4-26b-a4b-it-4bit",
+        "quantization": "4-bit",
+        "context_length": 262144
+      },
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768
+      }
+    },
+    {
+      "model_id": "local/qwen3.5-2b-q4_k_m",
+      "display_name": "Qwen3.5 2B (Q4_K_M)",
+      "lab": "qwen",
+      "size_class": "local",
+      "vendor_published_cutoff": "2026-02-01",
+      "public_release_date": "2026-03-10",
+      "effective_cutoff": "2026-03-10",
+      "cutoff_source": "public_release_date",
+      "local": {
+        "engine": "ollama",
+        "served_model": "qwen3.5:2b-q4_K_M",
+        "quantization": "Q4_K_M",
+        "context_length": 32768
+      },
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768
+      }
+    }
+  ]
+}
