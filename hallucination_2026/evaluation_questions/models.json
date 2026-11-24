@@ -1944,6 +1944,86 @@
         "summary_max_tokens": 600,
         "reasoning_effort": null
       }
+    },
+    {
+      "model_id": "radixark/daisyrose-27b",
+      "display_name": "DaisyRose 27B",
+      "lab": "radixark",
+      "size_class": "open_weight_mid",
+      "vendor_published_cutoff": "2026-08-14",
+      "public_release_date": "2026-11-21",
+      "effective_cutoff": "2026-08-14",
+      "cutoff_source": "base_model_rl_only_qwen3.8_27b",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": "high"
+      }
+    },
+    {
+      "model_id": "google/gemma-4-31b-it",
+      "display_name": "Gemma 4 31B IT",
+      "lab": "google",
+      "size_class": "open_weight_mid",
+      "vendor_published_cutoff": "2026-03-01",
+      "public_release_date": "2026-04-02",
+      "effective_cutoff": "2026-04-02",
+      "cutoff_source": "release_date_fallback",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": "high"
+      }
+    },
+    {
+      "model_id": "prism-ml/ternary-bonsai-2-27b",
+      "display_name": "Ternary Bonsai 2 27B",
+      "lab": "prism-ml",
+      "size_class": "open_weight_mid",
+      "vendor_published_cutoff": null,
+      "public_release_date": "2026-09-18",
+      "effective_cutoff": "2026-09-18",
+      "cutoff_source": "release_date_fallback",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": "high"
+      }
+    },
+    {
+      "model_id": "qwen/qwen3.5-27b",
+      "display_name": "Qwen 3.5 27B",
+      "lab": "qwen",
+      "size_class": "open_weight_mid",
+      "vendor_published_cutoff": "2026-02-01",
+      "public_release_date": "2026-02-25",
+      "effective_cutoff": "2026-02-25",
+      "cutoff_source": "release_date_fallback",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": "high"
+      }
+    },
+    {
+      "model_id": "qwen/qwen3.6-27b",
+      "display_name": "Qwen 3.6 27B",
+      "lab": "qwen",
+      "size_class": "open_weight_mid",
+      "vendor_published_cutoff": "2026-04-01",
+      "public_release_date": "2026-04-27",
+      "effective_cutoff": "2026-04-27",
+      "cutoff_source": "release_date_fallback",
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768,
+        "reasoning_effort": "high"
+      }
     }
   ]
 }
