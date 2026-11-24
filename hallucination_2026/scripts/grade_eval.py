@@ -296,11 +296,46 @@ def detect_abstention_and_hedge(pred: str, question: str = "") -> Tuple[bool, bo
     return False, has_hedge
 
 
+HIGH_CAP_DNF_MIN_TOKENS = 16384
+
+
+def _is_high_cap_empty_dnf(item: Dict[str, Any], default_max_tokens: int = 0) -> bool:
+    """True when a model burned a generous reasoning budget (>=16k tokens) with empty final output."""
+    if (item.get("response") or "").strip():
+        return False
+    tel = item.get("telemetry") or {}
+    if tel.get("finish_reason") != "length":
+        return False
+    cap = int(item.get("max_tokens") or default_max_tokens or 0)
+    if cap > 0:
+        return cap >= HIGH_CAP_DNF_MIN_TOKENS
+    ctok = int(tel.get("completion_tokens") or 0)
+    return ctok >= HIGH_CAP_DNF_MIN_TOKENS
+
+
 def deterministic_prepass(qa_item: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     """
     Attempt deterministic grading before calling the 3-judge panel.
     Returns a grade dict if deterministically resolved, else None.
     """
+    if qa_item.get("telemetry", {}).get("finish_reason") == "loop":
+        return {
+            "grading_path": "deterministic_loop",
+            "final_grade": "LOOP",
+            "hedged": False,
+            "judge_votes": {},
+            "disagreement": False,
+        }
+
+    if _is_high_cap_empty_dnf(qa_item):
+        return {
+            "grading_path": "deterministic_dnf",
+            "final_grade": "DNF",
+            "hedged": False,
+            "judge_votes": {},
+            "disagreement": False,
+        }
+
     pred_raw = qa_item.get("response", "").strip()
     if pred_raw.startswith("[ERROR:"):
         return {
@@ -485,6 +520,26 @@ def grade_single_summary(
     key_facts = [kf["claim"] for kf in article.get("key_facts", [])]
     telemetry: List[Dict[str, Any]] = []
 
+    if sum_item.get("telemetry", {}).get("finish_reason") == "loop" or _is_high_cap_empty_dnf(sum_item):
+        is_loop = sum_item.get("telemetry", {}).get("finish_reason") == "loop"
+        return {
+            "grading_path": "deterministic_loop" if is_loop else "deterministic_dnf",
+            **({"loop_detected": True} if is_loop else {"dnf": True}),
+            "claims": [],
+            "key_facts": key_facts,
+            "n_claims": 1,
+            "n_supported": 0,
+            "n_unsupported": 1,
+            "n_contradicted": 0,
+            "unsupported_rate": 1.0,
+            "contradicted_rate": 0.0,
+            "hallucinated_claim_rate": 1.0,
+            "n_key_facts": len(key_facts),
+            "n_key_facts_covered": 0,
+            "key_fact_coverage": 0.0,
+            "judge_claim_disagreements": 0,
+        }, telemetry
+
     if not summary_text or summary_text.startswith("[ERROR:"):
         return {
             "claims": [],
@@ -635,12 +690,19 @@ def grade_result_file(
     data = json.loads(result_path.read_text(encoding="utf-8"))
     qa_list = data.get("qa_responses", [])
     sum_list = data.get("summary_responses", [])
+    default_params = (data.get("model_meta") or {}).get("default_params") or {}
+    qa_default_cap = int(default_params.get("qa_max_tokens") or 0)
+    sum_default_cap = int(default_params.get("summary_max_tokens") or 0)
 
-    truncated_empty = [
-        f"{r.get('eval_mode')}::{r.get('item_id')}"
-        for r in (qa_list + sum_list)
-        if not (r.get("response") or "").strip() and r.get("telemetry", {}).get("finish_reason") == "length"
-    ]
+    truncated_empty = []
+    for r, dcap in [(x, qa_default_cap) for x in qa_list] + [(x, sum_default_cap) for x in sum_list]:
+        if not (r.get("response") or "").strip() and r.get("telemetry", {}).get("finish_reason") == "length":
+            if _is_high_cap_empty_dnf(r, dcap):
+                # Ensure downstream prepass sees the effective high cap even if item lacks explicit max_tokens
+                if not r.get("max_tokens") and dcap >= HIGH_CAP_DNF_MIN_TOKENS:
+                    r["max_tokens"] = dcap
+            else:
+                truncated_empty.append(f"{r.get('eval_mode')}::{r.get('item_id')}")
     if truncated_empty:
         raise RuntimeError(
             f"[grade_eval] Refusing to grade {result_path.name}: {len(truncated_empty)} response(s) are empty with "

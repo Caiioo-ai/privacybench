@@ -379,6 +379,174 @@
         "qa_max_tokens": 32768,
         "summary_max_tokens": 32768
       }
+    },
+    {
+      "model_id": "local/ministral-3-8b",
+      "display_name": "Ministral 3 8B (Q4_K_M)",
+      "lab": "mistralai",
+      "size_class": "local",
+      "vendor_published_cutoff": "2025-11-01",
+      "public_release_date": "2025-12-02",
+      "effective_cutoff": "2025-12-02",
+      "cutoff_source": "public_release_date",
+      "local": {
+        "engine": "ollama",
+        "served_model": "ministral-3:8b",
+        "quantization": "Q4_K_M",
+        "context_length": 32768
+      },
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768
+      }
+    },
+    {
+      "model_id": "local/bonsai-2-9b",
+      "display_name": "Ternary Bonsai 2 9B (1.58-bit)",
+      "lab": "prism-ml",
+      "size_class": "local",
+      "vendor_published_cutoff": "2026-09-01",
+      "public_release_date": "2026-10-16",
+      "effective_cutoff": "2026-10-16",
+      "cutoff_source": "public_release_date",
+      "local": {
+        "engine": "ollama",
+        "served_model": "bonsai-2:9b",
+        "quantization": "1.58-bit ternary",
+        "context_length": 32768
+      },
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768
+      }
+    },
+    {
+      "model_id": "local/bonsai-2-27b",
+      "display_name": "Ternary Bonsai 2 27B (1.58-bit)",
+      "lab": "prism-ml",
+      "size_class": "local",
+      "vendor_published_cutoff": "2026-08-01",
+      "public_release_date": "2026-09-18",
+      "effective_cutoff": "2026-09-18",
+      "cutoff_source": "public_release_date",
+      "local": {
+        "engine": "ollama",
+        "served_model": "bonsai-2:27b",
+        "quantization": "1.58-bit ternary",
+        "context_length": 32768
+      },
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768
+      }
+    },
+    {
+      "model_id": "local/qwen3-8b",
+      "display_name": "Qwen3 8B (Q4_K_M)",
+      "lab": "qwen",
+      "size_class": "local",
+      "vendor_published_cutoff": "2025-03-01",
+      "public_release_date": "2025-04-29",
+      "effective_cutoff": "2025-04-29",
+      "cutoff_source": "public_release_date",
+      "local": {
+        "engine": "ollama",
+        "served_model": "qwen3:8b",
+        "quantization": "Q4_K_M",
+        "context_length": 32768
+      },
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768
+      }
+    },
+    {
+      "model_id": "local/deepseek-r1-8b",
+      "display_name": "DeepSeek-R1 8B (Q4_K_M)",
+      "lab": "deepseek",
+      "size_class": "local",
+      "vendor_published_cutoff": "2025-05-01",
+      "public_release_date": "2025-05-28",
+      "effective_cutoff": "2025-05-28",
+      "cutoff_source": "public_release_date",
+      "local": {
+        "engine": "ollama",
+        "served_model": "deepseek-r1:8b",
+        "quantization": "Q4_K_M",
+        "context_length": 32768
+      },
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768
+      }
+    },
+    {
+      "model_id": "local/olmo-3-7b-think",
+      "display_name": "OLMo 3 7B Think (Q4_K_M)",
+      "lab": "allenai",
+      "size_class": "local",
+      "vendor_published_cutoff": "2025-10-01",
+      "public_release_date": "2025-11-20",
+      "effective_cutoff": "2025-11-20",
+      "cutoff_source": "public_release_date",
+      "local": {
+        "engine": "ollama",
+        "served_model": "olmo-3:7b-think",
+        "quantization": "Q4_K_M",
+        "context_length": 32768
+      },
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768
+      }
+    },
+    {
+      "model_id": "local/rnj-1-8b",
+      "display_name": "RNJ-1 8B (Q4_K_M)",
+      "lab": "essentialai",
+      "size_class": "local",
+      "vendor_published_cutoff": "2025-11-01",
+      "public_release_date": "2025-12-08",
+      "effective_cutoff": "2025-12-08",
+      "cutoff_source": "public_release_date",
+      "local": {
+        "engine": "ollama",
+        "served_model": "rnj-1:8b",
+        "quantization": "Q4_K_M",
+        "context_length": 32768
+      },
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768
+      }
+    },
+    {
+      "model_id": "local/llama3.1-8b",
+      "display_name": "Llama 3.1 8B (Q4_K_M)",
+      "lab": "meta-llama",
+      "size_class": "local",
+      "vendor_published_cutoff": "2023-12-01",
+      "public_release_date": "2024-07-23",
+      "effective_cutoff": "2024-07-23",
+      "cutoff_source": "public_release_date",
+      "local": {
+        "engine": "ollama",
+        "served_model": "llama3.1:8b",
+        "quantization": "Q4_K_M",
+        "context_length": 32768
+      },
+      "default_params": {
+        "temperature": 0.0,
+        "qa_max_tokens": 32768,
+        "summary_max_tokens": 32768
+      }
     }
   ]
 }

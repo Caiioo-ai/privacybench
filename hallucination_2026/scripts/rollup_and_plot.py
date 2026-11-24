@@ -98,6 +98,20 @@ def compute_metrics_from_subsets(
         + 0.20 * (1.0 - sum_halluc_rate)
     )
 
+    loop_count = sum(
+        1 for q in qa_items if _grade(q) == "LOOP" or q.get("telemetry", {}).get("finish_reason") == "loop"
+    ) + sum(
+        1 for s in summaries if s.get("grading", {}).get("grading_path") == "deterministic_loop" or s.get("telemetry", {}).get("finish_reason") == "loop"
+    )
+    dnf_count = sum(
+        1 for q in qa_items if _grade(q) == "DNF" or q.get("grading", {}).get("grading_path") == "deterministic_dnf"
+    ) + sum(
+        1 for s in summaries if s.get("grading", {}).get("grading_path") == "deterministic_dnf"
+    )
+    total_eval_items = len(qa_items) + len(summaries)
+    loop_rate_pct = round(100.0 * loop_count / total_eval_items, 2) if total_eval_items else 0.0
+    dnf_rate_pct = round(100.0 * dnf_count / total_eval_items, 2) if total_eval_items else 0.0
+
     return {
         "grounded_accuracy_pct": round(100.0 * grounded_acc, 2),
         "omniscience_index": round(omniscience_idx, 2),
@@ -113,6 +127,8 @@ def compute_metrics_from_subsets(
         "summary_hallucinated_pct": round(100.0 * sum_halluc_rate, 2),
         "summary_key_fact_coverage_pct": round(100.0 * sum_kf_cov, 2),
         "proposed_pb_nhs": round(pb_nhs, 2),
+        **({"loop_count": loop_count, "loop_rate_pct": loop_rate_pct} if loop_count > 0 else {}),
+        **({"dnf_count": dnf_count, "dnf_rate_pct": dnf_rate_pct} if dnf_count > 0 else {}),
     }
 
 
